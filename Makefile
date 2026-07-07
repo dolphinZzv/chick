@@ -8,7 +8,7 @@ check:
 	@echo "=== 门禁检查: go vet ==="
 	go vet ./...
 	@echo "=== 门禁检查: go build ==="
-	go build -race -o /dev/null ./cmd/server/
+	go build -o /dev/null ./cmd/server/
 	@echo "=== 门禁检查: Go 测试 ==="
 	go test -race -count=1 ./internal/...
 	@echo "=== 门禁检查: 验证 ==="
@@ -26,7 +26,7 @@ ui-build:
 # ─── 后端构建 ──────────────────────────────────────────────
 
 build:
-	go build -race -o bin/chick ./cmd/server/
+	go build -o bin/chick ./cmd/server/
 
 # ─── 启动 / 停止 ────────────────────────────────────────────
 
