@@ -175,7 +175,7 @@ func TestToolsList(t *testing.T) {
 
 	required := []string{
 		"create_issue", "add_comment", "assign_issue",
-		"transition_issue", "search_issues", "get_agent_info",
+		"transition_issue", "search_issues",
 		"mark_notifications_read", "get_unread_count",
 	}
 	for _, r := range required {

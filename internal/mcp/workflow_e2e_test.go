@@ -26,24 +26,7 @@ func TestAgentWorkflowE2E(t *testing.T) {
 	// Add to project
 	projectSvc.AddMember(proj.ID, agentID, models.ProjectRoleMember)
 
-	// ── Step 3: Verify agent info ──
-	infoResult := call(t, srv, "tools/call", map[string]interface{}{
-		"name": "get_agent_info",
-		"arguments": map[string]interface{}{
-			"agentId": "1",
-		},
-	}, agentID)
-	if infoResult["deviceInfo"] != "Linux / Chrome" {
-		t.Errorf("expected deviceInfo, got %v", infoResult["deviceInfo"])
-	}
-	if infoResult["modelInfo"] != "Claude 4 Opus" {
-		t.Errorf("expected modelInfo, got %v", infoResult["modelInfo"])
-	}
-	if infoResult["status"] != "online" {
-		t.Errorf("expected status online, got %v", infoResult["status"])
-	}
-
-	// ── Step 4: Create issue (auto-derive project from membership) ──
+	// ── Step 3: Create issue (auto-derive project from membership) ──
 	issueResult := call(t, srv, "tools/call", map[string]interface{}{
 		"name": "create_issue",
 		"arguments": map[string]interface{}{

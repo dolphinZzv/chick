@@ -6,7 +6,6 @@
 
 | Tool | 说明 |
 |------|------|
-| get_agent_info | 获取 Agent 详情 |
 | create_issue | 创建 Issue |
 | create_issues_batch | 批量创建 Issue |
 | edit_issue | 编辑 Issue |
@@ -43,7 +42,10 @@
 {
   "mcpServers": {
     "chick": {
-      "url": "http://localhost:9091/mcp"
+      "url": "http://localhost:9091/mcp",
+      "headers": {
+        "Authorization": "Bearer <your-token>"
+      }
     }
   }
 }

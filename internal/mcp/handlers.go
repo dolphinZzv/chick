@@ -77,16 +77,6 @@ func (h *Handlers) resolveProject(projectIDStr string, agentID uint) (uint, erro
 func (h *Handlers) RegisterAll(registry *ToolRegistry) {
 
 	registry.Register(&ToolDefinition{
-		Name:        "get_agent_info",
-		Description: "Get agent details by ID or external ID",
-		InputSchema: ObjectSchema(map[string]interface{}{
-			"agentId":    StringParam("Agent numeric ID"),
-			"externalId": StringParam("Agent external ID"),
-		}, nil),
-		Handler: h.handleGetAgentInfo,
-	})
-
-	registry.Register(&ToolDefinition{
 		Name:        "create_issue",
 		Description: "Create a new issue",
 		InputSchema: ObjectSchema(map[string]interface{}{
@@ -811,70 +801,6 @@ func (h *Handlers) handleSearchTasks(id json.RawMessage, params json.RawMessage,
 	return NewResponse(id, map[string]interface{}{
 		"items": items,
 		"total": total,
-	})
-}
-
-func (h *Handlers) handleGetAgentInfo(id json.RawMessage, params json.RawMessage, agentID uint, remoteAddr string) Response {
-	var p struct {
-		AgentID    string `json:"agentId"`
-		ExternalID string `json:"externalId"`
-	}
-	if err := json.Unmarshal(params, &p); err != nil {
-		return NewError(id, -32602, "Invalid params: "+err.Error())
-	}
-
-	if agentID == 0 {
-		return NewError(id, -32602, "Not authenticated")
-	}
-
-	var targetID uint
-	if p.AgentID != "" {
-		aid, err := strconv.ParseUint(p.AgentID, 10, 64)
-		if err != nil {
-			return NewError(id, -32602, "Invalid agentId: "+p.AgentID)
-		}
-		targetID = uint(aid)
-	} else if p.ExternalID != "" {
-		agent, err := h.agentSvc.GetByExternalID(p.ExternalID)
-		if err != nil {
-			return NewInternalError(id, err.Error())
-		}
-		if agent == nil {
-			return NewError(id, -32602, "Agent not found")
-		}
-		targetID = agent.ID
-	} else {
-		return NewError(id, -32602, "Provide agentId or externalId")
-	}
-
-	// Agents can always view themselves; otherwise they must share a project
-	if agentID != targetID {
-		ok, err := h.projectSvc.CheckSharedProject(agentID, targetID)
-		if err != nil || !ok {
-			return NewError(id, -32602, "Access denied: agent not found or not in same project")
-		}
-	}
-
-	agent, err := h.agentSvc.GetByID(targetID)
-	if err != nil {
-		return NewInternalError(id, err.Error())
-	}
-	if agent == nil {
-		return NewError(id, -32602, "Agent not found")
-	}
-
-	return NewResponse(id, map[string]interface{}{
-		"id":           fmt.Sprintf("%d", agent.ID),
-		"number":       agent.Number,
-		"name":         agent.Name,
-		"kind":         string(agent.Kind),
-		"status":       string(agent.Status),
-		"externalId":   agent.ExternalID,
-		"capabilities": agent.Capabilities,
-		"deviceInfo":   agent.DeviceInfo,
-		"modelInfo":    agent.ModelInfo,
-		"lastIp":       agent.LastIP,
-		"tokenPreview": maskToken(agent.Token),
 	})
 }
 
