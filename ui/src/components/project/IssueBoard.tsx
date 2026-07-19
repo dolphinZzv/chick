@@ -46,16 +46,16 @@ interface Column {
 }
 
 const stateColors: Record<string, string> = {
-  open: "border-l-green-500",
-  in_progress: "border-l-blue-500",
-  blocked: "border-l-amber-500",
-  review: "border-l-purple-500",
-  pending_confirmation: "border-l-cyan-500",
-  later: "border-l-slate-500",
-  reopen: "border-l-orange-500",
-  closed_completed: "border-l-gray-500",
-  closed_not_planned: "border-l-gray-500",
-  closed_rejected: "border-l-red-500",
+  open: "border-l-gray-500",
+  in_progress: "border-l-gray-500",
+  blocked: "border-l-gray-500",
+  review: "border-l-gray-500",
+  pending_confirmation: "border-l-gray-500",
+  later: "border-l-gray-500",
+  reopen: "border-l-gray-500",
+  closed_completed: "border-l-gray-300",
+  closed_not_planned: "border-l-gray-300",
+  closed_rejected: "border-l-gray-300",
 };
 
 const priorityLabels: Record<string, string> = {
@@ -66,10 +66,10 @@ const priorityLabels: Record<string, string> = {
 };
 
 const priorityColors: Record<string, string> = {
-  critical: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
-  high: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200",
-  medium: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-  low: "bg-sky-100 text-sky-800 dark:bg-sky-900 dark:text-sky-200",
+  critical: "bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-gray-100",
+  high: "bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-gray-100",
+  medium: "bg-gray-100 text-gray-700 dark:bg-gray-600 dark:text-gray-200",
+  low: "bg-gray-50 text-gray-500 dark:bg-gray-800 dark:text-gray-400",
 };
 
 const stateLabels: Record<string, string> = {
@@ -500,7 +500,7 @@ function StaticColumn({
 function DragOverlayCard({ issue }: { issue: Issue }) {
   return (
     <div
-      className={`rounded-lg border bg-card p-3 border-l-2 shadow-xl rotate-3 ${
+      className={`rounded-lg border bg-card p-3 border-l-2 ${
         stateColors[issue.state] || "border-l-border"
       }`}
     >

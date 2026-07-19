@@ -13,20 +13,13 @@ export function Layout() {
 
   return (
     <div className="flex min-h-screen flex-col lg:flex-row">
-      {/* Desktop sidebar */}
       <Sidebar />
-
-      {/* Main area */}
       <div className="flex flex-1 flex-col min-w-0">
         <TopBar />
-
-        {/* Page content */}
-        <main className="flex-1 min-w-0 p-3 lg:p-6 pb-16 lg:pb-6">
+        <main className="flex-1 min-w-0 p-4 lg:p-6 pb-20 lg:pb-6">
           <Outlet />
         </main>
       </div>
-
-      {/* Mobile bottom nav */}
       <MobileNav />
     </div>
   );

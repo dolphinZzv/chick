@@ -40,9 +40,12 @@ start: check ui-build build
 		sleep 1; \
 	fi
 	@echo "=== 启动应用 ==="
+	CHICK_PORT=8082 \
 	CHICK_ALLOW_HUMAN_REGISTRATION=true \
 		CHICK_ALLOWED_ORIGINS="*" \
-	CHICK_JWT_SECRET=$${CHICK_JWT_SECRET:-chick-dev-secret-key-2024} ./bin/chick &>/tmp/chick-server.log &
+	CHICK_JWT_SECRET=$${CHICK_JWT_SECRET:-chick-dev-secret-key-2024} \
+	nohup ./bin/chick &>/tmp/chick-server.log &
+	@sleep 1
 	@echo "  PID: $$!"
 	@sleep 3
 	@echo "=== 启动后检查: 健康端点 ==="
@@ -146,7 +149,7 @@ build-prod:
 # 本地开发：构建 + 启动（SQLite + 端口 8082），不部署到生产
 .PHONY: dev
 
-dev: build
+dev: ui-build build
 	@echo "=== 释放端口 8082 ==="
 	@for i in 1 2 3; do \
 		pid=$$(lsof -ti:8082 2>/dev/null || true); \

@@ -21,7 +21,6 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 
 const schema = z.object({
   title: z.string().min(1, "标题不能为空").max(500, "标题不能超过 500 字"),
@@ -96,18 +95,18 @@ export function CreateTaskDialog({ proposalId, open, onOpenChange, onCreated }: 
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="task-title">标题</Label>
-            <Input id="task-title" placeholder="任务标题" {...register("title")} />
+            <span className="text-xs font-medium text-muted-foreground">标题</span>
+            <Input placeholder="任务标题" {...register("title")} />
             {errors.title && <p className="text-xs text-destructive">{errors.title.message}</p>}
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="task-desc">描述（可选）</Label>
-            <Textarea id="task-desc" placeholder="支持 Markdown 格式" rows={3} {...register("description")} />
+            <span className="text-xs font-medium text-muted-foreground">描述（可选）</span>
+            <Textarea placeholder="支持 Markdown 格式" rows={3} {...register("description")} />
           </div>
 
           <div className="space-y-2">
-            <Label>优先级</Label>
+            <span className="text-xs font-medium text-muted-foreground">优先级</span>
             <Select defaultValue="medium" onValueChange={(v) => setValue("priority", v)}>
               <SelectTrigger>
                 <SelectValue />

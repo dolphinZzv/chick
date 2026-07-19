@@ -167,7 +167,7 @@ export function CreateProposalDialog({ projectId, onCreated }: Props) {
                     onClick={() => setValue("priority", opt.value)}
                     className={`relative px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
                       currentPriority === opt.value
-                        ? "bg-background shadow-sm text-foreground"
+                        ? "bg-background text-foreground"
                         : "text-muted-foreground hover:text-foreground"
                     }`}
                   >

@@ -6,13 +6,10 @@ import { gql } from "@/lib/graphql";
 import { MarkdownContent } from "@/components/shared/MarkdownContent";
 
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Separator } from "@/components/ui/separator";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   Select,
   SelectContent,
@@ -20,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Send, MessageSquare, Trash2, Plus, Pencil, X, Check } from "lucide-react";
+import { Send, Trash2, Plus, Pencil, X, Check } from "lucide-react";
 import { toast } from "sonner";
 import { ErrorFallback } from "@/components/shared/ErrorFallback";
 import { EmptyState } from "@/components/shared/EmptyState";
@@ -95,16 +92,16 @@ const stateLabels: Record<string, string> = {
 };
 
 const stateBadgeColors: Record<string, string> = {
-  open: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-  in_progress: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-  blocked: "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200",
-  review: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
-  pending_confirmation: "bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-200",
-  later: "bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-200",
-  reopen: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200",
-  closed_completed: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200",
-  closed_not_planned: "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400",
-  closed_rejected: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
+  open: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200",
+  in_progress: "bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-gray-100",
+  blocked: "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300",
+  review: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-200",
+  pending_confirmation: "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300",
+  later: "bg-gray-50 text-gray-500 dark:bg-gray-900 dark:text-gray-400",
+  reopen: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-200",
+  closed_completed: "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400",
+  closed_not_planned: "bg-gray-50 text-gray-400 dark:bg-gray-900 dark:text-gray-500",
+  closed_rejected: "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400",
 };
 
 const priorityLabels: Record<string, string> = {
@@ -128,9 +125,9 @@ const eventTypeLabels: Record<string, string> = {
 const eventIcons: Record<string, string> = {
   issue_created: "●",
   issue_transitioned: "→",
-  assignee_added: "👤",
-  comment_added: "💬",
-  label_added: "🏷",
+  assignee_added: "+",
+  comment_added: "◆",
+  label_added: "#",
 };
 
 function relativeTime(dateStr: string): string {
@@ -754,138 +751,123 @@ export function IssueDetailPage() {
 
       {/* Description */}
       {editingDescription ? (
-        <Card>
-          <CardContent className="p-4 space-y-2">
-            <Textarea
-              value={editDescription}
-              onChange={(e) => setEditDescription(e.target.value)}
-              rows={6}
-              autoFocus
-            />
-            <div className="flex justify-end gap-2">
-              <Button size="sm" onClick={handleSaveDescription}><Check className="h-4 w-4 mr-1" />保存</Button>
-              <Button size="sm" variant="ghost" onClick={() => setEditingDescription(false)}>取消</Button>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="border bg-card p-4 space-y-2">
+          <Textarea
+            value={editDescription}
+            onChange={(e) => setEditDescription(e.target.value)}
+            rows={6}
+            autoFocus
+          />
+          <div className="flex justify-end gap-2">
+            <Button size="sm" onClick={handleSaveDescription}><Check className="h-4 w-4 mr-1" />保存</Button>
+            <Button size="sm" variant="ghost" onClick={() => setEditingDescription(false)}>取消</Button>
+          </div>
+        </div>
       ) : issue.description ? (
-        <Card>
-          <CardContent className="p-4 group relative">
-            <MarkdownContent content={issue.description} />
-            {agent && (
-              <Button variant="ghost" size="sm" className="absolute top-2 right-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                onClick={() => { setEditDescription(issue.description || ""); setEditingDescription(true); }}>
-                <Pencil className="h-3 w-3" />
-              </Button>
-            )}
-          </CardContent>
-        </Card>
-      ) : agent ? (
-        <Card>
-          <CardContent className="p-4">
-            <Button variant="ghost" size="sm" onClick={() => { setEditDescription(""); setEditingDescription(true); }}>
-              <Plus className="h-4 w-4 mr-1" />添加描述
+        <div className="border bg-card p-4 group relative">
+          <MarkdownContent content={issue.description} />
+          {agent && (
+            <Button variant="ghost" size="sm" className="absolute top-2 right-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+              onClick={() => { setEditDescription(issue.description || ""); setEditingDescription(true); }}>
+              <Pencil className="h-3 w-3" />
             </Button>
-          </CardContent>
-        </Card>
+          )}
+        </div>
+      ) : agent ? (
+        <div className="border bg-card p-4">
+          <Button variant="ghost" size="sm" onClick={() => { setEditDescription(""); setEditingDescription(true); }}>
+            <Plus className="h-4 w-4 mr-1" />添加描述
+          </Button>
+        </div>
       ) : null}
 
-      <Separator />
+      <div className="border-t" />
 
       {/* Comments */}
       <div className="space-y-4">
-        <h2 className="text-lg font-medium flex items-center gap-2">
-          <MessageSquare className="h-4 w-4" />
+        <h2 className="text-base font-medium">
           评论 ({comments.length})
         </h2>
         {comments
           .filter((c) => !c.parentID)
           .map((parent) => (
           <div key={parent.id}>
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center gap-2">
-                  <Avatar className="h-6 w-6">
-                    <AvatarFallback className="text-xs">
-                      {parent.author.name.charAt(0)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="text-sm font-medium">{parent.author.name}</span>
-                  <span className="text-xs text-muted-foreground">
-                    {relativeTime(parent.createdAt)}
-                  </span>
-                  {agent && (
-                    <Button variant="ghost" size="sm" className="h-6 px-2 text-xs ml-auto"
-                      onClick={() => { setReplyingTo(replyingTo === parent.id ? null : parent.id); setReplyText(""); }}>
-                      {replyingTo === parent.id ? "取消回复" : "回复"}
-                    </Button>
-                  )}
-                </div>
-                <div className="mt-2 text-sm">
-                  <MarkdownContent content={parent.body} />
-                </div>
-                {replyingTo === parent.id && (
-                  <div className="mt-2 border-t pt-2">
-                    <div className="flex gap-2 mb-2">
-                      <button
-                        className={`text-xs font-medium px-2 py-0.5 rounded ${!previewReply ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
-                        onClick={() => setPreviewReply(false)}
-                      >
-                        编辑
-                      </button>
-                      <button
-                        className={`text-xs font-medium px-2 py-0.5 rounded ${previewReply ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
-                        onClick={() => setPreviewReply(true)}
-                      >
-                        预览
-                      </button>
-                    </div>
-                    {previewReply ? (
-                      <div className="min-h-[60px] rounded-md border bg-background p-2 text-sm">
-                        {replyText.trim() ? (
-                          <MarkdownContent content={replyText} />
-                        ) : (
-                          <p className="text-xs text-muted-foreground">暂无内容</p>
-                        )}
-                      </div>
-                    ) : (
-                      <Textarea
-                        value={replyText}
-                        onChange={(e) => setReplyText(e.target.value)}
-                        placeholder={`回复 ${parent.author.name}...`}
-                        rows={2}
-                        className="text-sm"
-                      />
-                    )}
-                    <div className="mt-1 flex justify-end gap-1">
-                      <Button size="sm" onClick={() => handleComment(parent.id)} disabled={!replyText.trim()}><Send className="h-3 w-3 mr-1" />发送</Button>
-                    </div>
-                  </div>
+            <div className="border bg-card p-4">
+              <div className="flex items-center gap-2">
+                <span className="inline-flex items-center justify-center h-5 w-5 rounded-full bg-primary/10 text-[10px] font-medium text-primary">
+                  {parent.author.name.charAt(0)}
+                </span>
+                <span className="text-sm font-medium">{parent.author.name}</span>
+                <span className="text-xs text-muted-foreground">
+                  {relativeTime(parent.createdAt)}
+                </span>
+                {agent && (
+                  <Button variant="ghost" size="sm" className="h-6 px-2 text-xs ml-auto"
+                    onClick={() => { setReplyingTo(replyingTo === parent.id ? null : parent.id); setReplyText(""); }}>
+                    {replyingTo === parent.id ? "取消回复" : "回复"}
+                  </Button>
                 )}
-              </CardContent>
-            </Card>
+              </div>
+              <div className="mt-2 text-sm">
+                <MarkdownContent content={parent.body} />
+              </div>
+              {replyingTo === parent.id && (
+                <div className="mt-2 border-t pt-2">
+                  <div className="flex gap-2 mb-2">
+                    <button
+                      className={`text-xs font-medium px-2 py-0.5 rounded ${!previewReply ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
+                      onClick={() => setPreviewReply(false)}
+                    >
+                      编辑
+                    </button>
+                    <button
+                      className={`text-xs font-medium px-2 py-0.5 rounded ${previewReply ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
+                      onClick={() => setPreviewReply(true)}
+                    >
+                      预览
+                    </button>
+                  </div>
+                  {previewReply ? (
+                    <div className="min-h-[60px] rounded-md border bg-background p-2 text-sm">
+                      {replyText.trim() ? (
+                        <MarkdownContent content={replyText} />
+                      ) : (
+                        <p className="text-xs text-muted-foreground">暂无内容</p>
+                      )}
+                    </div>
+                  ) : (
+                    <Textarea
+                      value={replyText}
+                      onChange={(e) => setReplyText(e.target.value)}
+                      placeholder={`回复 ${parent.author.name}...`}
+                      rows={2}
+                      className="text-sm"
+                    />
+                  )}
+                  <div className="mt-1 flex justify-end gap-1">
+                    <Button size="sm" onClick={() => handleComment(parent.id)} disabled={!replyText.trim()}><Send className="h-3 w-3 mr-1" />发送</Button>
+                  </div>
+                </div>
+              )}
+            </div>
             {/* Replies */}
             {parent.replies && parent.replies.length > 0 && (
               <div className="ml-6 mt-1 space-y-1">
                 {parent.replies.map((r) => (
-                  <Card key={r.id} className="border-muted">
-                    <CardContent className="p-3">
-                      <div className="flex items-center gap-2">
-                        <Avatar className="h-5 w-5">
-                          <AvatarFallback className="text-[10px]">
-                            {r.author.name.charAt(0)}
-                          </AvatarFallback>
-                        </Avatar>
-                        <span className="text-xs font-medium">{r.author.name}</span>
-                        <span className="text-xs text-muted-foreground">
-                          {relativeTime(r.createdAt)}
-                        </span>
-                      </div>
-                      <div className="mt-1 text-sm">
-                        <MarkdownContent content={r.body} />
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <div key={r.id} className="border bg-card p-3">
+                    <div className="flex items-center gap-2">
+                      <span className="inline-flex items-center justify-center h-4 w-4 rounded-full bg-primary/10 text-[9px] font-medium text-primary">
+                        {r.author.name.charAt(0)}
+                      </span>
+                      <span className="text-xs font-medium">{r.author.name}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {relativeTime(r.createdAt)}
+                      </span>
+                    </div>
+                    <div className="mt-1 text-sm">
+                      <MarkdownContent content={r.body} />
+                    </div>
+                  </div>
                 ))}
               </div>
             )}
@@ -893,56 +875,54 @@ export function IssueDetailPage() {
         ))}
 
         {/* Add comment */}
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex gap-2 mb-2">
-              <button
-                className={`text-xs font-medium px-2 py-1 rounded ${!previewComment ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
-                onClick={() => setPreviewComment(false)}
-              >
-                编辑
-              </button>
-              <button
-                className={`text-xs font-medium px-2 py-1 rounded ${previewComment ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
-                onClick={() => setPreviewComment(true)}
-              >
-                预览
-              </button>
+        <div className="border bg-card p-4">
+          <div className="flex gap-2 mb-2">
+            <button
+              className={`text-xs font-medium px-2 py-1 rounded ${!previewComment ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
+              onClick={() => setPreviewComment(false)}
+            >
+              编辑
+            </button>
+            <button
+              className={`text-xs font-medium px-2 py-1 rounded ${previewComment ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
+              onClick={() => setPreviewComment(true)}
+            >
+              预览
+            </button>
+          </div>
+          {previewComment ? (
+            <div className="min-h-[80px] rounded-md border p-3">
+              {newComment.trim() ? (
+                <MarkdownContent content={newComment} />
+              ) : (
+                <p className="text-sm text-muted-foreground">暂无内容</p>
+              )}
             </div>
-            {previewComment ? (
-              <div className="min-h-[80px] rounded-md border bg-background p-3">
-                {newComment.trim() ? (
-                  <MarkdownContent content={newComment} />
-                ) : (
-                  <p className="text-sm text-muted-foreground">暂无内容</p>
-                )}
-              </div>
-            ) : (
-              <Textarea
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-                placeholder="输入评论... 支持 Markdown"
-                rows={3}
-              />
-            )}
-            <div className="mt-2 flex justify-end">
-              <Button
-                onClick={() => handleComment()}
-                disabled={!newComment.trim()}
-              >
-                <Send className="mr-1 h-4 w-4" />
-                发送
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+          ) : (
+            <Textarea
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              placeholder="输入评论... 支持 Markdown"
+              rows={3}
+            />
+          )}
+          <div className="mt-2 flex justify-end">
+            <Button
+              onClick={() => handleComment()}
+              disabled={!newComment.trim()}
+            >
+              <Send className="mr-1 h-4 w-4" />
+              发送
+            </Button>
+          </div>
+        </div>
       </div>
 
-      <Separator />
+      <div className="border-t" />
 
       {/* Timeline */}
       <div className="space-y-2">
-        <h2 className="text-lg font-medium">动态</h2>
+        <h2 className="text-base font-medium">动态</h2>
         {events.length === 0 ? (
           <p className="text-sm text-muted-foreground">暂无动态</p>
         ) : (
@@ -955,117 +935,109 @@ export function IssueDetailPage() {
   const metaSidebar = (
     <div className="space-y-4">
       {/* Assignees */}
-      <Card>
-        <CardHeader className="pb-2 flex flex-row items-center justify-between">
-          <CardTitle className="text-sm font-medium">负责人</CardTitle>
+      <div className="border bg-card p-4">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-sm font-medium">负责人</span>
           {agent && (
             <Button variant="ghost" size="sm" className="h-6 px-2 text-xs" onClick={() => setShowAssigneePicker(!showAssigneePicker)}>
               <Plus className="h-3 w-3 mr-1" />添加
             </Button>
           )}
-        </CardHeader>
-        <CardContent>
-          {(!issue.assignees || issue.assignees.length === 0) && !showAssigneePicker ? (
-            <p className="text-sm text-muted-foreground">无</p>
-          ) : (
-            <div className="space-y-2">
-              {issue.assignees.map((a) => (
-                <div key={a.id} className="flex items-center gap-2 group">
-                  <Avatar className="h-6 w-6">
-                    <AvatarFallback className="text-xs">
-                      {a.agent.name.charAt(0)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="text-sm">{a.agent.name}</span>
-                  <Badge variant="outline" className="text-xs ml-auto">
-                    {a.state === "accepted" ? "已接受" : a.state === "declined" ? "已拒绝" : "待处理"}
-                  </Badge>
-                  {agent && (
-                    <button className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-opacity"
-                      onClick={() => handleRemoveAssignee(a.agent.id, a.agent.name)}>
-                      <X className="h-3 w-3" />
-                    </button>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-          {showAssigneePicker && (
-            <div className="mt-2 pt-2 border-t space-y-1">
-              {projectAgents.length === 0 ? (
-                <p className="text-xs text-muted-foreground">暂无可用成员</p>
-              ) : (
-                projectAgents
-                  .filter((ag) => !(issue.assignees || []).some((a) => a.agent.id === ag.id))
-                  .map((ag) => (
-                    <div key={ag.id} className="flex items-center gap-2 py-1 cursor-pointer hover:bg-accent rounded px-1"
-                      onClick={() => { handleAddAssignee(ag.id); setShowAssigneePicker(false); }}>
-                      <Avatar className="h-5 w-5">
-                        <AvatarFallback className="text-[10px]">{ag.name.charAt(0)}</AvatarFallback>
-                      </Avatar>
-                      <span className="text-sm">{ag.name}</span>
-                    </div>
-                  ))
-              )}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+        </div>
+        {(!issue.assignees || issue.assignees.length === 0) && !showAssigneePicker ? (
+          <p className="text-sm text-muted-foreground">无</p>
+        ) : (
+          <div className="space-y-2">
+            {issue.assignees.map((a) => (
+              <div key={a.id} className="flex items-center gap-2 group">
+                <span className="inline-flex items-center justify-center h-5 w-5 rounded-full bg-primary/10 text-[10px] font-medium text-primary">
+                  {a.agent.name.charAt(0)}
+                </span>
+                <span className="text-sm">{a.agent.name}</span>
+                <Badge variant="outline" className="text-xs ml-auto">
+                  {a.state === "accepted" ? "已接受" : a.state === "declined" ? "已拒绝" : "待处理"}
+                </Badge>
+                {agent && (
+                  <button className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-opacity"
+                    onClick={() => handleRemoveAssignee(a.agent.id, a.agent.name)}>
+                    <X className="h-3 w-3" />
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+        {showAssigneePicker && (
+          <div className="mt-2 pt-2 border-t space-y-1">
+            {projectAgents.length === 0 ? (
+              <p className="text-xs text-muted-foreground">暂无可用成员</p>
+            ) : (
+              projectAgents
+                .filter((ag) => !(issue.assignees || []).some((a) => a.agent.id === ag.id))
+                .map((ag) => (
+                  <div key={ag.id} className="flex items-center gap-2 py-1 cursor-pointer hover:bg-accent rounded px-1"
+                    onClick={() => { handleAddAssignee(ag.id); setShowAssigneePicker(false); }}>
+                    <span className="inline-flex items-center justify-center h-4 w-4 rounded-full bg-primary/10 text-[9px] font-medium text-primary">{ag.name.charAt(0)}</span>
+                    <span className="text-sm">{ag.name}</span>
+                  </div>
+                ))
+            )}
+          </div>
+        )}
+      </div>
 
       {/* Milestone */}
-      <Card>
-        <CardHeader className="pb-2 flex flex-row items-center justify-between">
-          <CardTitle className="text-sm font-medium">里程碑</CardTitle>
+      <div className="border bg-card p-4">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-sm font-medium">里程碑</span>
           {agent && (
             <Button variant="ghost" size="sm" className="h-6 px-2 text-xs" onClick={() => setShowNewMilestone(!showNewMilestone)}>
               <Plus className="h-3 w-3 mr-1" />创建
             </Button>
           )}
-        </CardHeader>
-        <CardContent>
-          {showNewMilestone ? (
-            <div className="space-y-2">
-              <Input
-                value={newMilestoneTitle}
-                onChange={(e) => setNewMilestoneTitle(e.target.value)}
-                placeholder="里程碑名称"
-                className="h-8 text-sm"
-                autoFocus
-                onKeyDown={(e) => { if (e.key === "Enter") handleCreateMilestone(); if (e.key === "Escape") setShowNewMilestone(false); }}
-              />
-              <div className="flex justify-end gap-1">
-                <Button size="sm" className="h-7 text-xs" onClick={handleCreateMilestone} disabled={!newMilestoneTitle.trim()}>
-                  <Check className="h-3 w-3 mr-1" />创建
-                </Button>
-                <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => { setShowNewMilestone(false); setNewMilestoneTitle(""); }}>
-                  取消
-                </Button>
-              </div>
+        </div>
+        {showNewMilestone ? (
+          <div className="space-y-2">
+            <Input
+              value={newMilestoneTitle}
+              onChange={(e) => setNewMilestoneTitle(e.target.value)}
+              placeholder="里程碑名称"
+              className="h-8 text-sm"
+              autoFocus
+              onKeyDown={(e) => { if (e.key === "Enter") handleCreateMilestone(); if (e.key === "Escape") setShowNewMilestone(false); }}
+            />
+            <div className="flex justify-end gap-1">
+              <Button size="sm" className="h-7 text-xs" onClick={handleCreateMilestone} disabled={!newMilestoneTitle.trim()}>
+                <Check className="h-3 w-3 mr-1" />创建
+              </Button>
+              <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => { setShowNewMilestone(false); setNewMilestoneTitle(""); }}>
+                取消
+              </Button>
             </div>
-          ) : projectMilestones.length === 0 ? (
-            <p className="text-sm text-muted-foreground">无</p>
-          ) : (
-            <Select value={currentMilestoneId || "_none"} onValueChange={(v) => handleChangeMilestone(v === "_none" ? "" : v)}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="不关联" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="_none">不关联</SelectItem>
-                {projectMilestones.map((m) => (
-                  <SelectItem key={m.id} value={m.id}>
-                    {m.title}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-        </CardContent>
-      </Card>
+          </div>
+        ) : projectMilestones.length === 0 ? (
+          <p className="text-sm text-muted-foreground">无</p>
+        ) : (
+          <Select value={currentMilestoneId || "_none"} onValueChange={(v) => handleChangeMilestone(v === "_none" ? "" : v)}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="不关联" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="_none">不关联</SelectItem>
+              {projectMilestones.map((m) => (
+                <SelectItem key={m.id} value={m.id}>
+                  {m.title}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
+      </div>
 
       {/* Labels */}
-      <Card>
-        <CardHeader className="pb-2 flex flex-row items-center justify-between">
-          <CardTitle className="text-sm font-medium">标签</CardTitle>
+      <div className="border bg-card p-4">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-sm font-medium">标签</span>
           <div className="flex gap-1">
             {agent && (
               <Button variant="ghost" size="sm" className="h-6 px-2 text-xs" onClick={() => setShowNewLabel(!showNewLabel)}>
@@ -1084,167 +1056,161 @@ export function IssueDetailPage() {
               </Button>
             )}
           </div>
-        </CardHeader>
-        <CardContent>
-          {showNewLabel ? (
-            <div className="space-y-2">
-              <Input
-                value={newLabelName}
-                onChange={(e) => setNewLabelName(e.target.value)}
-                placeholder="标签名称"
-                className="h-8 text-sm"
-                autoFocus
-                onKeyDown={(e) => { if (e.key === "Enter") handleCreateLabel(); }}
+        </div>
+        {showNewLabel ? (
+          <div className="space-y-2">
+            <Input
+              value={newLabelName}
+              onChange={(e) => setNewLabelName(e.target.value)}
+              placeholder="标签名称"
+              className="h-8 text-sm"
+              autoFocus
+              onKeyDown={(e) => { if (e.key === "Enter") handleCreateLabel(); }}
+            />
+            <div className="flex items-center gap-2">
+              <input
+                type="color"
+                value={newLabelColor}
+                onChange={(e) => setNewLabelColor(e.target.value)}
+                className="h-7 w-10 rounded border cursor-pointer"
               />
-              <div className="flex items-center gap-2">
-                <input
-                  type="color"
-                  value={newLabelColor}
-                  onChange={(e) => setNewLabelColor(e.target.value)}
-                  className="h-7 w-10 rounded border cursor-pointer"
-                />
-                <Button size="sm" className="h-7 text-xs" onClick={handleCreateLabel} disabled={!newLabelName.trim()}>
-                  <Check className="h-3 w-3 mr-1" />创建
-                </Button>
-                <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => { setShowNewLabel(false); setNewLabelName(""); }}>
-                  取消
-                </Button>
-                <Badge
-                  className="text-xs ml-auto"
-                  style={{
-                    backgroundColor: `${newLabelColor}20`,
-                    color: newLabelColor,
-                  }}
-                >
-                  {newLabelName || "预览"}
-                </Badge>
-              </div>
-            </div>
-          ) : null}
-          {(!issue.labels || issue.labels.length === 0) && !showLabelPicker ? (
-            <p className="text-sm text-muted-foreground">无</p>
-          ) : (
-            <div className="flex flex-wrap gap-1">
-              {issue.labels.map((l) => (
-                <Badge
-                  key={l.id}
-                  className="text-xs cursor-pointer hover:opacity-80"
-                  style={{
-                    backgroundColor: l.color ? `${l.color}20` : undefined,
-                    color: l.color || undefined,
-                  }}
-                  onClick={() => handleRemoveLabel(l.id, l.name)}
-                  title="点击移除"
-                >
-                  {l.name} ✕
-                </Badge>
-              ))}
-            </div>
-          )}
-          {showLabelPicker && availableLabels.length > 0 && (
-            <div className="mt-2 pt-2 border-t flex flex-wrap gap-1">
-              {availableLabels.map((l) => (
-                <Badge
-                  key={l.id}
-                  variant="outline"
-                  className="text-xs cursor-pointer hover:bg-accent"
-                  style={{
-                    borderColor: l.color || undefined,
-                    color: l.color || undefined,
-                  }}
-                  onClick={() => {
-                    handleAddLabel(l.id);
-                    setShowLabelPicker(false);
-                  }}
-                >
-                  + {l.name}
-                </Badge>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Environment / Branch / Link */}
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium">环境 / 分支 / 链接</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2">
-          {showTimeFields ? (
-            <div className="space-y-2 border-b pb-2 mb-2">
-              <div>
-                <span className="text-xs text-muted-foreground">开始时间</span>
-                <Input
-                  type="datetime-local"
-                  value={editStartedAt ? new Date(editStartedAt).toISOString().slice(0, 16) : ""}
-                  onChange={(e) => setEditStartedAt(e.target.value ? new Date(e.target.value).toISOString() : "")}
-                  className="h-8 text-sm mt-1"
-                />
-              </div>
-              <div>
-                <span className="text-xs text-muted-foreground">完成时间</span>
-                <Input
-                  type="datetime-local"
-                  value={editCompletedAt ? new Date(editCompletedAt).toISOString().slice(0, 16) : ""}
-                  onChange={(e) => setEditCompletedAt(e.target.value ? new Date(e.target.value).toISOString() : "")}
-                  className="h-8 text-sm mt-1"
-                />
-              </div>
-              <div className="flex justify-end gap-1">
-                <Button size="sm" className="h-7 text-xs" onClick={handleSaveTimeFields}>保存</Button>
-                <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => setShowTimeFields(false)}>取消</Button>
-              </div>
-            </div>
-          ) : agent ? (
-            <button className="text-xs text-primary hover:underline w-full text-left" onClick={() => {
-              setEditStartedAt(issue.startedAt || "");
-              setEditCompletedAt(issue.completedAt || "");
-              setShowTimeFields(true);
-            }}>
-              编辑时间
-            </button>
-          ) : null}
-          <div className="space-y-1.5">
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground w-12">环境</span>
-              {editingEnv ? (
-                <div className="flex-1 flex gap-1">
-                  <Input value={editEnv} onChange={(e) => setEditEnv(e.target.value)} className="h-7 text-xs flex-1"
-                    autoFocus onKeyDown={(e) => { if (e.key === "Enter") handleSaveEnv(); if (e.key === "Escape") setEditingEnv(false); }} />
-                  <Button size="sm" className="h-7 text-xs" onClick={handleSaveEnv}>确定</Button>
-                </div>
-              ) : (
-                <span className="text-xs flex-1 truncate cursor-pointer hover:text-primary"
-                  onClick={() => { setEditEnv(issue.environment || ""); setEditingEnv(true); }}>
-                  {issue.environment || <span className="text-muted-foreground">未设置</span>}
-                </span>
-              )}
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground w-12">分支</span>
-              {editingBranch ? (
-                <div className="flex-1 flex gap-1">
-                  <Input value={editBranch} onChange={(e) => setEditBranch(e.target.value)} className="h-7 text-xs flex-1"
-                    autoFocus onKeyDown={(e) => { if (e.key === "Enter") handleSaveBranch(); if (e.key === "Escape") setEditingBranch(false); }} />
-                  <Button size="sm" className="h-7 text-xs" onClick={handleSaveBranch}>确定</Button>
-                </div>
-              ) : (
-                <span className="text-xs flex-1 truncate cursor-pointer hover:text-primary"
-                  onClick={() => { setEditBranch(issue.branch || ""); setEditingBranch(true); }}>
-                  {issue.branch || <span className="text-muted-foreground">未设置</span>}
-                </span>
-              )}
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground w-12">链接</span>
-              <span className="text-xs flex-1 truncate">
-                {issue.link ? <a href={issue.link} target="_blank" rel="noreferrer" className="text-primary underline">打开链接</a> : <span className="text-muted-foreground">未设置</span>}
-              </span>
+              <Button size="sm" className="h-7 text-xs" onClick={handleCreateLabel} disabled={!newLabelName.trim()}>
+                <Check className="h-3 w-3 mr-1" />创建
+              </Button>
+              <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => { setShowNewLabel(false); setNewLabelName(""); }}>
+                取消
+              </Button>
+              <Badge
+                className="text-xs ml-auto"
+                style={{
+                  backgroundColor: `${newLabelColor}20`,
+                  color: newLabelColor,
+                }}
+              >
+                {newLabelName || "预览"}
+              </Badge>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        ) : null}
+        {(!issue.labels || issue.labels.length === 0) && !showLabelPicker ? (
+          <p className="text-sm text-muted-foreground">无</p>
+        ) : (
+          <div className="flex flex-wrap gap-1">
+            {issue.labels.map((l) => (
+              <Badge
+                key={l.id}
+                className="text-xs cursor-pointer hover:opacity-80"
+                style={{
+                  backgroundColor: l.color ? `${l.color}20` : undefined,
+                  color: l.color || undefined,
+                }}
+                onClick={() => handleRemoveLabel(l.id, l.name)}
+                title="点击移除"
+              >
+                {l.name} ✕
+              </Badge>
+            ))}
+          </div>
+        )}
+        {showLabelPicker && availableLabels.length > 0 && (
+          <div className="mt-2 pt-2 border-t flex flex-wrap gap-1">
+            {availableLabels.map((l) => (
+              <Badge
+                key={l.id}
+                variant="outline"
+                className="text-xs cursor-pointer hover:bg-accent"
+                style={{
+                  borderColor: l.color || undefined,
+                  color: l.color || undefined,
+                }}
+                onClick={() => {
+                  handleAddLabel(l.id);
+                  setShowLabelPicker(false);
+                }}
+              >
+                + {l.name}
+              </Badge>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Environment / Branch / Link */}
+      <div className="border bg-card p-4">
+        <div className="text-sm font-medium mb-2">环境 / 分支 / 链接</div>
+        {showTimeFields ? (
+          <div className="space-y-2 border-b pb-2 mb-2">
+            <div>
+              <span className="text-xs text-muted-foreground">开始时间</span>
+              <Input
+                type="datetime-local"
+                value={editStartedAt ? new Date(editStartedAt).toISOString().slice(0, 16) : ""}
+                onChange={(e) => setEditStartedAt(e.target.value ? new Date(e.target.value).toISOString() : "")}
+                className="h-8 text-sm mt-1"
+              />
+            </div>
+            <div>
+              <span className="text-xs text-muted-foreground">完成时间</span>
+              <Input
+                type="datetime-local"
+                value={editCompletedAt ? new Date(editCompletedAt).toISOString().slice(0, 16) : ""}
+                onChange={(e) => setEditCompletedAt(e.target.value ? new Date(e.target.value).toISOString() : "")}
+                className="h-8 text-sm mt-1"
+              />
+            </div>
+            <div className="flex justify-end gap-1">
+              <Button size="sm" className="h-7 text-xs" onClick={handleSaveTimeFields}>保存</Button>
+              <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => setShowTimeFields(false)}>取消</Button>
+            </div>
+          </div>
+        ) : agent ? (
+          <button className="text-xs text-primary hover:underline w-full text-left mb-2" onClick={() => {
+            setEditStartedAt(issue.startedAt || "");
+            setEditCompletedAt(issue.completedAt || "");
+            setShowTimeFields(true);
+          }}>
+            编辑时间
+          </button>
+        ) : null}
+        <div className="space-y-1.5">
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-muted-foreground w-12">环境</span>
+            {editingEnv ? (
+              <div className="flex-1 flex gap-1">
+                <Input value={editEnv} onChange={(e) => setEditEnv(e.target.value)} className="h-7 text-xs flex-1"
+                  autoFocus onKeyDown={(e) => { if (e.key === "Enter") handleSaveEnv(); if (e.key === "Escape") setEditingEnv(false); }} />
+                <Button size="sm" className="h-7 text-xs" onClick={handleSaveEnv}>确定</Button>
+              </div>
+            ) : (
+              <span className="text-xs flex-1 truncate cursor-pointer hover:text-primary"
+                onClick={() => { setEditEnv(issue.environment || ""); setEditingEnv(true); }}>
+                {issue.environment || <span className="text-muted-foreground">未设置</span>}
+              </span>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-muted-foreground w-12">分支</span>
+            {editingBranch ? (
+              <div className="flex-1 flex gap-1">
+                <Input value={editBranch} onChange={(e) => setEditBranch(e.target.value)} className="h-7 text-xs flex-1"
+                  autoFocus onKeyDown={(e) => { if (e.key === "Enter") handleSaveBranch(); if (e.key === "Escape") setEditingBranch(false); }} />
+                <Button size="sm" className="h-7 text-xs" onClick={handleSaveBranch}>确定</Button>
+              </div>
+            ) : (
+              <span className="text-xs flex-1 truncate cursor-pointer hover:text-primary"
+                onClick={() => { setEditBranch(issue.branch || ""); setEditingBranch(true); }}>
+                {issue.branch || <span className="text-muted-foreground">未设置</span>}
+              </span>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-muted-foreground w-12">链接</span>
+            <span className="text-xs flex-1 truncate">
+              {issue.link ? <a href={issue.link} target="_blank" rel="noreferrer" className="text-primary underline">打开链接</a> : <span className="text-muted-foreground">未设置</span>}
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
   );
 
@@ -1260,7 +1226,7 @@ export function IssueDetailPage() {
   return (
     <div className="space-y-6">
       {mainContent}
-      <Separator />
+      <div className="border-t" />
       {metaSidebar}
     </div>
   );

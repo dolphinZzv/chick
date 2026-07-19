@@ -2,7 +2,6 @@ import { useEffect, useState, useCallback } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { gql } from "@/lib/graphql";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,7 +32,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { ErrorFallback } from "@/components/shared/ErrorFallback";
 import { EmptyState } from "@/components/shared/EmptyState";
-import { Plus, Trash2, AlertTriangle, Copy, Check } from "lucide-react";
+import { Plus, Trash2, Copy, Check } from "lucide-react";
 import { toast } from "sonner";
 
 interface Label {
@@ -131,8 +130,7 @@ export function ProjectSettingsPage() {
   const [createdToken, setCreatedToken] = useState<string | null>(null);
   const [tokenCopied, setTokenCopied] = useState(false);
   const [cmdCopied, setCmdCopied] = useState(false);
-  const [installTool, setInstallTool] = useState<"claude" | "opencode" | "dolphin">("dolphin");
-  const [installTab, setInstallTab] = useState<"cli" | "project" | "manual">("cli");
+
   const [agentCreating, setAgentCreating] = useState(false);
 
   const fetchData = useCallback(() => {
@@ -414,41 +412,38 @@ members { agent { id number name kind status capabilities deviceInfo modelInfo l
 
       {/* Basic info tab */}
       {tab === "basic" && (
-        <Card>
-          <CardContent className="p-0 divide-y">
-            <div className="p-4">
-              <label className="text-xs font-medium text-muted-foreground mb-1 block">项目名称</label>
-              <input
-                value={projectName}
-                onChange={e => setProjectName(e.target.value)}
-                placeholder="项目名称"
-                className="w-full text-xl font-semibold placeholder:text-muted-foreground/40 bg-transparent border-none outline-none focus:ring-0"
-              />
-            </div>
-            <div className="p-4">
-              <label className="text-xs font-medium text-muted-foreground mb-1 block">项目描述</label>
-              <textarea
-                value={projectDesc}
-                onChange={e => setProjectDesc(e.target.value)}
-                placeholder="项目的简要说明..."
-                rows={3}
-                className="w-full resize-none text-sm leading-relaxed placeholder:text-muted-foreground/40 bg-transparent border-none outline-none focus:ring-0"
-              />
-            </div>
-            <div className="flex items-center justify-end gap-2 px-4 py-3">
-              <Button onClick={handleSaveProject} size="sm" disabled={saving}>
-                {saving ? "保存中..." : "保存"}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="border bg-card divide-y">
+          <div className="p-4">
+            <label className="text-xs font-medium text-muted-foreground mb-1 block">项目名称</label>
+            <input
+              value={projectName}
+              onChange={e => setProjectName(e.target.value)}
+              placeholder="项目名称"
+              className="w-full text-xl font-semibold placeholder:text-muted-foreground/40 bg-transparent border-none outline-none focus:ring-0"
+            />
+          </div>
+          <div className="p-4">
+            <label className="text-xs font-medium text-muted-foreground mb-1 block">项目描述</label>
+            <textarea
+              value={projectDesc}
+              onChange={e => setProjectDesc(e.target.value)}
+              placeholder="项目的简要说明..."
+              rows={3}
+              className="w-full resize-none text-sm leading-relaxed placeholder:text-muted-foreground/40 bg-transparent border-none outline-none focus:ring-0"
+            />
+          </div>
+          <div className="flex items-center justify-end gap-2 px-4 py-3">
+            <Button onClick={handleSaveProject} size="sm" disabled={saving}>
+              {saving ? "保存中..." : "保存"}
+            </Button>
+          </div>
+        </div>
       )}
 
       {/* Workflow config tab */}
       {tab === "workflow" && (
-        <Card>
-          <CardContent className="p-4 space-y-4">
-            <h2 className="text-base font-semibold">工作流配置</h2>
+        <div className="border bg-card p-4 space-y-4">
+          <h2 className="text-base font-semibold">工作流配置</h2>
           <p className="text-sm text-muted-foreground">配置 Issue 的状态流转权限。</p>
 
           <div className="flex items-center justify-between gap-4">
@@ -463,7 +458,7 @@ members { agent { id number name kind status capabilities deviceInfo modelInfo l
                 checked={allowCreatorTransition}
                 onChange={e => setAllowCreatorTransition(e.target.checked)}
               />
-              <div className="w-10 h-5 bg-muted rounded-full peer peer-checked:bg-primary peer-focus:outline-none after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-card after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-5" />
+              <div className="w-10 h-5 bg-muted rounded-full peer peer-checked:bg-primary after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-card after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-5" />
             </label>
           </div>
 
@@ -479,7 +474,7 @@ members { agent { id number name kind status capabilities deviceInfo modelInfo l
                 checked={requireCreatorCloseApproval}
                 onChange={e => setRequireCreatorCloseApproval(e.target.checked)}
               />
-              <div className="w-10 h-5 bg-muted rounded-full peer peer-checked:bg-primary peer-focus:outline-none after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-card after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-5" />
+              <div className="w-10 h-5 bg-muted rounded-full peer peer-checked:bg-primary after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-card after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-5" />
             </label>
           </div>
 
@@ -488,8 +483,7 @@ members { agent { id number name kind status capabilities deviceInfo modelInfo l
               {saving ? "保存中..." : "保存"}
             </Button>
           </div>
-        </CardContent>
-      </Card>
+        </div>
       )}
 
       {/* Agents tab */}
@@ -510,58 +504,54 @@ members { agent { id number name kind status capabilities deviceInfo modelInfo l
                 const a = m.agent;
                 const st = statusConfig[a.status] || statusConfig.offline;
                 return (
-                  <Link key={a.id} to={`/agents/${a.id}`} className="block">
-                    <Card>
-                      <CardContent className="p-4">
-                        <div className="flex items-center gap-3">
-                          <div className={`h-3 w-3 rounded-full ${st.dot}`} />
-                          <div className="flex-1 min-w-0">
-                            <p className="font-medium truncate">#{a.number} {a.name}</p>
-                            <p className="text-xs text-muted-foreground">
-                              {kindLabels[a.kind] || a.kind} · {st.label}
-                            </p>
-                          </div>
-                          <Badge variant="secondary" className="text-xs">
-                            {m.role === "owner" ? "拥有者" : m.role === "member" ? "成员" : m.role}
+                  <Link key={a.id} to={`/agents/${a.id}`} className="block border bg-card p-4">
+                    <div className="flex items-center gap-3">
+                      <div className={`h-3 w-3 rounded-full ${st.dot}`} />
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium truncate">#{a.number} {a.name}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {kindLabels[a.kind] || a.kind} · {st.label}
+                        </p>
+                      </div>
+                      <Badge variant="secondary" className="text-xs">
+                        {m.role === "owner" ? "拥有者" : m.role === "member" ? "成员" : m.role}
+                      </Badge>
+                      {m.role !== "owner" && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-muted-foreground hover:text-destructive shrink-0"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setRemoveMemberTarget({ id: a.id, name: `#${a.number} ${a.name}` });
+                          }}
+                          aria-label="移除 Agent"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                    {(a.modelInfo || a.deviceInfo) && (
+                      <div className="mt-2 text-xs text-muted-foreground space-y-0.5">
+                        {a.modelInfo && <p>模型: {a.modelInfo}</p>}
+                        {a.deviceInfo && <p className="truncate" title={a.deviceInfo}>设备: {a.deviceInfo}</p>}
+                      </div>
+                    )}
+                    {a.lastIP && (
+                      <div className="mt-1 text-xs text-muted-foreground">
+                        <p>IP: {a.lastIP}</p>
+                      </div>
+                    )}
+                    {a.capabilities && a.capabilities.length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-1">
+                        {a.capabilities.map((cap) => (
+                          <Badge key={cap} variant="secondary" className="text-xs">
+                            {cap}
                           </Badge>
-                          {m.role !== "owner" && (
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-8 w-8 text-muted-foreground hover:text-destructive shrink-0"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                setRemoveMemberTarget({ id: a.id, name: `#${a.number} ${a.name}` });
-                              }}
-                              aria-label="移除 Agent"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          )}
-                        </div>
-                        {(a.modelInfo || a.deviceInfo) && (
-                          <div className="mt-2 text-xs text-muted-foreground space-y-0.5">
-                            {a.modelInfo && <p>模型: {a.modelInfo}</p>}
-                            {a.deviceInfo && <p className="truncate" title={a.deviceInfo}>设备: {a.deviceInfo}</p>}
-                          </div>
-                        )}
-                        {a.lastIP && (
-                          <div className="mt-1 text-xs text-muted-foreground">
-                            <p>IP: {a.lastIP}</p>
-                          </div>
-                        )}
-                        {a.capabilities && a.capabilities.length > 0 && (
-                          <div className="mt-2 flex flex-wrap gap-1">
-                            {a.capabilities.map((cap) => (
-                              <Badge key={cap} variant="secondary" className="text-xs">
-                                {cap}
-                              </Badge>
-                            ))}
-                          </div>
-                        )}
-                      </CardContent>
-                    </Card>
+                        ))}
+                      </div>
+                    )}
                   </Link>
                 );
               })}
@@ -652,107 +642,9 @@ members { agent { id number name kind status capabilities deviceInfo modelInfo l
 
                 {/* One-click install */}
                 <div className="border-t pt-4">
-                  {/* Outer tabs: tool selector */}
-                  <div className="flex gap-0 mb-3">
-                    <button
-                      className={`px-3 py-1.5 text-xs font-medium rounded-l-md border transition-colors ${
-                        installTool === "dolphin"
-                          ? "bg-primary text-primary-foreground border-primary"
-                          : "bg-muted text-muted-foreground border-border hover:bg-accent"
-                      }`}
-                      onClick={() => { setInstallTool("dolphin"); setInstallTab("cli"); }}
-                    >
-                      Dolphin
-                    </button>
-                    <button
-                      className={`px-3 py-1.5 text-xs font-medium border border-l-0 transition-colors ${
-                        installTool === "claude"
-                          ? "bg-primary text-primary-foreground border-primary"
-                          : "bg-muted text-muted-foreground border-border hover:bg-accent"
-                      }`}
-                      onClick={() => { setInstallTool("claude"); setInstallTab("cli"); }}
-                    >
-                      Claude Code
-                    </button>
-                    <button
-                      className={`px-3 py-1.5 text-xs font-medium rounded-r-md border border-l-0 transition-colors ${
-                        installTool === "opencode"
-                          ? "bg-primary text-primary-foreground border-primary"
-                          : "bg-muted text-muted-foreground border-border hover:bg-accent"
-                      }`}
-                      onClick={() => { setInstallTool("opencode"); setInstallTab("cli"); }}
-                    >
-                      OpenCode
-                    </button>
-                  </div>
-
-                  {/* Inner tabs: install method */}
-                  {installTool !== "dolphin" && (
-                  <div className="flex gap-0 mb-3">
-                    <button
-                      className={`px-2.5 py-1 text-xs font-medium rounded-l-md border transition-colors ${
-                        installTab === "cli"
-                          ? "bg-primary text-primary-foreground border-primary"
-                          : "bg-muted text-muted-foreground border-border hover:bg-accent"
-                      }`}
-                      onClick={() => setInstallTab("cli")}
-                    >
-                      全局一键安装
-                    </button>
-                    <button
-                      className={`px-2.5 py-1 text-xs font-medium border border-l-0 transition-colors ${
-                        installTab === "project"
-                          ? "bg-primary text-primary-foreground border-primary"
-                          : "bg-muted text-muted-foreground border-border hover:bg-accent"
-                      }`}
-                      onClick={() => setInstallTab("project")}
-                    >
-                      项目级安装
-                    </button>
-                    <button
-                      className={`px-2.5 py-1 text-xs font-medium rounded-r-md border border-l-0 transition-colors ${
-                        installTab === "manual"
-                          ? "bg-primary text-primary-foreground border-primary"
-                          : "bg-muted text-muted-foreground border-border hover:bg-accent"
-                      }`}
-                      onClick={() => setInstallTab("manual")}
-                    >
-                      手动配置
-                    </button>
-                  </div>
-                  )}
-
-                  {installTool === "claude" && installTab === "cli" && (
-                    <ClaudeCLICmd createdToken={createdToken!} cmdCopied={cmdCopied} setCmdCopied={setCmdCopied} />
-                  )}
-                  {installTool === "claude" && installTab === "project" && (
-                    <ClaudeProjectCmd createdToken={createdToken!} cmdCopied={cmdCopied} setCmdCopied={setCmdCopied} />
-                  )}
-                  {installTool === "claude" && installTab === "manual" && (
-                    <ClaudeManualCmd createdToken={createdToken!} cmdCopied={cmdCopied} setCmdCopied={setCmdCopied} />
-                  )}
-                  {installTool === "opencode" && installTab === "cli" && (
-                    <OpenCodeCLICmd createdToken={createdToken!} cmdCopied={cmdCopied} setCmdCopied={setCmdCopied} />
-                  )}
-                  {installTool === "opencode" && installTab === "project" && (
-                    <OpenCodeProjectCmd createdToken={createdToken!} cmdCopied={cmdCopied} setCmdCopied={setCmdCopied} />
-                  )}
-                  {installTool === "opencode" && installTab === "manual" && (
-                    <OpenCodeManualCmd createdToken={createdToken!} cmdCopied={cmdCopied} setCmdCopied={setCmdCopied} />
-                  )}
-                  {installTool === "dolphin" && (
-                    <DolphinCmd createdToken={createdToken!} cmdCopied={cmdCopied} setCmdCopied={setCmdCopied} />
-                  )}
-
-                  <p className="text-xs text-muted-foreground mt-1.5">
-                    {installTool === "claude" && installTab === "cli" && "复制后在 Claude Code 终端运行，注册到当前用户全局配置"}
-                    {installTool === "claude" && installTab === "project" && "复制后在 Claude Code 终端运行，注册到当前项目的 .mcp.json，仅本项目可见"}
-                    {installTool === "claude" && installTab === "manual" && "复制后在终端运行，适用于 Claude Code 和 Claude Desktop"}
-                    {installTool === "opencode" && installTab === "cli" && "复制后在 OpenCode 终端运行，注册 MCP 服务器"}
-                    {installTool === "opencode" && installTab === "project" && "复制后在 OpenCode 终端运行，注册到项目级配置"}
-                    {installTool === "opencode" && installTab === "manual" && "复制后在终端运行，OpenCode 会自动加载配置"}
-                    {installTool === "dolphin" && "将配置添加到你的 MCP 客户端配置文件中"}
-                  </p>
+                  <div className="text-xs text-muted-foreground mb-2">Dolphin MCP 配置</div>
+                  <DolphinCmd createdToken={createdToken!} cmdCopied={cmdCopied} setCmdCopied={setCmdCopied} />
+                  <p className="text-xs text-muted-foreground mt-1.5">将配置添加到你的 MCP 客户端配置文件中</p>
                 </div>
 
                 <div className="flex justify-end">
@@ -847,35 +739,33 @@ members { agent { id number name kind status capabilities deviceInfo modelInfo l
           ) : (
             <div className="space-y-2">
               {milestones.map((ms) => (
-                <Card key={ms.id}>
-                  <CardContent className="p-4">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <h3 className="font-medium">{ms.title}</h3>
-                        {ms.description && (
-                          <p className="mt-1 text-sm text-muted-foreground">{ms.description}</p>
+                <div key={ms.id} className="border bg-card p-4">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <h3 className="font-medium">{ms.title}</h3>
+                      {ms.description && (
+                        <p className="mt-1 text-sm text-muted-foreground">{ms.description}</p>
+                      )}
+                      <div className="mt-2 flex items-center gap-2">
+                        <Badge variant="secondary">{ms.state === "open" ? "进行中" : ms.state}</Badge>
+                        {ms.dueDate && (
+                          <span className="text-xs text-muted-foreground">
+                            截止: {new Date(ms.dueDate).toLocaleDateString("zh-CN")}
+                          </span>
                         )}
-                        <div className="mt-2 flex items-center gap-2">
-                          <Badge variant="secondary">{ms.state === "open" ? "进行中" : ms.state}</Badge>
-                          {ms.dueDate && (
-                            <span className="text-xs text-muted-foreground">
-                              截止: {new Date(ms.dueDate).toLocaleDateString("zh-CN")}
-                            </span>
-                          )}
-                        </div>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                        onClick={() => setDeleteMsTarget({ id: ms.id, name: ms.title })}
-                        aria-label="删除里程碑"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
                     </div>
-                  </CardContent>
-                </Card>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                      onClick={() => setDeleteMsTarget({ id: ms.id, name: ms.title })}
+                      aria-label="删除里程碑"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
               ))}
             </div>
           )}
@@ -908,11 +798,8 @@ members { agent { id number name kind status capabilities deviceInfo modelInfo l
       )}
 
       {/* Danger Zone */}
-      <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-4">
-        <div className="flex items-center gap-2 mb-3">
-          <AlertTriangle className="h-5 w-5 text-destructive" />
-          <h2 className="text-base font-semibold text-destructive">危险区域</h2>
-        </div>
+      <div className="border border-destructive/30 bg-destructive/5 p-4">
+        <h2 className="text-base font-semibold text-destructive mb-3">危险区域</h2>
         <p className="text-sm text-muted-foreground mb-3">删除项目后不可恢复，所有 Issue、标签、里程碑和成员关系将被永久删除。</p>
         <Button variant="destructive" size="sm" onClick={() => setDeleteOpen(true)} disabled={deleting}>
           {deleting ? "删除中..." : "删除项目"}
@@ -1029,50 +916,7 @@ function CopyBlock({ cmd, cmdCopied, setCmdCopied }: { cmd: string; cmdCopied: b
   );
 }
 
-function ClaudeCLICmd({ createdToken, cmdCopied, setCmdCopied }: CmdProps) {
-  const url = `${window.location.origin}/mcp`;
-  const cmd = `claude mcp add --transport http chick ${url} --header "Authorization: Bearer ${createdToken}"`;
-  return <CopyBlock cmd={cmd} cmdCopied={cmdCopied} setCmdCopied={setCmdCopied} />;
-}
 
-function ClaudeManualCmd({ createdToken, cmdCopied, setCmdCopied }: CmdProps) {
-  const url = `${window.location.origin}/mcp`;
-  const config = JSON.stringify({
-    mcpServers: { chick: { type: "url", url, headers: { Authorization: "Bearer " + createdToken } } }
-  }, null, 2);
-  const cmd = `mkdir -p ~/.claude && cat > ~/.claude/settings.json << 'EOF'\n${config}\nEOF`;
-  return <CopyBlock cmd={cmd} cmdCopied={cmdCopied} setCmdCopied={setCmdCopied} />;
-}
-
-function OpenCodeCLICmd({ createdToken, cmdCopied, setCmdCopied }: CmdProps) {
-  const url = `${window.location.origin}/mcp`;
-  const cmd = `opencode config set mcpServers.chick '{"type":"url","url":"${url}","headers":{"Authorization":"Bearer ${createdToken}"}}'`;
-  return <CopyBlock cmd={cmd} cmdCopied={cmdCopied} setCmdCopied={setCmdCopied} />;
-}
-
-function OpenCodeManualCmd({ createdToken, cmdCopied, setCmdCopied }: CmdProps) {
-  const url = `${window.location.origin}/mcp`;
-  const config = JSON.stringify({
-    mcpServers: { chick: { type: "url", url, headers: { Authorization: "Bearer " + createdToken } } }
-  }, null, 2);
-  const cmd = `mkdir -p ~/.config/opencode && cat > ~/.config/opencode/config.json << 'EOF'\n${config}\nEOF`;
-  return <CopyBlock cmd={cmd} cmdCopied={cmdCopied} setCmdCopied={setCmdCopied} />;
-}
-
-function ClaudeProjectCmd({ createdToken, cmdCopied, setCmdCopied }: CmdProps) {
-  const url = `${window.location.origin}/mcp`;
-  const cmd = `claude mcp add --transport http --scope project chick ${url} --header "Authorization: Bearer ${createdToken}"`;
-  return <CopyBlock cmd={cmd} cmdCopied={cmdCopied} setCmdCopied={setCmdCopied} />;
-}
-
-function OpenCodeProjectCmd({ createdToken, cmdCopied, setCmdCopied }: CmdProps) {
-  const url = `${window.location.origin}/mcp`;
-  const config = JSON.stringify({
-    mcpServers: { chick: { type: "url", url, headers: { Authorization: "Bearer " + createdToken } } }
-  }, null, 2);
-  const cmd = `echo '${config}' > .mcp.json`;
-  return <CopyBlock cmd={cmd} cmdCopied={cmdCopied} setCmdCopied={setCmdCopied} />;
-}
 
 function DolphinCmd({ cmdCopied, setCmdCopied, createdToken }: CmdProps) {
   const url = `${window.location.origin}/mcp`;
@@ -1145,68 +989,64 @@ function ProjectNotificationsTab({ members }: { projectId: string; members: Memb
   }, [selectedMember]);
 
   return (
-    <div className="space-y-4">
-      <Card>
-        <CardContent className="p-6 space-y-4">
-          <h2 className="text-lg font-semibold">通知设置</h2>
-          <p className="text-sm text-muted-foreground">选择项目成员，配置其通知偏好。未配置的类型默认开启。</p>
+    <div className="border bg-card p-4 space-y-4">
+      <h2 className="text-base font-semibold">通知设置</h2>
+      <p className="text-sm text-muted-foreground">选择项目成员，配置其通知偏好。未配置的类型默认开启。</p>
 
-          {/* Member selector */}
-          <div className="flex flex-wrap gap-2">
-            {members.map(m => (
-              <button
-                key={m.agent.id}
-                className={`px-3 py-1.5 text-xs font-medium rounded-md border transition-colors ${
-                  selectedMember === m.agent.id
-                    ? "bg-primary text-primary-foreground border-primary"
-                    : "bg-muted text-muted-foreground border-border hover:bg-accent"
-                }`}
-                onClick={() => setSelectedMember(m.agent.id)}
-              >
-                #{m.agent.number} {m.agent.name}
-              </button>
-            ))}
-          </div>
+      {/* Member selector */}
+      <div className="flex flex-wrap gap-2">
+        {members.map(m => (
+          <button
+            key={m.agent.id}
+            className={`px-3 py-1.5 text-xs font-medium rounded-md border transition-colors ${
+              selectedMember === m.agent.id
+                ? "bg-primary text-primary-foreground border-primary"
+                : "bg-muted text-muted-foreground border-border hover:bg-accent"
+            }`}
+            onClick={() => setSelectedMember(m.agent.id)}
+          >
+            #{m.agent.number} {m.agent.name}
+          </button>
+        ))}
+      </div>
 
-          {!selectedMember ? (
-            <p className="text-sm text-muted-foreground py-4">请选择一个成员查看通知设置</p>
-          ) : settingsLoading || notifTypes.length === 0 && notifLoading ? (
-            <div className="space-y-2">{[1,2,3].map(i => <Skeleton key={i} className="h-12 w-full" />)}</div>
-          ) : notifTypes.length === 0 ? (
-            <p className="text-sm text-muted-foreground">暂无通知类型</p>
-          ) : (
-            <div className="divide-y rounded-lg border">
-              {notifTypes.map(nt => {
-                const setting = notifSettings.find(s => s.notificationType === nt.type);
-                const enabled = setting ? setting.enabled : true;
-                const updating = notifUpdating === nt.type;
-                return (
-                  <div key={nt.type} className="flex items-center justify-between gap-4 px-4 py-3">
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium">{nt.description}</p>
-                      <p className="text-xs text-muted-foreground font-mono">{nt.type}</p>
-                    </div>
-                    <label className="relative inline-flex items-center cursor-pointer">
-                      <input
-                        type="checkbox"
-                        className="sr-only peer"
-                        checked={enabled}
-                        disabled={!!updating}
-                        onChange={() => handleToggle(nt.type, !enabled)}
-                      />
-                      <div className={`w-10 h-5 rounded-full peer-focus:outline-none after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-card after:rounded-full after:h-4 after:w-4 after:transition-all ${
-                        updating
-                          ? "bg-muted cursor-wait"
-                          : "bg-muted peer-checked:bg-primary cursor-pointer"
-                      } peer-checked:after:translate-x-5`} />
-                    </label>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+      {!selectedMember ? (
+        <p className="text-sm text-muted-foreground">请选择一个成员查看通知设置</p>
+      ) : settingsLoading || notifTypes.length === 0 && notifLoading ? (
+        <div className="space-y-2">{[1,2,3].map(i => <Skeleton key={i} className="h-12 w-full" />)}</div>
+      ) : notifTypes.length === 0 ? (
+        <p className="text-sm text-muted-foreground">暂无通知类型</p>
+      ) : (
+        <div className="divide-y border">
+          {notifTypes.map(nt => {
+            const setting = notifSettings.find(s => s.notificationType === nt.type);
+            const enabled = setting ? setting.enabled : true;
+            const updating = notifUpdating === nt.type;
+            return (
+              <div key={nt.type} className="flex items-center justify-between gap-4 py-3">
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium">{nt.description}</p>
+                  <p className="text-xs text-muted-foreground font-mono">{nt.type}</p>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    className="sr-only peer"
+                    checked={enabled}
+                    disabled={!!updating}
+                    onChange={() => handleToggle(nt.type, !enabled)}
+                  />
+                  <div className={`w-10 h-5 rounded-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-card after:rounded-full after:h-4 after:w-4 after:transition-all ${
+                    updating
+                      ? "bg-muted cursor-wait"
+                      : "bg-muted peer-checked:bg-primary cursor-pointer"
+                  } peer-checked:after:translate-x-5`} />
+                </label>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

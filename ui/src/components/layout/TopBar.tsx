@@ -82,7 +82,6 @@ export function TopBar() {
     return () => clearInterval(interval);
   }, [fetchNotifs]);
 
-  // Real-time subscription for new notifications
   useSubscription(
     `subscription agentNotifications($aid: ID!) { agentNotifications(agentID: $aid) { id number agentID notificationType issueID message read createdAt } }`,
     agentId ? { aid: agentId } : undefined,
@@ -93,7 +92,6 @@ export function TopBar() {
     }
   );
 
-  // Reset pagination on tab switch
   useEffect(() => { setPage(1); }, [tab]);
 
   const unreadNotifs = notifs.filter(n => !n.read);
@@ -102,7 +100,6 @@ export function TopBar() {
   const paginatedNotifs = displayedNotifs.slice(0, page * pageSize);
   const hasMore = paginatedNotifs.length < displayedNotifs.length;
 
-  // Close dropdown on outside click
   useEffect(() => {
     if (!open) return;
     const handler = (e: MouseEvent) => {
@@ -127,7 +124,6 @@ export function TopBar() {
   }, []);
 
   const handleNotifClick = useCallback((n: Notification) => {
-    // Determine navigation target
     let path = "";
     switch (n.notificationType) {
       case "issue_assigned":
@@ -155,9 +151,7 @@ export function TopBar() {
         else if (n.taskID) path = `/tasks/${n.taskID}`;
         break;
     }
-    // Mark as read
     if (!n.read) handleMarkRead(n.id);
-    // Navigate and close dropdown
     if (path) navigate(path);
     setOpen(false);
   }, [handleMarkRead, navigate]);
@@ -176,39 +170,34 @@ export function TopBar() {
   useEffect(() => { setMounted(true); }, []);
 
   return (
-    <header className="flex h-14 items-center gap-2 border-b bg-card px-4">
+    <header className="flex h-12 items-center gap-2 border-b bg-card px-4">
       <div className="flex-1" />
 
-      <div className="flex items-center gap-1 ml-auto relative" ref={dropdownRef}>
-        {/* Notification bell */}
+      <div className="flex items-center gap-0.5 ml-auto relative" ref={dropdownRef}>
         <Button
           variant="ghost"
-          size="icon"
-          className="h-9 w-9 relative"
+          size="icon-xs"
           aria-label="通知"
           onClick={() => setOpen(v => !v)}
         >
-          <Bell className="h-4 w-4" />
+          <Bell className="size-4" />
           {unreadCount > 0 && (
-            <span className="absolute -top-0.5 -right-0.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-red-500 text-[10px] font-medium text-white px-1">
+            <span className="absolute -top-0.5 -right-0.5 flex h-3.5 min-w-[14px] items-center justify-center rounded-full bg-red-500 text-[9px] font-medium text-white px-0.5">
               {unreadCount > 99 ? "99+" : unreadCount}
             </span>
           )}
         </Button>
 
-        {/* Notification dropdown */}
         {open && (
-          <div className="absolute top-full right-0 mt-2 w-80 sm:w-96 rounded-lg border bg-card shadow-lg z-50 overflow-hidden">
-            {/* Header */}
-            <div className="flex items-center justify-between px-4 py-3 border-b">
+          <div className="absolute top-full right-0 mt-1 w-80 sm:w-96 rounded-lg border bg-card shadow-sm z-50 overflow-hidden">
+            <div className="flex items-center justify-between px-3 py-2.5 border-b">
               <div className="flex items-center gap-2">
-                <h3 className="text-sm font-semibold">通知</h3>
-                {/* Tabs */}
-                <div className="flex bg-muted rounded-md p-0.5">
+                <span className="text-sm font-medium">通知</span>
+                <div className="flex bg-muted rounded p-0.5">
                   <button
                     className={cn(
-                      "px-2 py-0.5 text-xs font-medium rounded transition-colors",
-                      tab === "unread" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+                      "px-2 py-0.5 text-xs rounded transition-colors",
+                      tab === "unread" ? "bg-card text-foreground" : "text-muted-foreground hover:text-foreground"
                     )}
                     onClick={() => setTab("unread")}
                   >
@@ -216,8 +205,8 @@ export function TopBar() {
                   </button>
                   <button
                     className={cn(
-                      "px-2 py-0.5 text-xs font-medium rounded transition-colors",
-                      tab === "all" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+                      "px-2 py-0.5 text-xs rounded transition-colors",
+                      tab === "all" ? "bg-card text-foreground" : "text-muted-foreground hover:text-foreground"
                     )}
                     onClick={() => setTab("all")}
                   >
@@ -226,18 +215,17 @@ export function TopBar() {
                 </div>
               </div>
               {unreadCount > 0 && (
-                <Button variant="ghost" size="sm" className="h-7 text-xs gap-1" onClick={handleMarkAllRead}>
-                  <CheckCheck className="h-3.5 w-3.5" />
+                <Button variant="ghost" size="xs" onClick={handleMarkAllRead}>
+                  <CheckCheck className="size-3 mr-0.5" />
                   全部已读
                 </Button>
               )}
             </div>
 
-            {/* List */}
             <div className="max-h-96 overflow-y-auto">
               {displayedNotifs.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
-                  <Bell className="h-8 w-8 mb-2" />
+                  <Bell className="size-6 mb-2" />
                   <p className="text-sm">{tab === "unread" ? "没有未读通知" : "暂无通知"}</p>
                 </div>
               ) : (
@@ -248,13 +236,13 @@ export function TopBar() {
                       <button
                         key={n.id}
                         className={cn(
-                          "w-full text-left px-4 py-3 hover:bg-accent transition-colors flex items-start gap-3",
+                          "w-full text-left px-3 py-2.5 hover:bg-accent transition-colors flex items-start gap-2",
                           !n.read && "bg-accent/30"
                         )}
                         onClick={() => handleNotifClick(n)}
                       >
                         <Icon className={cn(
-                          "h-4 w-4 mt-0.5 shrink-0",
+                          "size-3.5 mt-0.5 shrink-0",
                           n.read ? "text-muted-foreground" : "text-primary"
                         )} />
                         <div className="flex-1 min-w-0">
@@ -266,14 +254,14 @@ export function TopBar() {
                           </p>
                         </div>
                         {!n.read && (
-                          <span className="h-2 w-2 rounded-full bg-primary shrink-0 mt-1.5" />
+                          <span className="size-1.5 rounded-full bg-primary shrink-0 mt-1.5" />
                         )}
                       </button>
                     );
                   })}
                   {hasMore && (
                     <button
-                      className="w-full px-4 py-2.5 text-xs text-center text-muted-foreground hover:text-foreground hover:bg-accent transition-colors border-t"
+                      className="w-full px-3 py-2 text-xs text-center text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
                       onClick={() => setPage(p => p + 1)}
                     >
                       加载更多 ({displayedNotifs.length - paginatedNotifs.length} 条)
@@ -285,30 +273,26 @@ export function TopBar() {
           </div>
         )}
 
-        {/* Theme toggle */}
         <Button
           variant="ghost"
-          size="icon"
-          className="h-9 w-9"
+          size="icon-xs"
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
           aria-label="切换主题"
         >
           {mounted && theme === "dark" ? (
-            <Sun className="h-4 w-4" />
+            <Sun className="size-4" />
           ) : (
-            <Moon className="h-4 w-4" />
+            <Moon className="size-4" />
           )}
         </Button>
 
-        {/* Logout */}
         <Button
           variant="ghost"
-          size="icon"
-          className="h-9 w-9"
+          size="icon-xs"
           onClick={logout}
           aria-label="退出登录"
         >
-          <LogOut className="h-4 w-4" />
+          <LogOut className="size-4" />
         </Button>
       </div>
     </header>

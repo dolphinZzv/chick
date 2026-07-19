@@ -304,15 +304,15 @@ export function ProjectDetailPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-4 border-b">
+      <div className="flex items-center gap-4">
         <button
-          className={`pb-2 text-sm font-medium border-b-2 transition-colors ${activeTab === "issues" ? "border-primary text-foreground" : "border-transparent text-muted-foreground hover:text-foreground"}`}
+          className={`text-sm font-medium ${activeTab === "issues" ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}
           onClick={() => setActiveTab("issues")}
         >
           Issue
         </button>
         <button
-          className={`pb-2 text-sm font-medium border-b-2 transition-colors ${activeTab === "proposals" ? "border-primary text-foreground" : "border-transparent text-muted-foreground hover:text-foreground"}`}
+          className={`text-sm font-medium ${activeTab === "proposals" ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}
           onClick={() => setActiveTab("proposals")}
         >
           提案
@@ -332,10 +332,10 @@ export function ProjectDetailPage() {
           placeholder="搜索 Issue..."
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
-          className="h-9 w-full sm:w-60"
+          className="h-8 w-full sm:w-48"
         />
         <Select value={priorityFilter} onValueChange={setPriorityFilter}>
-          <SelectTrigger className="h-9 w-32">
+          <SelectTrigger className="h-8 w-28">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -349,7 +349,7 @@ export function ProjectDetailPage() {
         {/* Label filter */}
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="outline" size="sm" className="h-9 gap-1 text-xs">
+            <Button variant="outline" size="sm" className="h-8 gap-1 text-xs">
               标签{labelFilter.length > 0 ? ` (${labelFilter.length})` : ""}
               <ChevronDown className="h-3 w-3 opacity-50" />
             </Button>
@@ -374,7 +374,7 @@ export function ProjectDetailPage() {
 
         {/* Milestone filter */}
         <Select value={milestoneFilter} onValueChange={setMilestoneFilter}>
-          <SelectTrigger className="h-9 w-36">
+          <SelectTrigger className="h-8 w-32">
             <SelectValue placeholder="里程碑" />
           </SelectTrigger>
           <SelectContent>
@@ -417,13 +417,13 @@ export function ProjectDetailPage() {
 
       {/* Closed issues */}
       {closed.length > 0 && (
-        <details className="rounded-lg border bg-card">
-          <summary className="cursor-pointer px-4 py-2 text-sm font-medium text-muted-foreground">
+        <details>
+          <summary className="cursor-pointer text-sm text-muted-foreground">
             已关闭 ({closed.length})
           </summary>
-          <div className="space-y-1 px-4 pb-3">
+          <div className="mt-1 space-y-0.5">
             {closed.map((issue) => (
-              <Link key={issue.id} to={`/issues/${issue.id}`} className="block rounded px-2 py-1 text-sm hover:bg-accent">
+              <Link key={issue.id} to={`/issues/${issue.id}`} className="block rounded px-2 py-0.5 text-sm hover:bg-accent">
                 <span className="text-muted-foreground line-through">#{issue.number}</span>{" "}
                 <span className="text-muted-foreground line-through">{issue.title}</span>
               </Link>

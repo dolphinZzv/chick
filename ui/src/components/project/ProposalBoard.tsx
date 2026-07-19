@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { CreateProposalDialog } from "@/components/project/CreateProposalDialog";
 import { CreateTaskDialog } from "@/components/project/CreateTaskDialog";
 
@@ -44,10 +43,10 @@ const columns = [
 ];
 
 const priorityColors: Record<string, string> = {
-  critical: "bg-red-500",
-  high: "bg-orange-500",
-  medium: "bg-blue-500",
-  low: "bg-gray-400",
+  critical: "bg-gray-900 dark:bg-gray-100",
+  high: "bg-gray-600 dark:bg-gray-300",
+  medium: "bg-gray-400 dark:bg-gray-500",
+  low: "bg-gray-300 dark:bg-gray-600",
 };
 
 
@@ -79,16 +78,14 @@ export function ProposalBoard({ projectId, proposals, onRefresh }: Props) {
               <span className="text-xs text-muted-foreground">{col.items.length}</span>
             </div>
             {col.items.map((proposal) => (
-              <Card key={proposal.id} className="shadow-sm">
-                <CardHeader className="p-3 pb-0">
-                  <div className="flex items-start justify-between gap-1">
-                    <Link to={`/proposals/${proposal.id}`} className="text-sm font-medium hover:underline leading-tight">
-                      {proposal.title}
-                    </Link>
-                    <div className={`w-2 h-2 rounded-full shrink-0 mt-1 ${priorityColors[proposal.priority] || "bg-gray-400"}`} />
-                  </div>
-                </CardHeader>
-                <CardContent className="p-3 pt-2 space-y-1">
+              <div key={proposal.id} className="border bg-card p-3">
+                <div className="flex items-start justify-between gap-1">
+                  <Link to={`/proposals/${proposal.id}`} className="text-sm font-medium hover:underline leading-tight">
+                    {proposal.title}
+                  </Link>
+                  <div className={`w-2 h-2 rounded-full shrink-0 mt-1 ${priorityColors[proposal.priority] || "bg-gray-400"}`} />
+                </div>
+                <div className="mt-2 space-y-1">
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <span>#{proposal.number}</span>
                     <span>{proposal.author.name}</span>
@@ -116,7 +113,6 @@ export function ProposalBoard({ projectId, proposals, onRefresh }: Props) {
                       )}
                     </div>
                   )}
-                  {/* Show task count for in_execution */}
                   {proposal.state === "in_execution" && proposal.tasks && proposal.tasks.length > 0 && (
                     <div className="pt-1">
                       <Button
@@ -130,8 +126,8 @@ export function ProposalBoard({ projectId, proposals, onRefresh }: Props) {
                       </Button>
                     </div>
                   )}
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             ))}
             {col.items.length === 0 && (
               <div className="rounded-lg border border-dashed p-4 text-center text-xs text-muted-foreground">

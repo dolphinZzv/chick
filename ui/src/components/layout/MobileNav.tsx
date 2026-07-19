@@ -19,10 +19,8 @@ export function MobileNav() {
           end={item.to === "/"}
           className={({ isActive }) =>
             cn(
-              "flex flex-1 flex-col items-center gap-1 py-2 text-xs transition-colors",
-              isActive
-                ? "text-primary"
-                : "text-muted-foreground"
+              "flex flex-1 flex-col items-center gap-0.5 py-2 text-xs transition-colors",
+              isActive ? "text-primary" : "text-muted-foreground"
             )
           }
         >

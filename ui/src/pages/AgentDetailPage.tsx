@@ -1,7 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorFallback } from "@/components/shared/ErrorFallback";
@@ -47,9 +46,7 @@ const statusConfig: Record<string, { label: string; dot: string }> = {
 };
 
 const kindLabels: Record<string, string> = {
-  ai: "AI",
-  human: "人类",
-  hybrid: "混合",
+  ai: "AI", human: "人类", hybrid: "混合",
 };
 
 export function AgentDetailPage() {
@@ -60,8 +57,6 @@ export function AgentDetailPage() {
   const [error, setError] = useState<string | null>(null);
   const [toggling, setToggling] = useState(false);
   const [deleting, setDeleting] = useState(false);
-
-  // notification settings
   const [notifTypes, setNotifTypes] = useState<NotifTypeInfo[]>([]);
   const [notifSettings, setNotifSettings] = useState<NotifSetting[]>([]);
   const [notifLoading, setNotifLoading] = useState(false);
@@ -71,10 +66,7 @@ export function AgentDetailPage() {
     if (!id) return;
     setLoading(true);
     setError(null);
-    gql(
-      `query agent($id: ID!) { agent(id: $id) { id number name kind status disabled externalID tokenPreview capabilities deviceInfo modelInfo lastIP lastSeenAt createdAt } }`,
-      { id }
-    )
+    gql(`query agent($id: ID!) { agent(id: $id) { id number name kind status disabled externalID tokenPreview capabilities deviceInfo modelInfo lastIP lastSeenAt createdAt } }`, { id })
       .then((json) => {
         if (json.errors) { setError(json.errors[0].message); return; }
         setAgent(json.data.agent);
@@ -89,12 +81,9 @@ export function AgentDetailPage() {
     if (!window.confirm(`确认${action} Agent #${agent.number} ${agent.name}？`)) return;
     setToggling(true);
     const newDisabled = !agent.disabled;
-    gql(
-      `mutation updateAgentDisabled($id: ID!, $disabled: Boolean!) { updateAgentDisabled(id: $id, disabled: $disabled) { id disabled } }`,
-      { id, disabled: newDisabled }
-    )
+    gql(`mutation updateAgentDisabled($id: ID!, $disabled: Boolean!) { updateAgentDisabled(id: $id, disabled: $disabled) { id disabled } }`, { id, disabled: newDisabled })
       .then((json) => {
-        if (json.errors) { return; }
+        if (json.errors) return;
         setAgent((prev) => prev ? { ...prev, disabled: newDisabled } : prev);
       })
       .finally(() => setToggling(false));
@@ -108,18 +97,14 @@ export function AgentDetailPage() {
       if (json.errors) { toast.error(json.errors[0].message); return; }
       toast.success("Agent 已删除");
       navigate("/projects", { replace: true });
-    } catch {
-      toast.error("网络错误");
-    } finally {
-      setDeleting(false);
-    }
+    } catch { toast.error("网络错误"); }
+    finally { setDeleting(false); }
   }, [id, agent, navigate]);
 
   const fetchNotifTypes = useCallback(async () => {
     try {
       const json = await gql(`query { notificationTypes { type description } }`);
-      if (json.errors) { return; }
-      setNotifTypes(json.data?.notificationTypes || []);
+      if (!json.errors) setNotifTypes(json.data?.notificationTypes || []);
     } catch { /* ignore */ }
   }, []);
 
@@ -127,12 +112,8 @@ export function AgentDetailPage() {
     if (!id) return;
     setNotifLoading(true);
     try {
-      const json = await gql(
-        `query notifSettings($aid: ID!) { notificationSettings(agentID: $aid) { id agentID notificationType enabled channel } }`,
-        { aid: id }
-      );
-      if (json.errors) { return; }
-      setNotifSettings(json.data?.notificationSettings || []);
+      const json = await gql(`query notifSettings($aid: ID!) { notificationSettings(agentID: $aid) { id agentID notificationType enabled channel } }`, { aid: id });
+      if (!json.errors) setNotifSettings(json.data?.notificationSettings || []);
     } catch { /* ignore */ }
     finally { setNotifLoading(false); }
   }, [id]);
@@ -142,17 +123,13 @@ export function AgentDetailPage() {
     setNotifUpdating(notifType);
     try {
       const json = await gql(
-        `mutation updateNotifSetting($aid: ID!, $type: String!, $enabled: Boolean!) {
-          updateNotificationSetting(agentID: $aid, notificationType: $type, enabled: $enabled) { id enabled }
-        }`,
+        `mutation updateNotifSetting($aid: ID!, $type: String!, $enabled: Boolean!) { updateNotificationSetting(agentID: $aid, notificationType: $type, enabled: $enabled) { id enabled } }`,
         { aid: id, type: notifType, enabled }
       );
       if (json.errors) { toast.error(json.errors[0].message); return; }
       setNotifSettings(prev => {
         const existing = prev.find(s => s.notificationType === notifType);
-        if (existing) {
-          return prev.map(s => s.notificationType === notifType ? { ...s, enabled } : s);
-        }
+        if (existing) return prev.map(s => s.notificationType === notifType ? { ...s, enabled } : s);
         return [...prev, { id: "", agentID: id, notificationType: notifType, enabled, channel: "in_app" }];
       });
     } catch { toast.error("网络错误"); }
@@ -162,185 +139,156 @@ export function AgentDetailPage() {
   useEffect(() => { fetchAgent(); }, [fetchAgent]);
   useEffect(() => { if (agent) { fetchNotifTypes(); fetchNotifSettings(); } }, [agent, fetchNotifTypes, fetchNotifSettings]);
 
-  if (loading) return <Skeleton className="h-48 w-full" />;
+  if (loading) return <Skeleton className="h-32 w-full" />;
   if (error) return <ErrorFallback message={error} onRetry={fetchAgent} />;
   if (!agent) return <ErrorFallback message="Agent 不存在" />;
 
   const status = statusConfig[agent.status] || statusConfig.offline;
 
   return (
-    <div className="space-y-4">
-      <button onClick={() => navigate(-1)} className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
+    <div className="space-y-5">
+      <button onClick={() => navigate(-1)} className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
         ← 返回
       </button>
-      <Card>
-        <CardContent className="p-6">
-          <div className="flex items-center gap-4">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted">
-              <Bot className="h-8 w-8 text-muted-foreground" />
-            </div>
-            <div className="flex-1">
-              <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-semibold">#{agent.number} {agent.name}</h1>
-                <div className={`h-3 w-3 rounded-full ${status.dot}`} />
-              </div>
-              <p className="text-sm text-muted-foreground mt-1">
-                {kindLabels[agent.kind] || agent.kind} · {status.label}
-              </p>
-            </div>
-            <button
-              onClick={toggleDisabled}
-              disabled={toggling}
-              className={`inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                agent.disabled
-                  ? "bg-red-100 text-red-700 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-400"
-                  : "bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-400"
-              }`}
-              title={agent.disabled ? "点击启用" : "点击禁用"}
-            >
-              {agent.disabled ? <ToggleLeft className="h-5 w-5" /> : <ToggleRight className="h-5 w-5" />}
-              {agent.disabled ? "已禁用" : "已启用"}
-            </button>
-          </div>
-        </CardContent>
-      </Card>
 
-      <Card>
-        <CardContent className="p-6 space-y-4">
-          <h2 className="text-lg font-semibold">基本信息</h2>
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div>
-              <p className="text-muted-foreground mb-0.5">编号</p>
-              <p className="font-mono">#{agent.number}</p>
-            </div>
-            <div>
-              <p className="text-muted-foreground mb-0.5">ID</p>
-              <p className="font-mono">{agent.id}</p>
-            </div>
-            <div>
-              <p className="text-muted-foreground mb-0.5">账户</p>
-              <p className="font-mono">{agent.externalID}</p>
-            </div>
-            {agent.tokenPreview && (
-            <div>
-              <p className="text-muted-foreground mb-0.5">Token</p>
-              <p className="font-mono text-xs tracking-wider">{agent.tokenPreview}</p>
-            </div>
-            )}
-            <div>
-              <p className="text-muted-foreground mb-0.5">类型</p>
-              <p>{kindLabels[agent.kind] || agent.kind}</p>
-            </div>
-            <div>
-              <p className="text-muted-foreground mb-0.5">状态</p>
-              <div className="flex items-center gap-1.5">
-                <div className={`h-2.5 w-2.5 rounded-full ${status.dot}`} />
-                <span>{status.label}</span>
-              </div>
-            </div>
-            <div>
-              <p className="text-muted-foreground mb-0.5">IP 地址</p>
-              <p className="font-mono">{agent.lastIP || "未知"}</p>
-            </div>
-            <div>
-              <p className="text-muted-foreground mb-0.5">注册时间</p>
-              <p>{new Date(agent.createdAt).toLocaleString("zh-CN")}</p>
-            </div>
-            <div>
-              <p className="text-muted-foreground mb-0.5">最后活跃</p>
-              <p>{agent.lastSeenAt ? new Date(agent.lastSeenAt).toLocaleString("zh-CN") : "未知"}</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardContent className="p-6">
-          <h2 className="text-lg font-semibold mb-3">能力</h2>
-          {!agent.capabilities || agent.capabilities.length === 0 ? (
-            <p className="text-sm text-muted-foreground">暂无能力</p>
-          ) : (
-            <div className="flex flex-wrap gap-2">
-              {agent.capabilities.map((cap) => (
-                <Badge key={cap} variant="secondary">{cap}</Badge>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardContent className="p-6 space-y-3">
-          <h2 className="text-lg font-semibold">设备与模型</h2>
-          <div>
-            <p className="text-sm text-muted-foreground mb-0.5">AI 模型</p>
-            <p className="text-sm font-mono">{agent.modelInfo || "未提供"}</p>
-          </div>
-          <div>
-            <p className="text-sm text-muted-foreground mb-0.5">设备信息</p>
-            <p className="text-sm font-mono whitespace-pre-wrap">{agent.deviceInfo || "未提供"}</p>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Notification Settings */}
-      <Card>
-        <CardContent className="p-6 space-y-4">
-          <div className="flex items-center gap-2">
-            <Bell className="h-5 w-5 text-muted-foreground" />
-            <h2 className="text-lg font-semibold">通知设置</h2>
-          </div>
-          <p className="text-sm text-muted-foreground">
-            选择需要接收的通知类型。未配置的类型默认开启。
-          </p>
-
-          {notifLoading && notifTypes.length === 0 ? (
-            <div className="space-y-2">
-              {[1,2,3].map((i) => <Skeleton key={i} className="h-12 w-full" />)}
-            </div>
-          ) : notifTypes.length === 0 ? (
-            <p className="text-sm text-muted-foreground">暂无通知类型</p>
-          ) : (
-            <div className="divide-y rounded-lg border">
-              {notifTypes.map((nt) => {
-                const setting = notifSettings.find(s => s.notificationType === nt.type);
-                const enabled = setting ? setting.enabled : true;
-                const updating = notifUpdating === nt.type;
-                return (
-                  <div key={nt.type} className="flex items-center justify-between gap-4 px-4 py-3">
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium">{nt.description}</p>
-                      <p className="text-xs text-muted-foreground font-mono">{nt.type}</p>
-                    </div>
-                    <label className="relative inline-flex items-center cursor-pointer">
-                      <input
-                        type="checkbox"
-                        className="sr-only peer"
-                        checked={enabled}
-                        disabled={!!updating}
-                        onChange={() => handleToggleNotif(nt.type, !enabled)}
-                      />
-                      <div className={`w-10 h-5 rounded-full peer-focus:outline-none after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-card after:rounded-full after:h-4 after:w-4 after:transition-all ${
-                        updating
-                          ? "bg-muted cursor-wait"
-                          : "bg-muted peer-checked:bg-primary cursor-pointer"
-                      } peer-checked:after:translate-x-5`} />
-                    </label>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Danger Zone */}
-      <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-4">
-        <div className="flex items-center gap-2 mb-3">
-          <AlertTriangle className="h-5 w-5 text-destructive" />
-          <h2 className="text-base font-semibold text-destructive">危险区域</h2>
+      <div className="flex items-center gap-3">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+          <Bot className="size-6 text-muted-foreground" />
         </div>
-        <p className="text-sm text-muted-foreground mb-3">删除 Agent 后不可恢复。相关的评论和分配记录将被保留，但 Agent 账户将被永久删除。</p>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <h1 className="text-base font-medium truncate">#{agent.number} {agent.name}</h1>
+            <div className={`size-2 shrink-0 rounded-full ${status.dot}`} />
+          </div>
+          <p className="text-xs text-muted-foreground mt-0.5">{kindLabels[agent.kind] || agent.kind} · {status.label}</p>
+        </div>
+        <button
+          onClick={toggleDisabled}
+          disabled={toggling}
+          className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors ${
+            agent.disabled
+              ? "bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400"
+              : "bg-green-50 text-green-600 hover:bg-green-100 dark:bg-green-900/20 dark:text-green-400"
+          }`}
+        >
+          {agent.disabled ? <ToggleLeft className="size-3.5" /> : <ToggleRight className="size-3.5" />}
+          {agent.disabled ? "已禁用" : "已启用"}
+        </button>
+      </div>
+
+      <div className="rounded-lg border bg-card p-4">
+        <h2 className="text-xs font-medium text-muted-foreground mb-3 uppercase tracking-wide">基本信息</h2>
+        <div className="grid grid-cols-2 gap-x-6 gap-y-2.5 text-sm">
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">编号</span>
+            <span className="font-mono">#{agent.number}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">ID</span>
+            <span className="font-mono text-xs">{agent.id}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">账户</span>
+            <span className="font-mono">{agent.externalID}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">状态</span>
+            <div className="flex items-center gap-1.5">
+              <div className={`size-2 rounded-full ${status.dot}`} />
+              <span>{status.label}</span>
+            </div>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">IP</span>
+            <span className="font-mono text-xs">{agent.lastIP || "未知"}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">注册时间</span>
+            <span className="text-xs">{new Date(agent.createdAt).toLocaleString("zh-CN")}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Token</span>
+            <span className="font-mono text-[10px] tracking-wider">{agent.tokenPreview || "—"}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">最后活跃</span>
+            <span className="text-xs">{agent.lastSeenAt ? new Date(agent.lastSeenAt).toLocaleString("zh-CN") : "未知"}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="rounded-lg border bg-card p-4">
+        <h2 className="text-xs font-medium text-muted-foreground mb-3 uppercase tracking-wide">能力</h2>
+        {!agent.capabilities || agent.capabilities.length === 0 ? (
+          <p className="text-sm text-muted-foreground">暂无能力</p>
+        ) : (
+          <div className="flex flex-wrap gap-1.5">
+            {agent.capabilities.map((cap) => (
+              <Badge key={cap} variant="secondary">{cap}</Badge>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="rounded-lg border bg-card p-4">
+        <h2 className="text-xs font-medium text-muted-foreground mb-3 uppercase tracking-wide">设备与模型</h2>
+        <div className="space-y-2 text-sm">
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">AI 模型</span>
+            <span>{agent.modelInfo || "未提供"}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">设备信息</span>
+            <span className="text-xs">{agent.deviceInfo || "未提供"}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="rounded-lg border bg-card p-4">
+        <div className="flex items-center gap-2 mb-3">
+          <Bell className="size-4 text-muted-foreground" />
+          <h2 className="text-xs font-medium text-muted-foreground uppercase tracking-wide">通知设置</h2>
+        </div>
+        {notifLoading && notifTypes.length === 0 ? (
+          <div className="space-y-2">{[1,2,3].map((i) => <Skeleton key={i} className="h-9 w-full" />)}</div>
+        ) : notifTypes.length === 0 ? (
+          <p className="text-sm text-muted-foreground">暂无通知类型</p>
+        ) : (
+          <div className="divide-y">
+            {notifTypes.map((nt) => {
+              const setting = notifSettings.find(s => s.notificationType === nt.type);
+              const enabled = setting ? setting.enabled : true;
+              const updating = notifUpdating === nt.type;
+              return (
+                <div key={nt.type} className="flex items-center justify-between gap-4 py-2.5">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm">{nt.description}</p>
+                  </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="sr-only peer"
+                      checked={enabled}
+                      disabled={!!updating}
+                      onChange={() => handleToggleNotif(nt.type, !enabled)}
+                    />
+                    <div className={`w-9 h-4.5 rounded-full after:content-[''] after:absolute after:top-[1px] after:left-[1px] after:bg-card after:rounded-full after:h-3.5 after:w-3.5 after:transition-all ${
+                      updating ? "bg-muted cursor-wait" : "bg-muted peer-checked:bg-primary cursor-pointer"
+                    } peer-checked:after:translate-x-4.5`} />
+                  </label>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      <div className="rounded-lg border border-destructive/20 bg-destructive/[0.02] p-4">
+        <div className="flex items-center gap-2 mb-2">
+          <AlertTriangle className="size-4 text-destructive" />
+          <h2 className="text-sm font-medium text-destructive">危险区域</h2>
+        </div>
+        <p className="text-xs text-muted-foreground mb-3">删除 Agent 后不可恢复。相关的评论和分配记录将被保留，但 Agent 账户将被永久删除。</p>
         <Button variant="destructive" size="sm" onClick={handleDelete} disabled={deleting}>
           {deleting ? "删除中..." : "删除 Agent"}
         </Button>

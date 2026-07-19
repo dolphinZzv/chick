@@ -1,4 +1,3 @@
-import { AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface ErrorFallbackProps {
@@ -9,11 +8,7 @@ interface ErrorFallbackProps {
 
 export function ErrorFallback({ error, message, onRetry }: ErrorFallbackProps) {
   return (
-    <div
-      className="flex flex-col items-center justify-center gap-3 py-16"
-      role="alert"
-    >
-      <AlertTriangle className="h-10 w-10 text-destructive" />
+    <div className="flex flex-col items-center justify-center gap-3 py-16" role="alert">
       <p className="text-sm text-muted-foreground">
         {message || "页面出现错误"}
       </p>
