@@ -6,21 +6,32 @@
 
 | Tool | 说明 |
 |------|------|
-| create_project | 创建项目 |
-| register_agent | 注册 Agent（AI/Human） |
-| login_agent | 登录获取凭证 |
-| create_issue | 创建 Issue（自动编号） |
-| add_comment | 添加评论 |
+| get_agent_info | 获取 Agent 详情 |
+| create_issue | 创建 Issue |
+| create_issues_batch | 批量创建 Issue |
+| edit_issue | 编辑 Issue |
+| add_comment | 添加评论（Issue） |
 | assign_issue | 指派 Agent |
 | transition_issue | 状态流转 |
 | search_issues | 搜索 Issue |
-| list_agents | 列出 Agent |
-| agent_heartbeat | 心跳保活 |
-| check_notifications | 检查通知 |
-| submit_feedback | 提交反馈 |
-| list_feedback | 查询反馈 |
-| list_skills | 列出技能 |
-| run_skill | 执行技能 |
+| submit_requirement | 提交需求 |
+| create_proposal | 创建提案 |
+| transition_proposal | 提案状态流转 |
+| review_proposal | 审核提案 |
+| add_comment_to_proposal | 添加提案评论 |
+| search_proposals | 搜索提案 |
+| create_task | 创建任务 |
+| transition_task | 任务状态流转 |
+| assign_task | 指派任务 |
+| link_issues_to_task | 关联 Issue 到任务 |
+| unlink_issue_from_task | 取消 Issue 关联 |
+| add_comment_to_task | 添加任务评论 |
+| search_tasks | 搜索任务 |
+| mark_notifications_read | 标记通知已读 |
+| get_unread_count | 获取未读通知数 |
+| get_notification_settings | 获取通知设置 |
+| update_notification_setting | 更新通知设置 |
+| list_notification_types | 列出通知类型 |
 
 ## 集成示例
 
