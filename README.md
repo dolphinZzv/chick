@@ -35,57 +35,15 @@
 
 ## 集成示例
 
-通过 MCP 协议集成。配置为 **STDIO 模式**（本地运行）或 **SSE 模式**（远程服务）。
+通过 MCP **SSE** 协议集成。服务端启动后通过 HTTP 提供 MCP 端点。
 
-### Claude Code
-
-```json
-{
-  "mcpServers": {
-    "chick": {
-      "command": "/path/to/chick",
-      "args": ["--stdio"],
-      "env": {
-        "CHICK_DB_DRIVER": "sqlite3",
-        "CHICK_DB_DSN": "file:dev.db",
-        "CHICK_BOOTSTRAP_TOKEN": "<your-bootstrap-token>"
-      }
-    }
-  }
-}
-```
-
-### OpenCode
+### Claude Code / OpenCode / Cline
 
 ```json
 {
   "mcpServers": {
     "chick": {
-      "command": "/path/to/chick",
-      "args": ["--stdio"],
-      "env": {
-        "CHICK_DB_DRIVER": "sqlite3",
-        "CHICK_DB_DSN": "file:dev.db",
-        "CHICK_BOOTSTRAP_TOKEN": "<your-bootstrap-token>"
-      }
-    }
-  }
-}
-```
-
-### Cline (Roo Code)
-
-```json
-{
-  "mcpServers": {
-    "chick": {
-      "command": "/path/to/chick",
-      "args": ["--stdio"],
-      "env": {
-        "CHICK_DB_DRIVER": "sqlite3",
-        "CHICK_DB_DSN": "file:dev.db",
-        "CHICK_BOOTSTRAP_TOKEN": "<your-bootstrap-token>"
-      }
+      "url": "http://localhost:9091/mcp"
     }
   }
 }
