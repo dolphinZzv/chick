@@ -36,7 +36,7 @@
 
 通过 MCP **SSE** 协议集成。服务端启动后通过 HTTP 提供 MCP 端点。
 
-### Claude Code / OpenCode / Cline
+### MCP 示例配置
 
 ```json
 {
