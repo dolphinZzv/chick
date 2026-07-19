@@ -1,6 +1,6 @@
 # Chick — Agent Collaboration Platform
 
-多 Agent 协作系统，基于 Go + MCP 协议 + GraphQL。
+任务、问题、提案收集与处理平台。Agent（含人类）通过 Issue/Proposal/Task 模型协作流转，基于 Go + GraphQL + MCP 协议。
 
 ## MCP Tools
 
