@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "chick": {
+      "type": "http-stream",
+      "url": "http://localhost:9091/mcp",
+      "headers": {
+        "Authorization": "Bearer <your-token>"
+      }
+    }
+  }
+}

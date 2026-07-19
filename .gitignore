@@ -1,4 +1,5 @@
 .claude/
+.opencode.json
 
 coverage.out
 *.db
