@@ -1,0 +1,26 @@
+type NotificationEvent {
+  id: ID!
+  number: Int!
+  agentID: ID!
+  notificationType: String!
+  issueID: ID
+  proposalID: ID
+  taskID: ID
+  projectID: ID
+  message: String!
+  read: Boolean!
+  createdAt: Time!
+}
+
+type NotificationSetting {
+  id: ID!
+  agentID: ID!
+  notificationType: String!
+  enabled: Boolean!
+  channel: String!
+}
+
+type NotificationTypeInfo {
+  type: String!
+  description: String!
+}

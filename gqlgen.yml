@@ -3,8 +3,9 @@ schema:
 
 exec:
   package: graph
-  layout: single-file
-  filename: internal/graphql/generated.go
+  layout: follow-schema
+  dir: internal/graphql
+  filename_template: "{name}.generated.go"
 
 model:
   filename: internal/graphql/models_gen.go

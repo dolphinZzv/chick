@@ -78,7 +78,7 @@ export function ProposalBoard({ projectId, proposals, onRefresh }: Props) {
               <span className="text-xs text-muted-foreground">{col.items.length}</span>
             </div>
             {col.items.map((proposal) => (
-              <div key={proposal.id} className="border bg-card p-3">
+              <div key={proposal.id} className="border bg-card p-3 rounded-lg">
                 <div className="flex items-start justify-between gap-1">
                   <Link to={`/proposals/${proposal.id}`} className="text-sm font-medium hover:underline leading-tight">
                     {proposal.title}

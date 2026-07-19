@@ -1,0 +1,10 @@
+type Label {
+  id: ID!
+  number: Int!
+  name: String!
+  color: String
+  description: String
+  projectID: ID!
+  capability: String
+  group: String
+}

@@ -178,6 +178,7 @@ export function TopBar() {
           variant="ghost"
           size="icon-xs"
           aria-label="通知"
+          className="relative"
           onClick={() => setOpen(v => !v)}
         >
           <Bell className="size-4" />

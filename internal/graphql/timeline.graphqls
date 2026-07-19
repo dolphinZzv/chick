@@ -1,0 +1,12 @@
+type TimelineEvent {
+  id: ID!
+  number: Int!
+  issueID: ID
+  proposalID: ID
+  taskID: ID
+  actorID: ID!
+  eventType: String!
+  payload: Map
+  createdAt: Time!
+  actor: Agent!
+}

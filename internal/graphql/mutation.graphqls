@@ -1,0 +1,62 @@
+type Mutation {
+  registerAgent(name: String!, kind: AgentKind!, externalID: String!, secret: String!, capabilities: [String!], deviceInfo: String, modelInfo: String): RegisterResult!
+  loginAgent(externalID: String!, secret: String!): LoginResult!
+  updateAgentStatus(id: ID!, status: AgentStatus!): Agent!
+  updateAgentDisabled(id: ID!, disabled: Boolean!): Agent!
+  updateAgent(id: ID!, systemPrompt: String): Agent!
+  deleteAgent(id: ID!): Boolean!
+  updateAgentAllowedCIDRs(id: ID!, allowedCIDRs: [String!]!): Agent!
+
+  createProjectAgent(projectID: ID!, name: String!, kind: AgentKind!, role: ProjectRole, externalID: String, secret: String, capabilities: [String!], deviceInfo: String, modelInfo: String): RegisterResult!
+
+  createProject(name: String!, description: String): Project!
+  updateProject(id: ID!, name: String, description: String): Project!
+  updateProjectConfig(id: ID!, allowCreatorTransition: Boolean, requireCreatorCloseApproval: Boolean): Project!
+  deleteProject(id: ID!): Boolean!
+  addProjectMember(projectID: ID!, agentID: ID!, role: ProjectRole!): ProjectMember!
+  updateProjectMember(projectID: ID!, agentID: ID!, role: ProjectRole!): ProjectMember!
+  removeProjectMember(projectID: ID!, agentID: ID!): Boolean!
+
+  createIssue(projectID: ID!, title: String!, description: String, priority: Priority!, assigneeIDs: [ID!], labelIDs: [ID!], milestoneId: ID, environment: String, branch: String, link: String): Issue!
+  updateIssue(id: ID!, title: String, description: String, priority: Priority, dueDate: Time, milestoneId: ID, environment: String, branch: String, link: String, startedAt: Time, completedAt: Time, difficulty: Int): Issue!
+  deleteIssue(id: ID!): Boolean!
+  transitionIssue(id: ID!, newState: IssueState!, actorID: ID!, note: String): Issue!
+
+  addAssignee(issueID: ID!, agentID: ID!): IssueAssignee!
+  removeAssignee(issueID: ID!, agentID: ID!): Boolean!
+  updateAssigneeState(issueID: ID!, agentID: ID!, state: AssigneeState!): IssueAssignee!
+
+  addComment(issueID: ID!, authorID: ID!, body: String!, contentType: CommentContentType!, parentID: ID): Comment!
+  addProposalComment(proposalID: ID!, authorID: ID!, body: String!, contentType: CommentContentType!): Comment!
+  addTaskComment(taskID: ID!, authorID: ID!, body: String!, contentType: CommentContentType!): Comment!
+  updateComment(id: ID!, body: String!): Comment!
+  deleteComment(id: ID!): Boolean!
+
+  addLabels(issueID: ID!, labelIDs: [ID!]!): Issue!
+  removeLabels(issueID: ID!, labelIDs: [ID!]!): Issue!
+  createLabel(projectID: ID!, name: String!, color: String, capability: String, group: String): Label!
+  updateLabel(id: ID!, name: String, color: String): Label!
+  deleteLabel(id: ID!): Boolean!
+
+  createMilestone(projectID: ID!, title: String!, description: String, dueDate: Time): Milestone!
+  updateMilestone(id: ID!, title: String, description: String, dueDate: Time, state: MilestoneState): Milestone!
+  deleteMilestone(id: ID!): Boolean!
+
+  createFeedback(targetType: FeedbackTargetType!, targetID: ID!, authorID: ID!, rating: FeedbackRating!, body: String): Feedback!
+
+  createProposal(projectID: ID!, title: String!, description: String, priority: Priority!, labelIDs: [ID!]): Proposal!
+  updateProposal(id: ID!, title: String, description: String, priority: Priority): Proposal!
+  transitionProposal(id: ID!, newState: ProposalState!, actorID: ID!, note: String): Proposal!
+  reviewProposal(id: ID!, reviewerID: ID!, approved: Boolean!, note: String): Proposal!
+  deleteProposal(id: ID!): Boolean!
+
+  createTask(proposalID: ID!, title: String!, description: String, priority: Priority, assigneeID: ID): Task!
+  updateTask(id: ID!, title: String, description: String, priority: Priority, state: TaskState): Task!
+  assignTask(id: ID!, assigneeID: ID!): Task!
+  linkIssuesToTask(taskID: ID!, issueIDs: [ID!]!): Task!
+  unlinkIssueFromTask(taskID: ID!, issueID: ID!): Task!
+  deleteTask(id: ID!): Boolean!
+  updateNotificationSetting(agentID: ID!, notificationType: String!, enabled: Boolean!, channel: String): NotificationSetting!
+  markNotificationRead(id: ID!): NotificationEvent!
+  markAllNotificationsRead(agentID: ID!): Boolean!
+}

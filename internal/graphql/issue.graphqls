@@ -1,0 +1,69 @@
+enum IssueState {
+  open
+  in_progress
+  blocked
+  review
+  later
+  reopen
+  pending_confirmation
+  closed_completed
+  closed_not_planned
+  closed_rejected
+}
+
+enum Priority {
+  critical
+  high
+  medium
+  low
+}
+
+enum AssigneeState {
+  pending
+  in_progress
+  completed
+  blocked
+}
+
+type IssueAssignee {
+  id: ID!
+  number: Int!
+  issueID: ID!
+  agentID: ID!
+  state: AssigneeState!
+  assignedAt: Time!
+  agent: Agent!
+}
+
+type Issue {
+  id: ID!
+  number: Int!
+  projectID: ID!
+  title: String!
+  description: String
+  state: IssueState!
+  priority: Priority!
+  creatorID: ID!
+  parentID: ID
+  dueDate: Time
+  environment: String
+  branch: String
+  link: String
+  closedAt: Time
+  startedAt: Time
+  completedAt: Time
+  difficulty: Int
+  createdAt: Time!
+  updatedAt: Time!
+  creator: Agent!
+  assignees: [IssueAssignee!]
+  labels: [Label!]
+  children: [Issue!]
+  milestone: Milestone
+  structuredOutput: Map
+}
+
+type IssueConnection {
+  edges: [Issue!]!
+  total: Int!
+}

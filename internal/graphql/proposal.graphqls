@@ -1,0 +1,41 @@
+enum ProposalState {
+  draft
+  submitted
+  under_review
+  approved
+  rejected
+  in_execution
+  completed
+  cancelled
+}
+
+type Proposal {
+  id: ID!
+  number: Int!
+  projectID: ID!
+  title: String!
+  description: String
+  state: ProposalState!
+  priority: Priority!
+  authorID: ID!
+  reviewerID: ID
+  reviewNote: String
+  reviewedAt: Time
+  submittedAt: Time
+  approvedAt: Time
+  startedAt: Time
+  completedAt: Time
+  cancelledAt: Time
+  createdAt: Time!
+  updatedAt: Time!
+  author: Agent!
+  reviewer: Agent
+  labels: [Label!]
+  tasks: [Task!]
+  comments: [Comment!]
+}
+
+type ProposalConnection {
+  edges: [Proposal!]!
+  total: Int!
+}

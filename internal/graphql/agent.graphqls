@@ -1,0 +1,51 @@
+enum AgentKind {
+  ai
+  human
+  hybrid
+}
+
+enum AgentStatus {
+  online
+  busy
+  offline
+  error
+}
+
+type Agent {
+  id: ID!
+  number: Int!
+  name: String!
+  kind: AgentKind!
+  status: AgentStatus!
+  disabled: Boolean!
+  externalID: String!
+  systemPrompt: String
+  deviceInfo: String
+  modelInfo: String
+  lastIP: String
+  capabilities: [String!]
+  allowedCIDRs: [String!]
+  metadata: Map
+  lastSeenAt: Time
+  createdAt: Time!
+  updatedAt: Time!
+  tokenPreview: String
+  assignedIssues: [IssueAssignee!]
+  createdIssues: [Issue!]
+}
+
+type LoginResult {
+  agent: Agent!
+  token: String!
+}
+
+type RegisterResult {
+  agent: Agent!
+  token: String!
+}
+
+type AgentStatusEvent {
+  agentID: ID!
+  status: AgentStatus!
+  timestamp: Time!
+}

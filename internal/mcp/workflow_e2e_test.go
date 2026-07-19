@@ -43,19 +43,7 @@ func TestAgentWorkflowE2E(t *testing.T) {
 		t.Errorf("expected status online, got %v", infoResult["status"])
 	}
 
-	// ── Step 4: List agents by project ──
-	listResult := call(t, srv, "tools/call", map[string]interface{}{
-		"name": "list_agents",
-		"arguments": map[string]interface{}{
-			"projectId": "1",
-		},
-	}, agentID)
-	items := toSlice(listResult["items"])
-	if len(items) < 1 {
-		t.Error("expected at least 1 agent in project")
-	}
-
-	// ── Step 5: Create issue (auto-derive project from membership) ──
+	// ── Step 4: Create issue (auto-derive project from membership) ──
 	issueResult := call(t, srv, "tools/call", map[string]interface{}{
 		"name": "create_issue",
 		"arguments": map[string]interface{}{
@@ -72,7 +60,7 @@ func TestAgentWorkflowE2E(t *testing.T) {
 	}
 	issueID := issueResult["id"].(string)
 
-	// ── Step 6: Transition issue to in_progress ──
+	// ── Step 5: Transition issue to in_progress ──
 	transResult := call(t, srv, "tools/call", map[string]interface{}{
 		"name": "transition_issue",
 		"arguments": map[string]interface{}{
@@ -84,7 +72,7 @@ func TestAgentWorkflowE2E(t *testing.T) {
 		t.Errorf("expected in_progress, got %v", transResult["state"])
 	}
 
-	// ── Step 7: Add comment ──
+	// ── Step 6: Add comment ──
 	call(t, srv, "tools/call", map[string]interface{}{
 		"name": "add_comment",
 		"arguments": map[string]interface{}{
@@ -93,7 +81,7 @@ func TestAgentWorkflowE2E(t *testing.T) {
 		},
 	}, agentID)
 
-	// ── Step 8: Transition to review ──
+	// ── Step 7: Transition to review ──
 	transReview := call(t, srv, "tools/call", map[string]interface{}{
 		"name": "transition_issue",
 		"arguments": map[string]interface{}{
@@ -105,7 +93,7 @@ func TestAgentWorkflowE2E(t *testing.T) {
 		t.Fatalf("expected review, got %v", transReview["state"])
 	}
 
-	// ── Step 9: Search issues ──
+	// ── Step 8: Search issues ──
 	searchResult := call(t, srv, "tools/call", map[string]interface{}{
 		"name": "search_issues",
 		"arguments": map[string]interface{}{
@@ -116,16 +104,7 @@ func TestAgentWorkflowE2E(t *testing.T) {
 		t.Errorf("expected at least 1 issue in review state, got %v", searchResult["total"])
 	}
 
-	// ── Step 10: Agent heartbeat ──
-	hbResult := call(t, srv, "tools/call", map[string]interface{}{
-		"name": "agent_heartbeat",
-		"arguments": map[string]interface{}{},
-	}, agentID)
-	if hbResult["success"] != true {
-		t.Error("heartbeat failed")
-	}
-
-	// ── Step 11: Verify create_issue with explicit projectId still works ──
+	// ── Step 9: Verify create_issue with explicit projectId still works ──
 	call(t, srv, "tools/call", map[string]interface{}{
 		"name": "create_issue",
 		"arguments": map[string]interface{}{
@@ -133,17 +112,6 @@ func TestAgentWorkflowE2E(t *testing.T) {
 			"title":     "Explicit Project ID",
 		},
 	}, agentID)
-}
-
-// toSlice converts interface{} to []interface{} safely
-func toSlice(v interface{}) []interface{} {
-	if s, ok := v.([]interface{}); ok {
-		return s
-	}
-	data, _ := json.Marshal(v)
-	var s []interface{}
-	json.Unmarshal(data, &s)
-	return s
 }
 
 // toInt converts interface{} to int safely

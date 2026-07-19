@@ -1,0 +1,16 @@
+enum MilestoneState {
+  open
+  closed
+}
+
+type Milestone {
+  id: ID!
+  number: Int!
+  projectID: ID!
+  title: String!
+  description: String
+  state: MilestoneState!
+  dueDate: Time
+  createdAt: Time!
+  updatedAt: Time!
+}

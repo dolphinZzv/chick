@@ -226,6 +226,8 @@ export function IssueDetailPage() {
   const [editEnv, setEditEnv] = useState("");
   const [editingBranch, setEditingBranch] = useState(false);
   const [editBranch, setEditBranch] = useState("");
+  const [editingLink, setEditingLink] = useState(false);
+  const [editLink, setEditLink] = useState("");
   const [projectAgents, setProjectAgents] = useState<Array<{ id: string; name: string }>>([]);
   const [showAssigneePicker, setShowAssigneePicker] = useState(false);
   const [transitions, setTransitions] = useState<string[]>([]);
@@ -515,6 +517,11 @@ export function IssueDetailPage() {
     setEditingBranch(false);
   };
 
+  const handleSaveLink = async () => {
+    await handleUpdateIssue({ link: editLink || null });
+    setEditingLink(false);
+  };
+
 
   const handleAddAssignee = async (agentId: string) => {
     if (!id) return;
@@ -751,7 +758,7 @@ export function IssueDetailPage() {
 
       {/* Description */}
       {editingDescription ? (
-        <div className="border bg-card p-4 space-y-2">
+        <div className="border bg-card p-4 rounded-lg space-y-2">
           <Textarea
             value={editDescription}
             onChange={(e) => setEditDescription(e.target.value)}
@@ -764,7 +771,7 @@ export function IssueDetailPage() {
           </div>
         </div>
       ) : issue.description ? (
-        <div className="border bg-card p-4 group relative">
+        <div className="border bg-card p-4 rounded-lg group relative">
           <MarkdownContent content={issue.description} />
           {agent && (
             <Button variant="ghost" size="sm" className="absolute top-2 right-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
@@ -774,7 +781,7 @@ export function IssueDetailPage() {
           )}
         </div>
       ) : agent ? (
-        <div className="border bg-card p-4">
+        <div className="border bg-card p-4 rounded-lg">
           <Button variant="ghost" size="sm" onClick={() => { setEditDescription(""); setEditingDescription(true); }}>
             <Plus className="h-4 w-4 mr-1" />添加描述
           </Button>
@@ -792,7 +799,7 @@ export function IssueDetailPage() {
           .filter((c) => !c.parentID)
           .map((parent) => (
           <div key={parent.id}>
-            <div className="border bg-card p-4">
+            <div className="border bg-card p-4 rounded-lg">
               <div className="flex items-center gap-2">
                 <span className="inline-flex items-center justify-center h-5 w-5 rounded-full bg-primary/10 text-[10px] font-medium text-primary">
                   {parent.author.name.charAt(0)}
@@ -854,7 +861,7 @@ export function IssueDetailPage() {
             {parent.replies && parent.replies.length > 0 && (
               <div className="ml-6 mt-1 space-y-1">
                 {parent.replies.map((r) => (
-                  <div key={r.id} className="border bg-card p-3">
+                  <div key={r.id} className="border bg-card p-3 rounded-lg">
                     <div className="flex items-center gap-2">
                       <span className="inline-flex items-center justify-center h-4 w-4 rounded-full bg-primary/10 text-[9px] font-medium text-primary">
                         {r.author.name.charAt(0)}
@@ -875,7 +882,7 @@ export function IssueDetailPage() {
         ))}
 
         {/* Add comment */}
-        <div className="border bg-card p-4">
+        <div className="border bg-card p-4 rounded-lg">
           <div className="flex gap-2 mb-2">
             <button
               className={`text-xs font-medium px-2 py-1 rounded ${!previewComment ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
@@ -935,7 +942,7 @@ export function IssueDetailPage() {
   const metaSidebar = (
     <div className="space-y-4">
       {/* Assignees */}
-      <div className="border bg-card p-4">
+      <div className="border bg-card p-4 rounded-lg">
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm font-medium">负责人</span>
           {agent && (
@@ -987,7 +994,7 @@ export function IssueDetailPage() {
       </div>
 
       {/* Milestone */}
-      <div className="border bg-card p-4">
+      <div className="border bg-card p-4 rounded-lg">
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm font-medium">里程碑</span>
           {agent && (
@@ -1035,7 +1042,7 @@ export function IssueDetailPage() {
       </div>
 
       {/* Labels */}
-      <div className="border bg-card p-4">
+      <div className="border bg-card p-4 rounded-lg">
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm font-medium">标签</span>
           <div className="flex gap-1">
@@ -1135,11 +1142,63 @@ export function IssueDetailPage() {
         )}
       </div>
 
-      {/* Environment / Branch / Link */}
-      <div className="border bg-card p-4">
-        <div className="text-sm font-medium mb-2">环境 / 分支 / 链接</div>
+      {/* Environment */}
+      <div className="border bg-card p-4 rounded-lg">
+        <div className="text-xs text-muted-foreground mb-1">环境</div>
+        {editingEnv ? (
+          <div className="flex gap-1">
+            <Input value={editEnv} onChange={(e) => setEditEnv(e.target.value)} className="h-7 text-xs flex-1"
+              autoFocus onKeyDown={(e) => { if (e.key === "Enter") handleSaveEnv(); if (e.key === "Escape") setEditingEnv(false); }} />
+            <Button size="sm" className="h-7 text-xs" onClick={handleSaveEnv}>确定</Button>
+          </div>
+        ) : (
+          <span className="text-sm cursor-pointer hover:text-primary"
+            onClick={() => { setEditEnv(issue.environment || ""); setEditingEnv(true); }}>
+            {issue.environment || <span className="text-muted-foreground">未设置</span>}
+          </span>
+        )}
+      </div>
+
+      {/* Branch */}
+      <div className="border bg-card p-4 rounded-lg">
+        <div className="text-xs text-muted-foreground mb-1">分支</div>
+        {editingBranch ? (
+          <div className="flex gap-1">
+            <Input value={editBranch} onChange={(e) => setEditBranch(e.target.value)} className="h-7 text-xs flex-1"
+              autoFocus onKeyDown={(e) => { if (e.key === "Enter") handleSaveBranch(); if (e.key === "Escape") setEditingBranch(false); }} />
+            <Button size="sm" className="h-7 text-xs" onClick={handleSaveBranch}>确定</Button>
+          </div>
+        ) : (
+          <span className="text-sm cursor-pointer hover:text-primary"
+            onClick={() => { setEditBranch(issue.branch || ""); setEditingBranch(true); }}>
+            {issue.branch || <span className="text-muted-foreground">未设置</span>}
+          </span>
+        )}
+      </div>
+
+      {/* Link */}
+      <div className="border bg-card p-4 rounded-lg">
+        <div className="text-xs text-muted-foreground mb-1">链接</div>
+        {editingLink ? (
+          <div className="flex gap-1">
+            <Input value={editLink} onChange={(e) => setEditLink(e.target.value)} className="h-7 text-xs flex-1"
+              placeholder="https://..."
+              autoFocus onKeyDown={(e) => { if (e.key === "Enter") handleSaveLink(); if (e.key === "Escape") setEditingLink(false); }} />
+            <Button size="sm" className="h-7 text-xs" onClick={handleSaveLink}>确定</Button>
+          </div>
+        ) : (
+          <span className="text-sm cursor-pointer hover:text-primary"
+            onClick={() => { setEditLink(issue.link || ""); setEditingLink(true); }}>
+            {issue.link ? <a href={issue.link} target="_blank" rel="noreferrer" className="text-primary underline" onClick={(e) => e.stopPropagation()}>打开链接</a> : <span className="text-muted-foreground">未设置</span>}
+          </span>
+        )}
+      </div>
+
+      {/* Edit Time */}
+      <div className="border bg-card p-4 rounded-lg">
+        <div className="text-sm font-medium mb-2">编辑时间</div>
         {showTimeFields ? (
-          <div className="space-y-2 border-b pb-2 mb-2">
+          <div className="space-y-2">
             <div>
               <span className="text-xs text-muted-foreground">开始时间</span>
               <Input
@@ -1164,52 +1223,20 @@ export function IssueDetailPage() {
             </div>
           </div>
         ) : agent ? (
-          <button className="text-xs text-primary hover:underline w-full text-left mb-2" onClick={() => {
+          <button className="text-xs text-primary hover:underline w-full text-left" onClick={() => {
             setEditStartedAt(issue.startedAt || "");
             setEditCompletedAt(issue.completedAt || "");
             setShowTimeFields(true);
           }}>
             编辑时间
           </button>
-        ) : null}
-        <div className="space-y-1.5">
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground w-12">环境</span>
-            {editingEnv ? (
-              <div className="flex-1 flex gap-1">
-                <Input value={editEnv} onChange={(e) => setEditEnv(e.target.value)} className="h-7 text-xs flex-1"
-                  autoFocus onKeyDown={(e) => { if (e.key === "Enter") handleSaveEnv(); if (e.key === "Escape") setEditingEnv(false); }} />
-                <Button size="sm" className="h-7 text-xs" onClick={handleSaveEnv}>确定</Button>
-              </div>
-            ) : (
-              <span className="text-xs flex-1 truncate cursor-pointer hover:text-primary"
-                onClick={() => { setEditEnv(issue.environment || ""); setEditingEnv(true); }}>
-                {issue.environment || <span className="text-muted-foreground">未设置</span>}
-              </span>
-            )}
+        ) : (
+          <div className="text-xs text-muted-foreground">
+            {issue.startedAt && <div>开始: {new Date(issue.startedAt).toLocaleString()}</div>}
+            {issue.completedAt && <div>完成: {new Date(issue.completedAt).toLocaleString()}</div>}
+            {!issue.startedAt && !issue.completedAt && <span>未设置</span>}
           </div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground w-12">分支</span>
-            {editingBranch ? (
-              <div className="flex-1 flex gap-1">
-                <Input value={editBranch} onChange={(e) => setEditBranch(e.target.value)} className="h-7 text-xs flex-1"
-                  autoFocus onKeyDown={(e) => { if (e.key === "Enter") handleSaveBranch(); if (e.key === "Escape") setEditingBranch(false); }} />
-                <Button size="sm" className="h-7 text-xs" onClick={handleSaveBranch}>确定</Button>
-              </div>
-            ) : (
-              <span className="text-xs flex-1 truncate cursor-pointer hover:text-primary"
-                onClick={() => { setEditBranch(issue.branch || ""); setEditingBranch(true); }}>
-                {issue.branch || <span className="text-muted-foreground">未设置</span>}
-              </span>
-            )}
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground w-12">链接</span>
-            <span className="text-xs flex-1 truncate">
-              {issue.link ? <a href={issue.link} target="_blank" rel="noreferrer" className="text-primary underline">打开链接</a> : <span className="text-muted-foreground">未设置</span>}
-            </span>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );

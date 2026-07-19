@@ -12,8 +12,8 @@ import (
 	"chick/internal/models"
 	"chick/internal/notifications"
 	gormrepo "chick/internal/repository/gorm"
-	"chick/internal/service"
 	"chick/internal/server"
+	"chick/internal/service"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -46,7 +46,6 @@ func setupTest(t *testing.T) (*mcp.Server, *service.ProjectService, *service.Age
 	timelineRepo := gormrepo.NewTimelineRepo(db)
 	labelRepo := gormrepo.NewLabelRepo(db)
 	milestoneRepo := gormrepo.NewMilestoneRepo(db)
-	feedbackRepo := gormrepo.NewFeedbackRepo(db)
 	proposalRepo := gormrepo.NewProposalRepo(db)
 	taskRepo := gormrepo.NewTaskRepo(db)
 	bus := events.NewBus()
@@ -60,12 +59,10 @@ func setupTest(t *testing.T) (*mcp.Server, *service.ProjectService, *service.Age
 	taskSvc := service.NewTaskService(db, taskRepo, timelineRepo, bus)
 	workflowSvc := service.NewWorkflowService(issueSvc)
 
-	feedbackSvc := service.NewFeedbackService(feedbackRepo, bus)
-
 	// Init MCP
 	notifSvc := notifications.NewService(nil, nil)
 	notifSvc.Subscribe(bus)
-	handlers := mcp.NewHandlers(projectSvc, agentSvc, issueSvc, commentSvc, proposalSvc, taskSvc, workflowSvc, feedbackSvc, notifSvc, 0)
+	handlers := mcp.NewHandlers(projectSvc, agentSvc, issueSvc, commentSvc, proposalSvc, taskSvc, workflowSvc, notifSvc, 0)
 	mcpServer := mcp.NewServer(handlers)
 
 	return mcpServer, projectSvc, agentSvc, issueSvc
@@ -178,8 +175,8 @@ func TestToolsList(t *testing.T) {
 
 	required := []string{
 		"create_issue", "add_comment", "assign_issue",
-		"transition_issue", "search_issues", "list_agents", "get_agent_info",
-		"agent_heartbeat", "check_notifications", "submit_feedback", "list_feedback",
+		"transition_issue", "search_issues", "get_agent_info",
+		"mark_notifications_read", "get_unread_count",
 	}
 	for _, r := range required {
 		if !names[r] {
@@ -391,7 +388,6 @@ func TestSubmitRequirement(t *testing.T) {
 	timelineRepo := gormrepo.NewTimelineRepo(db)
 	labelRepo := gormrepo.NewLabelRepo(db)
 	milestoneRepo := gormrepo.NewMilestoneRepo(db)
-	feedbackRepo := gormrepo.NewFeedbackRepo(db)
 	proposalRepo := gormrepo.NewProposalRepo(db)
 	taskRepo := gormrepo.NewTaskRepo(db)
 	bus := events.NewBus()
@@ -405,7 +401,6 @@ func TestSubmitRequirement(t *testing.T) {
 	taskSvc := service.NewTaskService(db, taskRepo, timelineRepo, bus)
 	commentSvc := service.NewCommentService(db, commentRepo, timelineRepo, issueRepo, proposalRepo, taskRepo, bus)
 	workflowSvc := service.NewWorkflowService(issueSvc)
-	feedbackSvc := service.NewFeedbackService(feedbackRepo, bus)
 
 	agent, err := agentSvc.Register("req-agent", models.AgentKindAI, "req-001", "secret", nil, "", "")
 	if err != nil {
@@ -415,7 +410,7 @@ func TestSubmitRequirement(t *testing.T) {
 	proj, _ := projectSvc.Create("ReqProject", "")
 	projectSvc.AddMember(proj.ID, agent.ID, models.ProjectRoleMember)
 
-	handlers := mcp.NewHandlers(projectSvc, agentSvc, issueSvc, commentSvc, proposalSvc, taskSvc, workflowSvc, feedbackSvc, notifSvc, proj.ID)
+	handlers := mcp.NewHandlers(projectSvc, agentSvc, issueSvc, commentSvc, proposalSvc, taskSvc, workflowSvc, notifSvc, proj.ID)
 	srv := mcp.NewServer(handlers)
 
 	result := call(t, srv, "tools/call", map[string]interface{}{
@@ -458,7 +453,6 @@ func TestSubmitRequirement_NoTitle(t *testing.T) {
 		t.Error("expected error for missing title")
 	}
 }
-
 
 func TestSearchIssues(t *testing.T) {
 	srv, projectSvc, agentSvc, issueSvc := setupTest(t)
@@ -544,7 +538,7 @@ func TestMCPCreateIssue_MissingRequired(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			params, _ := json.Marshal(map[string]interface{}{
-				"name": "create_issue",
+				"name":      "create_issue",
 				"arguments": tt.args,
 			})
 			req := &mcp.Request{

@@ -1,0 +1,27 @@
+enum CommentContentType {
+  markdown
+  tool_call
+  tool_result
+  code_diff
+  decision
+  approval
+  rejection
+  structured
+}
+
+type Comment {
+  id: ID!
+  number: Int!
+  issueID: ID
+  proposalID: ID
+  taskID: ID
+  authorID: ID!
+  parentID: ID
+  body: String!
+  contentType: CommentContentType!
+  createdAt: Time!
+  updatedAt: Time!
+  author: Agent!
+  parent: Comment
+  replies: [Comment!]
+}

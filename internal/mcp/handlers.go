@@ -20,7 +20,6 @@ type Handlers struct {
 	proposalSvc                 *service.ProposalService
 	taskSvc                     *service.TaskService
 	workflowSvc                 *service.WorkflowService
-	feedbackSvc                 *service.FeedbackService
 	notifSvc                    *notifications.Service
 	defaultRequirementProjectID uint
 }
@@ -33,7 +32,6 @@ func NewHandlers(
 	proposalSvc *service.ProposalService,
 	taskSvc *service.TaskService,
 	workflowSvc *service.WorkflowService,
-	feedbackSvc *service.FeedbackService,
 	notifSvc *notifications.Service,
 	defaultRequirementProjectID uint,
 ) *Handlers {
@@ -45,7 +43,6 @@ func NewHandlers(
 		proposalSvc:                 proposalSvc,
 		taskSvc:                     taskSvc,
 		workflowSvc:                 workflowSvc,
-		feedbackSvc:                 feedbackSvc,
 		notifSvc:                    notifSvc,
 		defaultRequirementProjectID: defaultRequirementProjectID,
 	}
@@ -198,33 +195,6 @@ func (h *Handlers) RegisterAll(registry *ToolRegistry) {
 	})
 
 	registry.Register(&ToolDefinition{
-		Name:        "list_agents",
-		Description: "List registered agents",
-		InputSchema: ObjectSchema(map[string]interface{}{
-			"kind":      StringParam("Filter by kind: ai / human / hybrid"),
-			"status":    StringParam("Filter by status: online / busy / offline / error"),
-			"projectId": StringParam("Project ID (filter by project)"),
-		}, nil),
-		Handler: h.handleListAgents,
-	})
-
-	registry.Register(&ToolDefinition{
-		Name:        "agent_heartbeat",
-		Description: "Update agent heartbeat timestamp",
-		InputSchema: ObjectSchema(map[string]interface{}{}, nil),
-		Handler:     h.handleHeartbeat,
-	})
-
-	registry.Register(&ToolDefinition{
-		Name:        "check_notifications",
-		Description: "Check notifications for the authenticated agent",
-		InputSchema: ObjectSchema(map[string]interface{}{
-			"projectId": StringParam("Optional: filter notifications by project ID"),
-		}, nil),
-		Handler: h.handleCheckNotifications,
-	})
-
-	registry.Register(&ToolDefinition{
 		Name:        "mark_notifications_read",
 		Description: "Mark notifications as read. Provide notification IDs or omit to mark all as read.",
 		InputSchema: ObjectSchema(map[string]interface{}{
@@ -265,27 +235,6 @@ func (h *Handlers) RegisterAll(registry *ToolRegistry) {
 		Handler:     h.handleListNotificationTypes,
 	})
 
-	registry.Register(&ToolDefinition{
-		Name:        "submit_feedback",
-		Description: "Submit feedback for an issue, comment, agent, or assignment",
-		InputSchema: ObjectSchema(map[string]interface{}{
-			"targetType": StringRequiredParam("Target type: issue / comment / agent / assignment"),
-			"targetId":   StringRequiredParam("Target ID"),
-			"rating":     StringRequiredParam("Rating 1-5"),
-			"body":       StringParam("Feedback body text"),
-		}, []string{"targetType", "targetId", "rating"}),
-		Handler: h.handleSubmitFeedback,
-	})
-
-	registry.Register(&ToolDefinition{
-		Name:        "list_feedback",
-		Description: "List feedback for a target",
-		InputSchema: ObjectSchema(map[string]interface{}{
-			"targetType": StringRequiredParam("Target type: issue / comment / agent / assignment"),
-			"targetId":   StringRequiredParam("Target ID"),
-		}, []string{"targetType", "targetId"}),
-		Handler: h.handleListFeedback,
-	})
 	registry.Register(&ToolDefinition{
 		Name:        "submit_requirement",
 		Description: "Submit a requirement / feature request from an LLM. Creates a requirement record that can be reviewed and turned into issues.",
@@ -1363,209 +1312,6 @@ func (h *Handlers) handleSearchIssues(id json.RawMessage, params json.RawMessage
 		"items": items,
 		"total": total,
 	})
-}
-
-func (h *Handlers) handleListAgents(id json.RawMessage, params json.RawMessage, agentID uint, remoteAddr string) Response {
-	var p struct {
-		Kind      string `json:"kind"`
-		Status    string `json:"status"`
-		ProjectID string `json:"projectId"`
-	}
-	if err := json.Unmarshal(params, &p); err != nil {
-		return NewError(id, -32602, "Invalid params: "+err.Error())
-	}
-
-	filter := models.AgentFilter{}
-	if p.Kind != "" {
-		v := models.AgentKind(p.Kind)
-		filter.Kind = &v
-	}
-	if p.Status != "" {
-		v := models.AgentStatus(p.Status)
-		filter.Status = &v
-	}
-	if p.ProjectID != "" {
-		pid, err := strconv.ParseUint(p.ProjectID, 10, 64)
-		if err != nil {
-			return NewError(id, -32602, "Invalid projectId: "+p.ProjectID)
-		}
-		v := uint(pid)
-		filter.ProjectID = &v
-	} else if agentID > 0 {
-		projects, err := h.projectSvc.ListByAgent(agentID)
-		if err == nil && len(projects) == 1 {
-			v := projects[0].ID
-			filter.ProjectID = &v
-		}
-	}
-	agents, err := h.agentSvc.List(filter)
-	if err != nil {
-		return NewInternalError(id, err.Error())
-	}
-
-	items := make([]map[string]interface{}, len(agents))
-	for i, a := range agents {
-		items[i] = map[string]interface{}{
-			"number": a.Number,
-			"id":     fmt.Sprintf("%d", a.ID),
-			"name":   a.Name,
-			"kind":   string(a.Kind),
-			"status": string(a.Status),
-		}
-	}
-	return NewResponse(id, map[string]interface{}{"items": items})
-}
-
-func (h *Handlers) handleHeartbeat(id json.RawMessage, params json.RawMessage, agentID uint, remoteAddr string) Response {
-	if agentID == 0 {
-		return NewError(id, -32602, "Not authenticated")
-	}
-	if err := h.agentSvc.Heartbeat(agentID); err != nil {
-		return NewInternalError(id, err.Error())
-	}
-	if remoteAddr != "" {
-		h.agentSvc.UpdateIP(agentID, remoteAddr)
-	}
-	return NewResponse(id, map[string]interface{}{"success": true})
-}
-
-func (h *Handlers) handleCheckNotifications(id json.RawMessage, params json.RawMessage, agentID uint, remoteAddr string) Response {
-	if agentID == 0 {
-		return NewError(id, -32602, "Not authenticated")
-	}
-
-	if h.notifSvc == nil {
-		return NewResponse(id, map[string]interface{}{"notifications": []interface{}{}})
-	}
-
-	var p struct {
-		ProjectID string `json:"projectId"`
-	}
-	if err := json.Unmarshal(params, &p); err != nil {
-		// params is optional, ignore unmarshal errors
-	}
-
-	var notifs []notifications.Notification
-	if p.ProjectID != "" {
-		pid, err := strconv.ParseUint(p.ProjectID, 10, 64)
-		if err == nil && pid > 0 {
-			notifs = h.notifSvc.ListByAgent(agentID, uint(pid))
-		} else {
-			notifs = h.notifSvc.ListByAgent(agentID)
-		}
-	} else {
-		notifs = h.notifSvc.ListByAgent(agentID)
-	}
-
-	items := make([]map[string]interface{}, len(notifs))
-	for i, n := range notifs {
-		items[i] = map[string]interface{}{
-			"id":         n.ID,
-			"type":       string(n.Type),
-			"issueId":    n.IssueID,
-			"commentId":  n.CommentID,
-			"proposalId": n.ProposalID,
-			"taskId":     n.TaskID,
-			"projectId":  n.ProjectID,
-			"message":    n.Message,
-			"read":       n.Read,
-			"createdAt":  n.CreatedAt,
-		}
-	}
-	return NewResponse(id, map[string]interface{}{"notifications": items})
-}
-
-func (h *Handlers) handleSubmitFeedback(id json.RawMessage, params json.RawMessage, authorID uint, remoteAddr string) Response {
-	var p struct {
-		TargetType string `json:"targetType"`
-		TargetID   string `json:"targetId"`
-		Rating     string `json:"rating"`
-		Body       string `json:"body"`
-	}
-	if err := json.Unmarshal(params, &p); err != nil {
-		return NewError(id, -32602, "Invalid params: "+err.Error())
-	}
-	if authorID == 0 {
-		return NewError(id, -32602, "Not authenticated")
-	}
-
-	targetID, err := strconv.ParseUint(p.TargetID, 10, 64)
-	if err != nil {
-		return NewError(id, -32602, "Invalid targetId: "+p.TargetID)
-	}
-	rating, err := strconv.Atoi(p.Rating)
-	if err != nil || rating < 1 || rating > 5 {
-		return NewError(id, -32602, "Invalid rating: must be 1-5")
-	}
-
-	feedback, err := h.feedbackSvc.Create(
-		models.FeedbackTargetType(p.TargetType),
-		uint(targetID),
-		authorID,
-		rating,
-		p.Body,
-	)
-	if err != nil {
-		return NewInternalError(id, err.Error())
-	}
-	return NewResponse(id, map[string]interface{}{
-		"id":     feedback.ID,
-		"rating": feedback.Rating,
-		"body":   feedback.Body,
-	})
-}
-
-func (h *Handlers) handleListFeedback(id json.RawMessage, params json.RawMessage, agentID uint, remoteAddr string) Response {
-	var p struct {
-		TargetType string `json:"targetType"`
-		TargetID   string `json:"targetId"`
-	}
-	if err := json.Unmarshal(params, &p); err != nil {
-		return NewError(id, -32602, "Invalid params: "+err.Error())
-	}
-	if agentID == 0 {
-		return NewError(id, -32602, "Not authenticated")
-	}
-
-	targetID, err := strconv.ParseUint(p.TargetID, 10, 64)
-	if err != nil {
-		return NewError(id, -32602, "Invalid targetId: "+p.TargetID)
-	}
-
-	// Verify caller has access to the target
-	switch models.FeedbackTargetType(p.TargetType) {
-	case models.FeedbackTargetIssue:
-		issue, err := h.issueSvc.GetByID(uint(targetID))
-		if err != nil {
-			return NewError(id, -32602, "Issue not found")
-		}
-		if _, err := h.projectSvc.GetMemberRole(issue.ProjectID, agentID); err != nil {
-			return NewError(id, -32602, "Access denied: not a member of this project")
-		}
-	case models.FeedbackTargetAgent:
-		if agentID != uint(targetID) {
-			ok, err := h.projectSvc.CheckSharedProject(agentID, uint(targetID))
-			if err != nil || !ok {
-				return NewError(id, -32602, "Access denied: agent not found or not in same project")
-			}
-		}
-	}
-
-	items, err := h.feedbackSvc.ListByTarget(models.FeedbackTargetType(p.TargetType), uint(targetID))
-	if err != nil {
-		return NewInternalError(id, err.Error())
-	}
-
-	result := make([]map[string]interface{}, len(items))
-	for i, f := range items {
-		result[i] = map[string]interface{}{
-			"id":       f.ID,
-			"rating":   f.Rating,
-			"body":     f.Body,
-			"authorId": f.AuthorID,
-		}
-	}
-	return NewResponse(id, map[string]interface{}{"items": result})
 }
 
 // resolveRequirementProject returns the project ID for submitting requirements.

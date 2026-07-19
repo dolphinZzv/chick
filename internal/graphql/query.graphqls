@@ -1,0 +1,26 @@
+type Query {
+  supportedModels: [String!]!
+  commonDeviceInfo: [String!]!
+  allowHumanRegistration: Boolean!
+  agents(kind: AgentKind, status: AgentStatus, capabilities: [String!], projectID: ID): [Agent!]!
+  agent(id: ID!): Agent
+  projects: [Project!]!
+  project(id: ID!): Project
+  labels(projectID: ID!, group: String): [Label!]!
+  milestones(projectID: ID!, state: MilestoneState): [Milestone!]!
+  issue(id: ID!): Issue
+  issues(projectID: ID!, state: IssueState, priority: Priority, assigneeID: ID, labelIDs: [ID!], search: String, limit: Int, offset: Int): IssueConnection!
+  proposal(id: ID!): Proposal
+  proposals(projectID: ID!, state: ProposalState, priority: Priority, search: String, limit: Int, offset: Int): ProposalConnection!
+  validProposalTransitions(state: ProposalState!): [ProposalState!]!
+  task(id: ID!): Task
+  tasks(proposalID: ID!, state: TaskState, assigneeID: ID, search: String, limit: Int, offset: Int): TaskConnection!
+  validTaskTransitions(state: TaskState!): [TaskState!]!
+  comments(issueID: ID, proposalID: ID, taskID: ID): [Comment!]!
+  timeline(issueID: ID, proposalID: ID, taskID: ID): [TimelineEvent!]!
+  validTransitions(state: IssueState!): [IssueState!]!
+  feedback(targetType: FeedbackTargetType!, targetID: ID!): [Feedback!]!
+  notificationSettings(agentID: ID!): [NotificationSetting!]!
+  notificationTypes: [NotificationTypeInfo!]!
+  notifications(agentID: ID!): [NotificationEvent!]!
+}

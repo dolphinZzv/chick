@@ -1,0 +1,5 @@
+type Subscription {
+  issueUpdated(issueID: ID!): Issue!
+  agentNotifications(agentID: ID!): NotificationEvent!
+  agentStatusChanged: AgentStatusEvent!
+}

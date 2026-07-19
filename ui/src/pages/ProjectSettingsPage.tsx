@@ -402,7 +402,7 @@ members { agent { id number name kind status capabilities deviceInfo modelInfo l
 
       {/* Basic info tab */}
       {tab === "basic" && (
-        <div className="border bg-card divide-y">
+        <div className="border bg-card rounded-lg divide-y">
           <div className="p-4">
             <label className="text-xs font-medium text-muted-foreground mb-1 block">项目名称</label>
             <input
@@ -432,7 +432,7 @@ members { agent { id number name kind status capabilities deviceInfo modelInfo l
 
       {/* Workflow config tab */}
       {tab === "workflow" && (
-        <div className="border bg-card p-4 space-y-4">
+<div className="border bg-card p-4 rounded-lg space-y-4">
           <h2 className="text-base font-semibold">工作流配置</h2>
           <p className="text-sm text-muted-foreground">配置 Issue 的状态流转权限。</p>
 
@@ -494,7 +494,7 @@ members { agent { id number name kind status capabilities deviceInfo modelInfo l
                 const a = m.agent;
                 const st = statusConfig[a.status] || statusConfig.offline;
                 return (
-                  <Link key={a.id} to={`/agents/${a.id}`} className="block border bg-card p-4">
+                  <Link key={a.id} to={`/agents/${a.id}`} className="block border bg-card p-4 rounded-lg">
                     <div className="flex items-center gap-3">
                       <div className={`h-3 w-3 rounded-full ${st.dot}`} />
                       <div className="flex-1 min-w-0">
@@ -718,7 +718,7 @@ members { agent { id number name kind status capabilities deviceInfo modelInfo l
           ) : (
             <div className="space-y-2">
               {milestones.map((ms) => (
-                <div key={ms.id} className="border bg-card p-4">
+                <div key={ms.id} className="border bg-card p-4 rounded-lg">
                   <div className="flex items-start justify-between">
                     <div>
                       <h3 className="font-medium">{ms.title}</h3>
@@ -777,7 +777,7 @@ members { agent { id number name kind status capabilities deviceInfo modelInfo l
       )}
 
       {/* Danger Zone */}
-      <div className="border border-destructive/30 bg-destructive/5 p-4">
+      <div className="border border-destructive/30 bg-destructive/5 p-4 rounded-lg">
         <h2 className="text-base font-semibold text-destructive mb-3">危险区域</h2>
         <p className="text-sm text-muted-foreground mb-3">删除项目后不可恢复，所有 Issue、标签、里程碑和成员关系将被永久删除。</p>
         <Button variant="destructive" size="sm" onClick={() => setDeleteOpen(true)} disabled={deleting}>
@@ -968,7 +968,7 @@ function ProjectNotificationsTab({ members }: { projectId: string; members: Memb
   }, [selectedMember]);
 
   return (
-    <div className="border bg-card p-4 space-y-4">
+    <div className="border bg-card p-4 rounded-lg space-y-4">
       <h2 className="text-base font-semibold">通知设置</h2>
       <p className="text-sm text-muted-foreground">选择项目成员，配置其通知偏好。未配置的类型默认开启。</p>
 

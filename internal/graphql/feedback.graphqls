@@ -1,0 +1,26 @@
+enum FeedbackTargetType {
+  issue
+  comment
+  agent
+  assignment
+}
+
+enum FeedbackRating {
+  one
+  two
+  three
+  four
+  five
+}
+
+type Feedback {
+  id: ID!
+  number: Int!
+  targetType: FeedbackTargetType!
+  targetID: ID!
+  authorID: ID!
+  rating: FeedbackRating!
+  body: String
+  createdAt: Time!
+  author: Agent!
+}

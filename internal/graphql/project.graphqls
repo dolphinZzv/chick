@@ -1,0 +1,29 @@
+enum ProjectRole {
+  owner
+  maintainer
+  member
+  observer
+}
+
+type ProjectMember {
+  id: ID!
+  number: Int!
+  projectID: ID!
+  agentID: ID!
+  role: ProjectRole!
+  agent: Agent!
+}
+
+type Project {
+  id: ID!
+  number: Int!
+  name: String!
+  description: String
+  allowCreatorTransition: Boolean!
+  requireCreatorCloseApproval: Boolean!
+  createdAt: Time!
+  updatedAt: Time!
+  members: [ProjectMember!]
+  labels: [Label!]
+  milestones: [Milestone!]
+}

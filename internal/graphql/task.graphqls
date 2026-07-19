@@ -1,0 +1,31 @@
+enum TaskState {
+  pending
+  in_progress
+  completed
+  blocked
+  cancelled
+}
+
+type Task {
+  id: ID!
+  number: Int!
+  proposalID: ID!
+  title: String!
+  description: String
+  state: TaskState!
+  priority: Priority!
+  assigneeID: ID
+  startedAt: Time
+  completedAt: Time
+  createdAt: Time!
+  updatedAt: Time!
+  proposal: Proposal!
+  assignee: Agent
+  issues: [Issue!]
+  comments: [Comment!]
+}
+
+type TaskConnection {
+  edges: [Task!]!
+  total: Int!
+}
