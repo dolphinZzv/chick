@@ -657,7 +657,7 @@ export function IssueDetailPage() {
           <Badge className={`text-xs ${stateBadgeColors[issue.state]}`}>
             {stateLabels[issue.state]}
           </Badge>
-          <span className="text-xs text-muted-foreground">#{issue.number}</span>
+          <span className="text-xs text-muted-foreground">#{issue.id}</span>
           {editPriority && agent ? (
             <Select defaultValue={issue.priority} onValueChange={handleSavePriority} onOpenChange={(open) => { if (!open) setEditPriority(false); }}>
               <SelectTrigger className="h-5 w-14 text-xs">

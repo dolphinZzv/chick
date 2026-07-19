@@ -424,7 +424,7 @@ export function ProjectDetailPage() {
           <div className="mt-1 space-y-0.5">
             {closed.map((issue) => (
               <Link key={issue.id} to={`/issues/${issue.id}`} className="block rounded px-2 py-0.5 text-sm hover:bg-accent">
-                <span className="text-muted-foreground line-through">#{issue.number}</span>{" "}
+                <span className="text-muted-foreground line-through">#{issue.id}</span>{" "}
                 <span className="text-muted-foreground line-through">{issue.title}</span>
               </Link>
             ))}

@@ -186,7 +186,7 @@ export function TaskDetailPage() {
           <div className="space-y-1">
             {task.issues.map((iss) => (
               <div key={iss.id} className="flex items-center gap-2 rounded-lg border px-3 py-2">
-                <Link to={`/issues/${iss.id}`} className="text-sm hover:underline flex-1">#{iss.number} {iss.title}</Link>
+                <Link to={`/issues/${iss.id}`} className="text-sm hover:underline flex-1">#{iss.id} {iss.title}</Link>
                 <Badge variant="secondary" className="text-xs">{iss.state}</Badge>
                 {agent && (
                   <button className="text-xs text-muted-foreground hover:text-destructive" onClick={() => handleUnlinkIssue(iss.id)}>移除</button>

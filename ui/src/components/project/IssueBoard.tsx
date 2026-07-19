@@ -131,7 +131,7 @@ function DraggableIssue({
     >
       <div className="flex items-center gap-1 text-xs text-muted-foreground">
         <GripVertical className="h-3 w-3 shrink-0 opacity-40" />
-        <span>#{issue.number}</span>
+        <span>#{issue.id}</span>
         <Badge className={`text-xs ${priorityColors[issue.priority] || ""}`}>
           {priorityLabels[issue.priority] || issue.priority}
         </Badge>
@@ -249,7 +249,7 @@ function SimpleIssueCard({
     >
       <div className="p-3">
         <div className="flex items-center gap-1 text-xs text-muted-foreground">
-          <span>#{issue.number}</span>
+          <span>#{issue.id}</span>
           <Badge className={`text-xs ${priorityColors[issue.priority] || ""}`}>
             {priorityLabels[issue.priority] || issue.priority}
           </Badge>
@@ -505,7 +505,7 @@ function DragOverlayCard({ issue }: { issue: Issue }) {
       }`}
     >
       <div className="flex items-center gap-1 text-xs text-muted-foreground">
-        <span>#{issue.number}</span>
+        <span>#{issue.id}</span>
         <Badge className={`text-xs ${priorityColors[issue.priority] || ""}`}>
           {priorityLabels[issue.priority] || issue.priority}
         </Badge>
