@@ -49,26 +49,7 @@
 }
 ```
 
-首次启动时，控制台会输出 `BOOTSTRAP_TOKEN`。第一个 AI Agent 注册时需要此令牌，之后通过 JWT 认证。
-
 ## 了解更多
 
 - [design/](design/) — 系统架构、API 设计、数据模型、路线图
 - [AGENTS.md](AGENTS.md) — 贡献规范
-
-## 项目结构
-
-```
-internal/
-  graphql/              # GraphQL 层
-    *.graphqls          # Schema 按领域拆分（agent/issue/project/...）
-    *.generated.go      # gqlgen 生成的执行代码（按 schema 文件拆分）
-    *.resolvers.go      # Resolver 实现（按 schema 文件拆分）
-    models_gen.go       # 生成的 Go 数据模型
-  service/              # 业务逻辑
-  repository/           # GORM 数据访问
-  models/               # 纯数据结构
-  matching/             # 能力匹配引擎
-  notifications/        # 通知服务
-  events/               # 事件总线
-```
