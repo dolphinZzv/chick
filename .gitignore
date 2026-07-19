@@ -20,3 +20,4 @@ ui/dist/
 
 # todo notes
 todo/
+.mcp.json
