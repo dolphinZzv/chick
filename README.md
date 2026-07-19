@@ -40,8 +40,10 @@
 
 ```json
 {
-  "mcpServers": {
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
     "chick": {
+      "type": "remote",
       "url": "http://localhost:9091/mcp",
       "headers": {
         "Authorization": "Bearer <your-token>"
