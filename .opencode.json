@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "chick": {
+      "url": "http://localhost:9091/mcp"
+    }
+  }
+}
