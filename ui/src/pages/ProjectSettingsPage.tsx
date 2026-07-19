@@ -5,8 +5,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Combobox } from "@/components/ui/combobox";
-import { Autocomplete } from "@/components/ui/autocomplete";
 import {
   Select,
   SelectContent,
@@ -89,8 +87,6 @@ export function ProjectSettingsPage() {
   const [labels, setLabels] = useState<Label[]>([]);
   const [milestones, setMilestones] = useState<Milestone[]>([]);
   const [members, setMembers] = useState<Member[]>([]);
-  const [supportedModels, setSupportedModels] = useState<string[]>([]);
-  const [commonDeviceInfo, setCommonDeviceInfo] = useState<string[]>([]);
   const [projectName, setProjectName] = useState("");
   const [projectDesc, setProjectDesc] = useState("");
   const [allowCreatorTransition, setAllowCreatorTransition] = useState(true);
@@ -158,15 +154,11 @@ members { agent { id number name kind status capabilities deviceInfo modelInfo l
         }`,
         { id }
       ),
-      gql(`query { supportedModels }`),
-      gql(`query { commonDeviceInfo }`),
     ])
-      .then(([lJson, mJson, pJson, sJson, dJson]) => {
+      .then(([lJson, mJson, pJson]) => {
         if (lJson.errors) { setError(lJson.errors[0].message); return; }
         if (mJson.errors) { setError(mJson.errors[0].message); return; }
         if (pJson.errors) { setError(pJson.errors[0].message); return; }
-        if (sJson.errors) { setError(sJson.errors[0].message); return; }
-        if (dJson.errors) { setError(dJson.errors[0].message); return; }
         setLabels(lJson.data.labels);
         setMilestones(mJson.data.milestones);
         setMembers(pJson.data.project.members || []);
@@ -174,8 +166,6 @@ members { agent { id number name kind status capabilities deviceInfo modelInfo l
         setProjectDesc(pJson.data.project.description || "");
         setAllowCreatorTransition(pJson.data.project.allowCreatorTransition ?? true);
         setRequireCreatorCloseApproval(pJson.data.project.requireCreatorCloseApproval ?? false);
-        setSupportedModels(sJson.data.supportedModels || []);
-        setCommonDeviceInfo(dJson.data.commonDeviceInfo || []);
       })
       .catch(() => setError("网络错误"))
       .finally(() => setLoading(false));
@@ -590,22 +580,11 @@ members { agent { id number name kind status capabilities deviceInfo modelInfo l
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">AI 模型</label>
-                  <Combobox
-                    items={supportedModels}
-                    value={newAgentModel}
-                    onChange={setNewAgentModel}
-                    placeholder="选择 AI 模型"
-                    searchPlaceholder="搜索模型..."
-                  />
+                  <Input value={newAgentModel} onChange={e => setNewAgentModel(e.target.value)} placeholder="例如: GPT-4o, Claude 3.5 Sonnet" />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">设备信息</label>
-                  <Autocomplete
-                    items={commonDeviceInfo}
-                    value={newAgentDevice}
-                    onChange={setNewAgentDevice}
-                    placeholder="例如: Linux / Chrome 120"
-                  />
+                  <Input value={newAgentDevice} onChange={e => setNewAgentDevice(e.target.value)} placeholder="例如: Linux / Chrome 120" />
                 </div>
                 <div className="flex justify-end gap-2">
                   <Button type="button" variant="outline" onClick={() => setAgentOpen(false)}>取消</Button>

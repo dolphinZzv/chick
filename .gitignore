@@ -21,3 +21,4 @@ ui/dist/
 # todo notes
 todo/
 .mcp.json
+nohup.out
