@@ -15,6 +15,15 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { GripVertical } from "lucide-react";
 import { toast } from "sonner";
+import {
+  issueStateLabels,
+  issueStateColors,
+  issueStateBadgeColors,
+  issuePriorityColors,
+  proposalPriorityDotColors,
+  priorityLabels as sharedPriorityLabels,
+} from "@/lib/constants";
+import { NoteDialog } from "@/components/shared/NoteDialog";
 
 export interface Label {
   id: string;
@@ -46,45 +55,10 @@ interface Column {
   label: string;
 }
 
-const stateColors: Record<string, string> = {
-  open: "border-l-gray-500",
-  in_progress: "border-l-gray-500",
-  blocked: "border-l-gray-500",
-  review: "border-l-gray-500",
-  pending_confirmation: "border-l-gray-500",
-  later: "border-l-gray-500",
-  reopen: "border-l-gray-500",
-  closed_completed: "border-l-gray-300",
-  closed_not_planned: "border-l-gray-300",
-  closed_rejected: "border-l-gray-300",
-};
-
-const priorityLabels: Record<string, string> = {
-  critical: "关键",
-  high: "高",
-  medium: "中",
-  low: "低",
-};
-
-const priorityColors: Record<string, string> = {
-  critical: "bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-gray-100",
-  high: "bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-gray-100",
-  medium: "bg-gray-100 text-gray-700 dark:bg-gray-600 dark:text-gray-200",
-  low: "bg-gray-50 text-gray-500 dark:bg-gray-800 dark:text-gray-400",
-};
-
-const stateLabels: Record<string, string> = {
-  open: "待处理",
-  in_progress: "进行中",
-  blocked: "阻塞",
-  review: "审查",
-  pending_confirmation: "待确认",
-  later: "稍后处理",
-  closed_completed: "已完成",
-  closed_not_planned: "已关闭",
-  closed_rejected: "已拒绝",
-  reopen: "重新打开",
-};
+const stateLabels = issueStateLabels;
+const stateColors = issueStateColors;
+const priorityLabels = sharedPriorityLabels;
+const priorityColors = issuePriorityColors;
 
 function LabelsDisplay({ labels, onRemove }: { labels: Label[]; onRemove?: (id: string) => void }) {
   if (!labels || labels.length === 0) return null;
@@ -198,16 +172,24 @@ export function SimpleIssueCard({
   const [newLabelName, setNewLabelName] = useState("");
   const [newLabelColor, setNewLabelColor] = useState("#6366f1");
   const [newMilestoneTitle, setNewMilestoneTitle] = useState("");
+  const [noteDialogOpen, setNoteDialogOpen] = useState(false);
+  const [noteDialogTarget, setNoteDialogTarget] = useState<string | null>(null);
 
   const handleQuickMove = async (e: React.MouseEvent, toState: string) => {
     e.preventDefault();
     e.stopPropagation();
-    const note = window.prompt(`请输入「${stateLabels[toState]}」的备注说明（可选）：`);
-    if (note === null) return; // cancelled
+    setNoteDialogTarget(toState);
+    setNoteDialogOpen(true);
+  };
+
+  const handleNoteSubmit = async (note: string) => {
+    if (!noteDialogTarget) return;
+    const target = noteDialogTarget;
+    setNoteDialogTarget(null);
     setMoving(true);
     try {
-      await onTransition(issue.id, toState, note);
-      toast.success(`已移至 ${stateLabels[toState]}`);
+      await onTransition(issue.id, target, note);
+      toast.success(`已移至 ${stateLabels[target]}`);
     } catch {
       toast.error("状态变更失败");
     } finally {
@@ -412,6 +394,15 @@ export function SimpleIssueCard({
           ))}
         </div>
       )}
+      <NoteDialog
+        open={noteDialogOpen}
+        onOpenChange={setNoteDialogOpen}
+        title={`变更为「${noteDialogTarget ? stateLabels[noteDialogTarget] : ""}」`}
+        description="添加备注说明（可选）"
+        placeholder="输入备注…"
+        onSubmit={handleNoteSubmit}
+        loading={moving}
+      />
     </Link>
   );
 }
@@ -554,6 +545,8 @@ export function IssueBoard({
   validTransitions,
 }: IssueBoardProps) {
   const [activeIssue, setActiveIssue] = useState<Issue | null>(null);
+  const [dragNoteOpen, setDragNoteOpen] = useState(false);
+  const [dragTarget, setDragTarget] = useState<{ issueId: string; toState: string; label: string } | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
@@ -581,11 +574,16 @@ export function IssueBoard({
     const toState = overData.column.state;
     if (fromState === toState) return;
 
-    const note = window.prompt(`请输入拖拽到「${overData.column.label}」的备注说明（可选）：`);
-    if (note === null) return;
+    setDragTarget({ issueId: activeData.issue.id, toState, label: overData.column.label });
+    setDragNoteOpen(true);
+  };
 
+  const handleDragNoteSubmit = async (note: string) => {
+    if (!dragTarget) return;
+    const { issueId, toState } = dragTarget;
+    setDragTarget(null);
     try {
-      await onTransition(activeData.issue.id, toState, note);
+      await onTransition(issueId, toState, note);
     } catch {
       toast.error("状态变更失败");
     }
@@ -598,48 +596,68 @@ export function IssueBoard({
 
   if (isDesktop) {
     return (
-      <DndContext
-        sensors={sensors}
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
-      >
-        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none">
-          {grouped.map((col) => (
-            <div key={col.state} className="min-w-[260px] w-72 shrink-0">
-              <DroppableColumn
-                column={col}
-                issues={col.items}
-              />
-            </div>
-          ))}
-        </div>
+      <>
+        <DndContext
+          sensors={sensors}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+        >
+          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none">
+            {grouped.map((col) => (
+              <div key={col.state} className="min-w-[260px] w-72 shrink-0">
+                <DroppableColumn
+                  column={col}
+                  issues={col.items}
+                />
+              </div>
+            ))}
+          </div>
 
-        <DragOverlay>
-          {activeIssue ? <DragOverlayCard issue={activeIssue} /> : null}
-        </DragOverlay>
-      </DndContext>
+          <DragOverlay>
+            {activeIssue ? <DragOverlayCard issue={activeIssue} /> : null}
+          </DragOverlay>
+        </DndContext>
+        <NoteDialog
+          open={dragNoteOpen}
+          onOpenChange={setDragNoteOpen}
+          title={`拖拽到「${dragTarget?.label || ""}」`}
+          description="添加备注说明（可选）"
+          placeholder="输入备注…"
+          onSubmit={handleDragNoteSubmit}
+        />
+      </>
     );
   }
 
   return (
-    <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-none">
-      {grouped.map((col) => (
-        <div key={col.state} className="min-w-[300px] w-[85vw] snap-start shrink-0">
-          <StaticColumn
-            column={col}
-            issues={col.items}
-            onTransition={onTransition}
-            projectLabels={projectLabels}
-            projectMilestones={projectMilestones}
-            onAddLabel={onAddLabel}
-            onRemoveLabel={onRemoveLabel}
-            onChangeMilestone={onChangeMilestone}
-            onCreateLabel={onCreateLabel}
-            onCreateMilestone={onCreateMilestone}
-            validTransitions={validTransitions}
-          />
-        </div>
-      ))}
-    </div>
+    <>
+      <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-none">
+        {grouped.map((col) => (
+          <div key={col.state} className="min-w-[300px] w-[85vw] snap-start shrink-0">
+            <StaticColumn
+              column={col}
+              issues={col.items}
+              onTransition={onTransition}
+              projectLabels={projectLabels}
+              projectMilestones={projectMilestones}
+              onAddLabel={onAddLabel}
+              onRemoveLabel={onRemoveLabel}
+              onChangeMilestone={onChangeMilestone}
+              onCreateLabel={onCreateLabel}
+              onCreateMilestone={onCreateMilestone}
+              validTransitions={validTransitions}
+            />
+          </div>
+        ))}
+      </div>
+      <NoteDialog
+        open={dragNoteOpen}
+        onOpenChange={setDragNoteOpen}
+        title={`拖拽到「${dragTarget?.label || ""}」`}
+        description="添加备注说明（可选）"
+        placeholder="输入备注…"
+        onSubmit={handleDragNoteSubmit}
+      />
+    </>
   );
 }

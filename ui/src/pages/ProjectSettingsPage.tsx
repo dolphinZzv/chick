@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link, useNavigate, useSearchParams } from "react-router-dom";
 import { gql } from "@/lib/graphql";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { ErrorFallback } from "@/components/shared/ErrorFallback";
 import { EmptyState } from "@/components/shared/EmptyState";
-import { Plus, Trash2, Copy, Check } from "lucide-react";
+import { Plus, Trash2, Copy, Check, Settings, Workflow, Bot, Tag, Milestone, Bell, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 
 interface Label {
@@ -83,7 +83,9 @@ const PRESET_COLORS = ["#0366d6", "#28a745", "#d73a49", "#ffd33d", "#6f42c1", "#
 export function ProjectSettingsPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [tab, setTab] = useState<"basic" | "workflow" | "agents" | "labels" | "milestones" | "notifications">("basic");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tab = (searchParams.get("tab") || "basic") as "basic" | "workflow" | "agents" | "labels" | "milestones" | "notifications";
+  const setTab = (t: typeof tab) => setSearchParams({ tab: t });
   const [labels, setLabels] = useState<Label[]>([]);
   const [milestones, setMilestones] = useState<Milestone[]>([]);
   const [members, setMembers] = useState<Member[]>([]);
@@ -365,12 +367,12 @@ members { agent { id number name kind status capabilities deviceInfo modelInfo l
   };
 
   const tabs = [
-    { key: "basic" as const, label: "基本" },
-    { key: "workflow" as const, label: "工作流" },
-    { key: "agents" as const, label: "Agent" },
-    { key: "labels" as const, label: "标签" },
-    { key: "milestones" as const, label: "里程碑" },
-    { key: "notifications" as const, label: "通知" },
+    { key: "basic" as const, label: "基本", icon: Settings },
+    { key: "workflow" as const, label: "工作流", icon: Workflow },
+    { key: "agents" as const, label: "Agent", icon: Bot },
+    { key: "labels" as const, label: "标签", icon: Tag },
+    { key: "milestones" as const, label: "里程碑", icon: Milestone },
+    { key: "notifications" as const, label: "通知", icon: Bell },
   ];
 
   if (loading) return <Skeleton className="h-48 w-full" />;
@@ -383,24 +385,33 @@ members { agent { id number name kind status capabilities deviceInfo modelInfo l
       </Link>
       <h1 className="text-2xl font-semibold">项目设置</h1>
 
-      {/* Tabs */}
-      <div className="flex gap-2 border-b overflow-x-auto">
-        {tabs.map((t) => (
-          <button
-            key={t.key}
-            className={`whitespace-nowrap px-3 py-2 text-sm font-medium border-b-2 transition-colors ${
-              tab === t.key
-                ? "border-primary text-primary"
-                : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
-            onClick={() => setTab(t.key)}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
+      <div className="flex flex-col gap-6 lg:flex-row">
+        {/* Left sidebar navigation */}
+        <nav className="w-full shrink-0 lg:w-48" aria-label="设置导航">
+          <div className="flex gap-1 overflow-x-auto lg:flex-col lg:overflow-x-visible">
+            {tabs.map((t) => {
+              const Icon = t.icon;
+              return (
+                <button
+                  key={t.key}
+                  className={`flex items-center gap-2 whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                    tab === t.key
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                  }`}
+                  onClick={() => setTab(t.key)}
+                  aria-current={tab === t.key ? "page" : undefined}
+                >
+                  <Icon className="h-4 w-4 shrink-0" />
+                  {t.label}
+                </button>
+              );
+            })}
+          </div>
+        </nav>
 
-      {/* Basic info tab */}
+        {/* Right content area */}
+        <div className="flex-1 min-w-0">
       {tab === "basic" && (
         <div className="border bg-card rounded-lg divide-y">
           <div className="p-4">

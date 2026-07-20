@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useSearchParams } from "react-router-dom";
 import { gql } from "@/lib/graphql";
 import { useAuth } from "@/hooks/useAuth";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
@@ -25,7 +25,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronDown } from "lucide-react";
 import { ErrorFallback } from "@/components/shared/ErrorFallback";
 import { EmptyState } from "@/components/shared/EmptyState";
+import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { toast } from "sonner";
+import { priorityLabels as sharedPriorityLabels } from "@/lib/constants";
 
 interface Label {
   id: string;
@@ -54,17 +56,13 @@ const columns = [
   { state: "reopen", label: "重新打开" },
 ];
 
-const priorityLabels: Record<string, string> = {
-  critical: "关键",
-  high: "高",
-  medium: "中",
-  low: "低",
-};
+const priorityLabels = sharedPriorityLabels;
 
 export function ProjectDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { agent } = useAuth();
   const isDesktop = useMediaQuery("(min-width: 1024px)");
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
@@ -78,10 +76,14 @@ export function ProjectDetailPage() {
   const [assigneeFilter, setAssigneeFilter] = useState("all");
   const [projectLabels, setProjectLabels] = useState<Label[]>([]);
   const [projectMilestones, setProjectMilestones] = useState<Milestone[]>([]);
+  const [projectAgents, setProjectAgents] = useState<Array<{ id: string; name: string }>>([]);
   const [validTransitions, setValidTransitions] = useState<Record<string, string[]>>({});
-  const [activeTab, setActiveTab] = useState<"issues" | "proposals">("issues");
+  const activeTab = (searchParams.get("tab") === "proposals" ? "proposals" : "issues") as "issues" | "proposals";
+  const setActiveTab = (tab: "issues" | "proposals") => setSearchParams({ tab });
   const [proposals, setProposals] = useState<any[]>([]);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [transitionConfirm, setTransitionConfirm] = useState<{ open: boolean; issueId: string; toState: string; label: string }>({ open: false, issueId: "", toState: "", label: "" });
+  const [removeLabelConfirm, setRemoveLabelConfirm] = useState<{ open: boolean; issueId: string; labelId: string }>({ open: false, issueId: "", labelId: "" });
 
   // Debounce search input before sending to backend
   useEffect(() => {
@@ -98,6 +100,7 @@ export function ProjectDetailPage() {
       gql(`query project($id: ID!) { project(id: $id) { id name description } }`, { id }),
       gql(`query labels($projectId: ID!) { labels(projectID: $projectId) { id name color } }`, { projectId: id }),
       gql(`query milestones($projectId: ID!) { milestones(projectID: $projectId) { id title } }`, { projectId: id }),
+      gql(`query agents($projectID: ID!) { agents(projectID: $projectID) { id name } }`, { projectID: id }),
       gql(
         `query proposals($projectId: ID!) { proposals(projectID: $projectId) { edges { id number title state priority author { id name } reviewer { id name } tasks { id number title state priority assignee { id name } } } } }`,
         { projectId: id }
@@ -108,12 +111,13 @@ export function ProjectDetailPage() {
     ])
       .then((results) => {
         const pJson = results[0]; const lJson = results[1]; const mJson = results[2];
-        const propJson = results[3];
-        const transitionResults = results.slice(4) as Array<{ data?: { validTransitions: string[] }; errors?: any }>;
+        const aJson = results[3]; const propJson = results[4];
+        const transitionResults = results.slice(5) as Array<{ data?: { validTransitions: string[] }; errors?: any }>;
         if (pJson.errors) { setError(pJson.errors[0].message); return; }
         setProject(pJson.data.project);
         if (!lJson.errors) setProjectLabels(lJson.data.labels);
         if (!mJson.errors) setProjectMilestones(mJson.data.milestones);
+        if (!aJson.errors) setProjectAgents(aJson.data.agents);
         if (!propJson.errors) setProposals(propJson.data.proposals.edges);
         const vt: Record<string, string[]> = {};
         transitionResults.forEach((r, i) => {
@@ -126,6 +130,10 @@ export function ProjectDetailPage() {
   }, [id]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
+
+  useEffect(() => {
+    document.title = project ? `${project.name} - Chick` : "Chick";
+  }, [project]);
 
   // Auto-refresh when tab becomes visible (covers background updates)
   useEffect(() => {
@@ -143,12 +151,17 @@ export function ProjectDetailPage() {
 
   const handleTransition = async (issueId: string, toState: string, note?: string) => {
     const targetLabel = columns.find((c) => c.state === toState)?.label || toState;
-    if (!window.confirm(`确认将该 Issue 状态变更为「${targetLabel}」？`)) return;
+    setTransitionConfirm({ open: true, issueId, toState, label: targetLabel });
+  };
+
+  const confirmTransition = async () => {
+    const { issueId, toState } = transitionConfirm;
+    setTransitionConfirm({ open: false, issueId: "", toState: "", label: "" });
     const json = await gql(
       `mutation transitionIssue($id: ID!, $newState: IssueState!, $actorId: ID!, $note: String) {
         transitionIssue(id: $id, newState: $newState, actorID: $actorId, note: $note) { state }
       }`,
-      { id: issueId, newState: toState, actorId: agent?.agentId || "", note: note || null }
+      { id: issueId, newState: toState, actorId: agent?.agentId || "", note: null }
     );
     if (json.errors) {
       toast.error(json.errors[0].message);
@@ -172,7 +185,12 @@ export function ProjectDetailPage() {
   };
 
   const handleRemoveLabel = async (issueId: string, labelId: string) => {
-    if (!window.confirm("确认从该 Issue 中移除该标签？")) return;
+    setRemoveLabelConfirm({ open: true, issueId, labelId });
+  };
+
+  const confirmRemoveLabel = async () => {
+    const { issueId, labelId } = removeLabelConfirm;
+    setRemoveLabelConfirm({ open: false, issueId: "", labelId: "" });
     const json = await gql(
       `mutation removeLabels($issueID: ID!, $labelIDs: [ID!]!) { removeLabels(issueID: $issueID, labelIDs: $labelIDs) { id labels { id name color } } }`,
       { issueID: issueId, labelIDs: [labelId] }
@@ -357,6 +375,9 @@ export function ProjectDetailPage() {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">全部成员</SelectItem>
+            {projectAgents.map((a) => (
+              <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
@@ -383,6 +404,23 @@ export function ProjectDetailPage() {
       {activeTab === "proposals" && (
         <ProposalBoard projectId={id!} proposals={proposals} onRefresh={fetchData} />
       )}
+
+      <ConfirmDialog
+        open={transitionConfirm.open}
+        onOpenChange={(open) => setTransitionConfirm((prev) => ({ ...prev, open }))}
+        title={`确认将该 Issue 状态变更为「${transitionConfirm.label}」？`}
+        confirmLabel="确认"
+        onConfirm={confirmTransition}
+      />
+
+      <ConfirmDialog
+        open={removeLabelConfirm.open}
+        onOpenChange={(open) => setRemoveLabelConfirm((prev) => ({ ...prev, open }))}
+        title="确认从该 Issue 中移除该标签？"
+        confirmLabel="移除"
+        variant="destructive"
+        onConfirm={confirmRemoveLabel}
+      />
     </div>
   );
 }

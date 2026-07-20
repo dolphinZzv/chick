@@ -13,6 +13,10 @@ import { MessageSquare, Send } from "lucide-react";
 import { toast } from "sonner";
 import { ErrorFallback } from "@/components/shared/ErrorFallback";
 import { EmptyState } from "@/components/shared/EmptyState";
+import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
+import { taskStateLabels, priorityLabels as sharedPriorityLabels } from "@/lib/constants";
+import { relativeTime } from "@/lib/format";
 
 interface IssueRef {
   id: string;
@@ -43,25 +47,8 @@ interface Comment {
   author: { id: string; name: string };
 }
 
-const stateLabels: Record<string, string> = {
-  pending: "待处理", in_progress: "进行中", completed: "已完成", blocked: "阻塞", cancelled: "已取消",
-};
-
-const priorityLabels: Record<string, string> = {
-  critical: "关键", high: "高", medium: "中", low: "低",
-};
-
-function relativeTime(dateStr: string): string {
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const min = Math.floor(diff / 60000);
-  if (min < 1) return "刚刚";
-  if (min < 60) return `${min}分钟前`;
-  const hour = Math.floor(min / 60);
-  if (hour < 24) return `${hour}小时前`;
-  const days = Math.floor(hour / 24);
-  if (days < 7) return `${days}天前`;
-  return dateStr.slice(0, 10);
-}
+const stateLabels = taskStateLabels;
+const priorityLabels = sharedPriorityLabels;
 
 export function TaskDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -72,6 +59,9 @@ export function TaskDetailPage() {
   const [error, setError] = useState<string | null>(null);
   const [newComment, setNewComment] = useState("");
   const [transitions, setTransitions] = useState<string[]>([]);
+  const [transitionConfirm, setTransitionConfirm] = useState<{ open: boolean; toState: string; label: string }>({ open: false, toState: "", label: "" });
+  const [unlinkConfirm, setUnlinkConfirm] = useState<{ open: boolean; issueId: string }>({ open: false, issueId: "" });
+  const [linkIssueInput, setLinkIssueInput] = useState<{ open: boolean; value: string }>({ open: false, value: "" });
 
   const fetchData = useCallback(() => {
     if (!id) return;
@@ -94,10 +84,20 @@ export function TaskDetailPage() {
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
+  useEffect(() => {
+    document.title = task ? `${task.title} - Chick` : "Chick";
+  }, [task]);
+
   const handleTransition = async (toState: string) => {
     if (!id || !agent) return;
     const label = stateLabels[toState] || toState;
-    if (!window.confirm(`确认将任务状态变更为「${label}」？`)) return;
+    setTransitionConfirm({ open: true, toState, label });
+  };
+
+  const confirmTransition = async () => {
+    if (!id || !agent) return;
+    const { toState, label } = transitionConfirm;
+    setTransitionConfirm({ open: false, toState: "", label: "" });
     try {
       const json = await gql(`mutation transitionTask($id: ID!, $toState: TaskState!) { transitionTask(id: $id, toState: $toState) { state } }`, { id, toState });
       if (!json.errors) {
@@ -122,8 +122,13 @@ export function TaskDetailPage() {
 
   const handleLinkIssue = async () => {
     if (!id || !agent) return;
-    const issueId = window.prompt("输入要关联的 Issue ID：");
-    if (!issueId) return;
+    setLinkIssueInput({ open: true, value: "" });
+  };
+
+  const confirmLinkIssue = async () => {
+    if (!id || !agent || !linkIssueInput.value.trim()) return;
+    const issueId = linkIssueInput.value.trim();
+    setLinkIssueInput({ open: false, value: "" });
     try {
       const json = await gql(`mutation linkIssuesToTask($taskID: ID!, $issueIDs: [ID!]!) { linkIssuesToTask(taskID: $taskID, issueIDs: $issueIDs) { id issues { id number title state } } }`, { taskID: id, issueIDs: [issueId] });
       if (!json.errors) { setTask((prev) => prev ? { ...prev, issues: json.data.linkIssuesToTask.issues } : prev); toast.success("Issue 已关联"); }
@@ -132,7 +137,14 @@ export function TaskDetailPage() {
   };
 
   const handleUnlinkIssue = async (issueId: string) => {
-    if (!id || !window.confirm("确认取消关联该 Issue？")) return;
+    if (!id) return;
+    setUnlinkConfirm({ open: true, issueId });
+  };
+
+  const confirmUnlinkIssue = async () => {
+    if (!id) return;
+    const { issueId } = unlinkConfirm;
+    setUnlinkConfirm({ open: false, issueId: "" });
     try {
       const json = await gql(`mutation unlinkIssueFromTask($taskID: ID!, $issueID: ID!) { unlinkIssueFromTask(taskID: $taskID, issueID: $issueID) { id issues { id number title state } } }`, { taskID: id, issueID: issueId });
       if (!json.errors) { setTask((prev) => prev ? { ...prev, issues: json.data.unlinkIssueFromTask.issues } : prev); toast.success("Issue 已取消关联"); }
@@ -215,15 +227,55 @@ export function TaskDetailPage() {
         ))}
         {agent && (
           <div className="rounded-lg border bg-card p-3">
-            <Textarea value={newComment} onChange={(e) => setNewComment(e.target.value)} placeholder="输入评论..." rows={2} className="text-sm" />
+            <Textarea value={newComment} onChange={(e) => setNewComment(e.target.value)} placeholder="输入评论... (⌘+Enter 发送)" rows={2} className="text-sm"
+              onKeyDown={(e) => { if ((e.metaKey || e.ctrlKey) && e.key === "Enter" && newComment.trim()) { e.preventDefault(); handleComment(); } }} />
             <div className="mt-2 flex justify-end">
-              <Button size="sm" onClick={handleComment} disabled={!newComment.trim()}>
+              <Button size="sm" className="min-h-[44px]" aria-label="发送评论" onClick={handleComment} disabled={!newComment.trim()}>
                 <Send className="mr-1 size-3.5" />发送
               </Button>
             </div>
           </div>
         )}
       </div>
+
+      <ConfirmDialog
+        open={transitionConfirm.open}
+        onOpenChange={(open) => setTransitionConfirm((prev) => ({ ...prev, open }))}
+        title={`确认将任务状态变更为「${transitionConfirm.label}」？`}
+        confirmLabel="确认"
+        onConfirm={confirmTransition}
+      />
+
+      <ConfirmDialog
+        open={unlinkConfirm.open}
+        onOpenChange={(open) => setUnlinkConfirm((prev) => ({ ...prev, open }))}
+        title="确认取消关联该 Issue？"
+        confirmLabel="确认取消关联"
+        variant="destructive"
+        onConfirm={confirmUnlinkIssue}
+      />
+
+      <Dialog open={linkIssueInput.open} onOpenChange={(open) => setLinkIssueInput((prev) => ({ ...prev, open }))}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle>关联 Issue</DialogTitle>
+            <DialogDescription>输入要关联的 Issue ID</DialogDescription>
+          </DialogHeader>
+          <input
+            type="text"
+            value={linkIssueInput.value}
+            onChange={(e) => setLinkIssueInput((prev) => ({ ...prev, value: e.target.value }))}
+            placeholder="Issue ID"
+            className="w-full rounded border bg-transparent px-3 py-2 text-sm"
+            autoFocus
+            onKeyDown={(e) => { if (e.key === "Enter") confirmLinkIssue(); }}
+          />
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setLinkIssueInput({ open: false, value: "" })}>取消</Button>
+            <Button onClick={confirmLinkIssue} disabled={!linkIssueInput.value.trim()}>关联</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

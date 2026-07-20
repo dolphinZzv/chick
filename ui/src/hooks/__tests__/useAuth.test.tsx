@@ -2,12 +2,19 @@ import { renderHook, act } from "@testing-library/react";
 import { type ReactNode } from "react";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 
-vi.mock("@/lib/urql", () => ({
-  setToken: vi.fn(),
-  clearToken: vi.fn(),
-}));
+vi.mock("@/lib/auth", () => {
+  const fns = {
+    getToken: vi.fn(() => localStorage.getItem("token")),
+    setToken: vi.fn((token: string) => localStorage.setItem("token", token)),
+    clearToken: vi.fn(() => localStorage.removeItem("token")),
+    getAgentId: vi.fn(() => localStorage.getItem("agentId")),
+    setAgentId: vi.fn((agentId: string) => localStorage.setItem("agentId", agentId)),
+    clearAgentId: vi.fn(() => localStorage.removeItem("agentId")),
+  };
+  return fns;
+});
 
-import { setToken, clearToken } from "@/lib/urql";
+import { setToken, clearToken } from "@/lib/auth";
 
 function wrapper({ children }: { children: ReactNode }) {
   return <AuthProvider>{children}</AuthProvider>;

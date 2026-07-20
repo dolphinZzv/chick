@@ -93,7 +93,8 @@ export function CreateTaskDialog({ proposalId, open, onOpenChange, onCreated }: 
         <DialogHeader>
           <DialogTitle>创建任务</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4"
+          onKeyDown={(e) => { if ((e.metaKey || e.ctrlKey) && e.key === "Enter") { e.preventDefault(); handleSubmit(onSubmit)(); } }}>
           <div className="space-y-2">
             <span className="text-xs font-medium text-muted-foreground">标题</span>
             <Input placeholder="任务标题" {...register("title")} />

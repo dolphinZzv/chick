@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorFallback } from "@/components/shared/ErrorFallback";
+import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { Bot, ToggleLeft, ToggleRight, AlertTriangle, Bell } from "lucide-react";
 import { gql } from "@/lib/graphql";
 import { toast } from "sonner";
@@ -61,6 +62,8 @@ export function AgentDetailPage() {
   const [notifSettings, setNotifSettings] = useState<NotifSetting[]>([]);
   const [notifLoading, setNotifLoading] = useState(false);
   const [notifUpdating, setNotifUpdating] = useState<string | null>(null);
+  const [toggleConfirmOpen, setToggleConfirmOpen] = useState(false);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
 
   const fetchAgent = useCallback(() => {
     if (!id) return;
@@ -77,9 +80,12 @@ export function AgentDetailPage() {
 
   const toggleDisabled = useCallback(() => {
     if (!id || !agent || toggling) return;
-    const action = agent.disabled ? "启用" : "禁用";
-    if (!window.confirm(`确认${action} Agent #${agent.number} ${agent.name}？`)) return;
-    setToggling(true);
+    setToggleConfirmOpen(true);
+  }, [id, agent, toggling]);
+
+  const confirmToggle = useCallback(() => {
+    if (!id || !agent) return;
+    setToggleConfirmOpen(false);
     const newDisabled = !agent.disabled;
     gql(`mutation updateAgentDisabled($id: ID!, $disabled: Boolean!) { updateAgentDisabled(id: $id, disabled: $disabled) { id disabled } }`, { id, disabled: newDisabled })
       .then((json) => {
@@ -87,10 +93,16 @@ export function AgentDetailPage() {
         setAgent((prev) => prev ? { ...prev, disabled: newDisabled } : prev);
       })
       .finally(() => setToggling(false));
-  }, [id, agent, toggling]);
+  }, [id, agent]);
 
   const handleDelete = useCallback(async () => {
-    if (!id || !window.confirm(`确认删除 Agent #${agent?.number} ${agent?.name}？此操作不可撤销。`)) return;
+    if (!id) return;
+    setDeleteConfirmOpen(true);
+  }, [id, agent, navigate]);
+
+  const confirmDelete = useCallback(async () => {
+    if (!id) return;
+    setDeleteConfirmOpen(false);
     setDeleting(true);
     try {
       const json = await gql(`mutation deleteAgent($id: ID!) { deleteAgent(id: $id) }`, { id });
@@ -99,7 +111,7 @@ export function AgentDetailPage() {
       navigate("/projects", { replace: true });
     } catch { toast.error("网络错误"); }
     finally { setDeleting(false); }
-  }, [id, agent, navigate]);
+  }, [id, navigate]);
 
   const fetchNotifTypes = useCallback(async () => {
     try {
@@ -293,6 +305,26 @@ export function AgentDetailPage() {
           {deleting ? "删除中..." : "删除 Agent"}
         </Button>
       </div>
+
+      <ConfirmDialog
+        open={toggleConfirmOpen}
+        onOpenChange={setToggleConfirmOpen}
+        title={`确认${agent?.disabled ? "启用" : "禁用"} Agent #${agent?.number} ${agent?.name}？`}
+        confirmLabel={agent?.disabled ? "启用" : "禁用"}
+        onConfirm={confirmToggle}
+        loading={toggling}
+      />
+
+      <ConfirmDialog
+        open={deleteConfirmOpen}
+        onOpenChange={setDeleteConfirmOpen}
+        title={`确认删除 Agent #${agent?.number} ${agent?.name}？`}
+        description="此操作不可撤销。"
+        confirmLabel="删除"
+        variant="destructive"
+        onConfirm={confirmDelete}
+        loading={deleting}
+      />
     </div>
   );
 }

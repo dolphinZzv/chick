@@ -16,7 +16,13 @@ const ProposalDetailPage = lazy(() => import("@/pages/ProposalDetailPage").then(
 const TaskDetailPage = lazy(() => import("@/pages/TaskDetailPage").then(m => ({ default: m.TaskDetailPage })));
 const AgentDetailPage = lazy(() => import("@/pages/AgentDetailPage").then(m => ({ default: m.AgentDetailPage })));
 const ProjectsPage = lazy(() => import("@/pages/ProjectsPage").then(m => ({ default: m.ProjectsPage })));
-const ProjectSettingsPage = lazy(() => import("@/pages/ProjectSettingsPage").then(m => ({ default: m.ProjectSettingsPage })));
+const ProjectSettingsLayout = lazy(() => import("@/pages/settings/ProjectSettingsLayout").then(m => ({ default: m.ProjectSettingsLayout })));
+const BasicSettings = lazy(() => import("@/pages/settings/BasicSettings").then(m => ({ default: m.BasicSettings })));
+const WorkflowSettings = lazy(() => import("@/pages/settings/WorkflowSettings").then(m => ({ default: m.WorkflowSettings })));
+const AgentSettings = lazy(() => import("@/pages/settings/AgentSettings").then(m => ({ default: m.AgentSettings })));
+const LabelSettings = lazy(() => import("@/pages/settings/LabelSettings").then(m => ({ default: m.LabelSettings })));
+const MilestoneSettings = lazy(() => import("@/pages/settings/MilestoneSettings").then(m => ({ default: m.MilestoneSettings })));
+const NotificationSettings = lazy(() => import("@/pages/settings/NotificationSettings").then(m => ({ default: m.NotificationSettings })));
 const NotFoundPage = lazy(() => import("@/pages/NotFoundPage").then(m => ({ default: m.NotFoundPage })));
 
 function PageLoading() {
@@ -56,7 +62,15 @@ export default function App() {
                   <Route path="/" element={<Navigate to="/projects" replace />} />
                   <Route path="/projects" element={<PageBoundary><ProjectsPage /></PageBoundary>} />
                   <Route path="/projects/:id" element={<PageBoundary><ProjectDetailPage /></PageBoundary>} />
-                  <Route path="/projects/:id/settings" element={<PageBoundary><ProjectSettingsPage /></PageBoundary>} />
+                  <Route path="/projects/:id/settings" element={<PageBoundary><ProjectSettingsLayout /></PageBoundary>}>
+                    <Route index element={<Navigate to="basic" replace />} />
+                    <Route path="basic" element={<PageBoundary><BasicSettings /></PageBoundary>} />
+                    <Route path="workflow" element={<PageBoundary><WorkflowSettings /></PageBoundary>} />
+                    <Route path="agents" element={<PageBoundary><AgentSettings /></PageBoundary>} />
+                    <Route path="labels" element={<PageBoundary><LabelSettings /></PageBoundary>} />
+                    <Route path="milestones" element={<PageBoundary><MilestoneSettings /></PageBoundary>} />
+                    <Route path="notifications" element={<PageBoundary><NotificationSettings /></PageBoundary>} />
+                  </Route>
                   <Route path="/issues/:id" element={<PageBoundary><IssueDetailPage /></PageBoundary>} />
                   <Route path="/proposals/:id" element={<PageBoundary><ProposalDetailPage /></PageBoundary>} />
                   <Route path="/tasks/:id" element={<PageBoundary><TaskDetailPage /></PageBoundary>} />

@@ -1,18 +1,7 @@
 import { createClient, fetchExchange, subscriptionExchange } from "@urql/core";
 import { authExchange } from "@urql/exchange-auth";
 import { SubscriptionClient } from "subscriptions-transport-ws";
-
-function getToken(): string | null {
-  return localStorage.getItem("token");
-}
-
-function setToken(token: string) {
-  localStorage.setItem("token", token);
-}
-
-function clearToken() {
-  localStorage.removeItem("token");
-}
+import { getToken, setToken, clearToken } from "./auth";
 
 let wsClient: SubscriptionClient | null = null;
 
@@ -20,8 +9,10 @@ function getWSClient(): SubscriptionClient | null {
   const token = getToken();
   if (!token) return null;
   if (wsClient) return wsClient;
+
+  const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
   wsClient = new SubscriptionClient(
-    `ws://${window.location.host}/graphql`,
+    `${protocol}//${window.location.host}/graphql`,
     {
       reconnect: true,
       connectionParams: { token },

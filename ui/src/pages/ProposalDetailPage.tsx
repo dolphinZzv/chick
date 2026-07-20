@@ -14,6 +14,9 @@ import { toast } from "sonner";
 import { ErrorFallback } from "@/components/shared/ErrorFallback";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { CreateTaskDialog } from "@/components/project/CreateTaskDialog";
+import { NoteDialog } from "@/components/shared/NoteDialog";
+import { proposalStateLabels, priorityLabels as sharedPriorityLabels, taskStateLabels } from "@/lib/constants";
+import { relativeTime } from "@/lib/format";
 
 interface TaskItem {
   id: string;
@@ -55,28 +58,8 @@ interface TimelineEvent {
   payload: Record<string, unknown> | null;
 }
 
-const stateLabels: Record<string, string> = {
-  draft: "草稿", submitted: "已提交", under_review: "评审中", approved: "已通过",
-  rejected: "已驳回", in_execution: "执行中", completed: "已完成", cancelled: "已取消",
-};
-
-const priorityLabels: Record<string, string> = { critical: "关键", high: "高", medium: "中", low: "低" };
-
-const taskStateLabels: Record<string, string> = {
-  pending: "待处理", in_progress: "进行中", completed: "已完成", blocked: "阻塞", cancelled: "已取消",
-};
-
-function relativeTime(dateStr: string): string {
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const min = Math.floor(diff / 60000);
-  if (min < 1) return "刚刚";
-  if (min < 60) return `${min}分钟前`;
-  const hour = Math.floor(min / 60);
-  if (hour < 24) return `${hour}小时前`;
-  const days = Math.floor(hour / 24);
-  if (days < 7) return `${days}天前`;
-  return dateStr.slice(0, 10);
-}
+const stateLabels = proposalStateLabels;
+const priorityLabels = sharedPriorityLabels;
 
 export function ProposalDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -89,6 +72,8 @@ export function ProposalDetailPage() {
   const [newComment, setNewComment] = useState("");
   const [transitions, setTransitions] = useState<string[]>([]);
   const [showTaskDialog, setShowTaskDialog] = useState(false);
+  const [noteDialogOpen, setNoteDialogOpen] = useState(false);
+  const [noteDialogTarget, setNoteDialogTarget] = useState<string | null>(null);
 
   const fetchData = useCallback(() => {
     if (!id) return;
@@ -114,11 +99,21 @@ export function ProposalDetailPage() {
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
+  useEffect(() => {
+    document.title = proposal ? `#${proposal.number} ${proposal.title} - Chick` : "Chick";
+  }, [proposal]);
+
   const handleTransition = async (toState: string) => {
     if (!id || !agent) return;
+    setNoteDialogTarget(toState);
+    setNoteDialogOpen(true);
+  };
+
+  const handleNoteSubmit = async (note: string) => {
+    if (!id || !agent || !noteDialogTarget) return;
+    const toState = noteDialogTarget;
     const label = stateLabels[toState] || toState;
-    const note = window.prompt(`请输入变更为「${label}」的备注说明（可选）：`);
-    if (note === null) return;
+    setNoteDialogTarget(null);
     try {
       const json = await gql(`mutation transitionProposal($id: ID!, $newState: ProposalState!, $actorID: ID!, $note: String) { transitionProposal(id: $id, newState: $newState, actorID: $actorID, note: $note) { state } }`, { id, newState: toState, actorID: agent.agentId, note: note || null });
       if (!json.errors) { setProposal((prev) => prev ? { ...prev, state: json.data.transitionProposal.state } : prev); toast.success(`状态已变更为 ${label}`); fetchData(); }
@@ -226,9 +221,10 @@ export function ProposalDetailPage() {
         ))}
         {agent && (
           <div className="rounded-lg border bg-card p-3">
-            <Textarea value={newComment} onChange={(e) => setNewComment(e.target.value)} placeholder="输入评论..." rows={2} className="text-sm" />
+            <Textarea value={newComment} onChange={(e) => setNewComment(e.target.value)} placeholder="输入评论... (⌘+Enter 发送)" rows={2} className="text-sm"
+              onKeyDown={(e) => { if ((e.metaKey || e.ctrlKey) && e.key === "Enter" && newComment.trim()) { e.preventDefault(); handleComment(); } }} />
             <div className="mt-2 flex justify-end">
-              <Button size="sm" onClick={handleComment} disabled={!newComment.trim()}>
+              <Button size="sm" className="min-h-[44px]" aria-label="发送评论" onClick={handleComment} disabled={!newComment.trim()}>
                 <Send className="mr-1 size-3.5" />发送
               </Button>
             </div>
@@ -266,6 +262,15 @@ export function ProposalDetailPage() {
       </div>
 
       <CreateTaskDialog proposalId={id!} open={showTaskDialog} onOpenChange={setShowTaskDialog} onCreated={fetchData} />
+
+      <NoteDialog
+        open={noteDialogOpen}
+        onOpenChange={setNoteDialogOpen}
+        title={`变更为「${noteDialogTarget ? stateLabels[noteDialogTarget] : ""}」`}
+        description="添加备注说明（可选）"
+        placeholder="输入备注…"
+        onSubmit={handleNoteSubmit}
+      />
     </div>
   );
 }

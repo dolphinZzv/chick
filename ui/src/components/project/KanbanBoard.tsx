@@ -17,21 +17,12 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollGradient } from "./ScrollGradient";
 import { DraggableIssue, SimpleIssueCard, type Issue, type Label, type Milestone } from "./IssueBoard";
+import { issueStateLabels } from "@/lib/constants";
+import { NoteDialog } from "@/components/shared/NoteDialog";
 
 const PAGE_SIZE = 20;
 
-const stateLabels: Record<string, string> = {
-  open: "待处理",
-  in_progress: "进行中",
-  blocked: "阻塞",
-  review: "审查",
-  pending_confirmation: "待确认",
-  later: "稍后处理",
-  closed_completed: "已完成",
-  closed_not_planned: "已关闭",
-  closed_rejected: "已拒绝",
-  reopen: "重新打开",
-};
+const stateLabels = issueStateLabels;
 
 interface ColumnDef {
   state: string;
@@ -320,6 +311,8 @@ export function KanbanBoard({
   const [closedLoadingMore, setClosedLoadingMore] = useState(false);
   const [localRefreshKey, setLocalRefreshKey] = useState(0);
   const boardScrollRef = useRef<HTMLDivElement>(null);
+  const [dragNoteOpen, setDragNoteOpen] = useState(false);
+  const [dragTarget, setDragTarget] = useState<{ issueId: string; toState: string; label: string } | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
@@ -347,11 +340,16 @@ export function KanbanBoard({
     const toState = overData.column.state;
     if (fromState === toState) return;
 
-    const note = window.prompt(`请输入拖拽到「${overData.column.label}」的备注说明（可选）：`);
-    if (note === null) return;
+    setDragTarget({ issueId: activeData.issue.id, toState, label: overData.column.label });
+    setDragNoteOpen(true);
+  };
 
+  const handleDragNoteSubmit = async (note: string) => {
+    if (!dragTarget) return;
+    const { issueId, toState } = dragTarget;
+    setDragTarget(null);
     try {
-      await onTransition(activeData.issue.id, toState, note);
+      await onTransition(issueId, toState, note);
     } catch {
       // Error handled by onTransition
     }
@@ -527,6 +525,15 @@ export function KanbanBoard({
           </div>
         </details>
       ) : null}
+
+      <NoteDialog
+        open={dragNoteOpen}
+        onOpenChange={setDragNoteOpen}
+        title={`拖拽到「${dragTarget?.label || ""}」`}
+        description="添加备注说明（可选）"
+        placeholder="输入备注…"
+        onSubmit={handleDragNoteSubmit}
+      />
     </div>
   );
 }

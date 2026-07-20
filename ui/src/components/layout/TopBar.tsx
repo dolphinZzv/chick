@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { gql } from "@/lib/graphql";
 import { cn } from "@/lib/utils";
+import { relativeTime } from "@/lib/format";
 
 interface Notification {
   id: string;
@@ -35,19 +36,6 @@ const notifIconMap: Record<string, React.ElementType> = {
   agent_status_changed: Radio,
   feedback_received: Star,
 };
-
-function relativeTime(dateStr: string): string {
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const seconds = Math.floor(diff / 1000);
-  if (seconds < 60) return "刚刚";
-  const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return `${minutes}分钟前`;
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}小时前`;
-  const days = Math.floor(hours / 24);
-  if (days < 30) return `${days}天前`;
-  return new Date(dateStr).toLocaleDateString("zh-CN");
-}
 
 export function TopBar() {
   const { logout, agent } = useAuth();
@@ -111,7 +99,7 @@ export function TopBar() {
     return () => document.removeEventListener("mousedown", handler);
   }, [open]);
 
-  const unreadCount = notifs.slice(0, 99).filter(n => !n.read).length;
+  const unreadCount = notifs.filter(n => !n.read).length;
 
   const handleMarkRead = useCallback(async (id: string) => {
     try {

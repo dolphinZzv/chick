@@ -1,5 +1,5 @@
 import { useState, useCallback, useContext, createContext, type ReactNode } from "react";
-import { setToken, clearToken } from "@/lib/urql";
+import { getToken, setToken, clearToken, getAgentId, setAgentId, clearAgentId } from "@/lib/auth";
 
 interface AuthState {
   agentId: string;
@@ -17,21 +17,21 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [agent, setAgent] = useState<AuthState | null>(() => {
-    const token = localStorage.getItem("token");
-    const agentId = localStorage.getItem("agentId");
+    const token = getToken();
+    const agentId = getAgentId();
     if (token && agentId) return { token, agentId };
     return null;
   });
 
   const login = useCallback((token: string, agentId: string) => {
     setToken(token);
-    localStorage.setItem("agentId", agentId);
+    setAgentId(agentId);
     setAgent({ token, agentId });
   }, []);
 
   const logout = useCallback(() => {
     clearToken();
-    localStorage.removeItem("agentId");
+    clearAgentId();
     setAgent(null);
   }, []);
 

@@ -185,10 +185,11 @@ export function CreateIssueDialog({
           <div className="px-6 pb-4">
             <textarea
               id="description"
-              placeholder="描述 — 支持 Markdown 格式..."
+              placeholder="描述 — 支持 Markdown 格式... (⌘+Enter 创建)"
               rows={5}
               className="w-full resize-none text-sm leading-relaxed placeholder:text-muted-foreground/40 bg-transparent border-none outline-none focus:ring-0"
               {...register("description")}
+              onKeyDown={(e) => { if ((e.metaKey || e.ctrlKey) && e.key === "Enter") { e.preventDefault(); handleSubmit(onSubmit)(); } }}
             />
           </div>
 

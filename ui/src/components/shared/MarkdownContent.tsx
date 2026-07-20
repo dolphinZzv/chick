@@ -16,7 +16,7 @@ function MermaidBlock({ code }: { code: string }) {
       mermaid.initialize({
         startOnLoad: false,
         theme: "default",
-        securityLevel: "loose",
+        securityLevel: "strict",
       });
       mermaid.run({ nodes: [ref.current] });
     }
