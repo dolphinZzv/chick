@@ -3,7 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
 import { LogOut, Sun, Moon, Bell, CheckCheck, MessageSquare, UserPlus, ArrowRightCircle, AlertCircle, FileText, GitPullRequest, CheckSquare, UserCheck, RefreshCw, Radio, Star } from "lucide-react";
 import { useEffect, useState, useCallback, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { gql } from "@/lib/graphql";
 import { cn } from "@/lib/utils";
@@ -159,6 +159,9 @@ export function TopBar() {
 
   return (
     <header className="flex h-12 items-center gap-2 border-b bg-card px-4">
+      <Link to="/projects" className="flex h-7 w-7 items-center justify-center rounded bg-primary text-xs font-bold text-primary-foreground">
+        C
+      </Link>
       <div className="flex-1" />
 
       <div className="flex items-center gap-0.5 ml-auto relative" ref={dropdownRef}>
