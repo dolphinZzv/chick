@@ -154,6 +154,17 @@ type TaskRepository interface {
 	UnlinkIssue(taskID, issueID uint) error
 }
 
+// ─── Webhook ──────────────────────────────────────────────
+
+type WebhookRepository interface {
+	Create(webhook *models.Webhook) error
+	GetByID(id uint) (*models.Webhook, error)
+	GetBySecret(secret string) (*models.Webhook, error)
+	ListByAgent(agentID uint) ([]models.Webhook, error)
+	ListByProject(projectID uint) ([]models.Webhook, error)
+	Delete(id uint) error
+}
+
 // ─── Transactor ────────────────────────────────────────────
 
 type Transactor interface {
@@ -175,6 +186,7 @@ type Repositories struct {
 	Feedback      FeedbackRepository
 	Proposal      ProposalRepository
 	Task          TaskRepository
+	Webhook       WebhookRepository
 	DB            *gorm.DB
 }
 

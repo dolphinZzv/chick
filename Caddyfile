@@ -8,6 +8,7 @@
 
     reverse_proxy /mcp* localhost:9091
     reverse_proxy /health localhost:9091
+    reverse_proxy /webhook* localhost:9091
 
     # 其余 → Vite 前端
     reverse_proxy localhost:5173 {

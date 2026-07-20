@@ -55,9 +55,13 @@ func main() {
 	// GraphQL handler with auth + CORS
 	graphqlHandler := graphql.NewHandler(
 		srv.ProjectService, srv.AgentService, srv.IssueService,
-		srv.CommentService, srv.ProposalService, srv.TaskService, srv.WorkflowService, srv.FeedbackService, srv.NotifService, srv.EventBus,
+		srv.CommentService, srv.ProposalService, srv.TaskService, srv.WorkflowService, srv.FeedbackService, srv.WebhookService, srv.NotifService, srv.EventBus,
 		cfg.AllowHumanRegistration)
 	http.Handle("/graphql", corsMW(authMW(graphqlHandler)))
+
+	// Webhook HTTP endpoint (no auth — authenticated by secret in URL)
+	webhookHandler := server.NewWebhookIssueHandler(srv.WebhookService, srv.IssueService)
+	http.Handle("/webhook/", corsMW(webhookHandler))
 
 	// MCP — Streamable HTTP (POST) + SSE events (GET)
 	http.Handle("/mcp", corsMW(handleMCP(srv, mcpServer)))

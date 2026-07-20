@@ -20,11 +20,12 @@ func NewHandler(
 	taskSvc *service.TaskService,
 	workflowSvc *service.WorkflowService,
 	feedbackSvc *service.FeedbackService,
+	webhookSvc *service.WebhookService,
 	notifSvc *notifications.Service,
 	eventBus *events.Bus,
 	allowHumanRegistration bool,
 ) http.Handler {
-	resolver := NewResolver(projectSvc, agentSvc, issueSvc, commentSvc, proposalSvc, taskSvc, workflowSvc, feedbackSvc, notifSvc, eventBus, allowHumanRegistration)
+	resolver := NewResolver(projectSvc, agentSvc, issueSvc, commentSvc, proposalSvc, taskSvc, workflowSvc, feedbackSvc, webhookSvc, notifSvc, eventBus, allowHumanRegistration)
 	cfg := Config{Resolvers: resolver}
 	srv := gqlhandler.NewDefaultServer(NewExecutableSchema(cfg))
 	srv.Use(extension.FixedComplexityLimit(1000))

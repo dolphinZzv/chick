@@ -994,6 +994,43 @@ func (r *mutationResolver) MarkAllNotificationsRead(ctx context.Context, agentID
 	return true, nil
 }
 
+// CreateWebhook is the resolver for the createWebhook field.
+func (r *mutationResolver) CreateWebhook(ctx context.Context, projectID string, agentID string, name string) (*WebhookPayload, error) {
+	pid := parseID(projectID)
+	if _, err := r.requireProjectOwner(ctx, pid); err != nil {
+		return nil, err
+	}
+	// Verify agent is a member of the project
+	if _, err := r.requireProjectMember(ctx, pid); err != nil {
+		return nil, fmt.Errorf("agent is not a project member")
+	}
+	aid := parseID(agentID)
+	output, err := r.WebhookSvc.Create(service.WebhookCreateInput{
+		ProjectID: pid,
+		AgentID:   aid,
+		Name:      name,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("create webhook: %w", err)
+	}
+	return &WebhookPayload{
+		Webhook:     webhookFromModel(output.Webhook),
+		CurlExample: output.CurlExample,
+	}, nil
+}
+
+// DeleteWebhook is the resolver for the deleteWebhook field.
+func (r *mutationResolver) DeleteWebhook(ctx context.Context, id string) (bool, error) {
+	agentID, err := requireAuth(ctx)
+	if err != nil {
+		return false, err
+	}
+	if err := r.WebhookSvc.Delete(parseID(id), agentID); err != nil {
+		return false, fmt.Errorf("delete webhook: %w", err)
+	}
+	return true, nil
+}
+
 // Mutation returns MutationResolver implementation.
 func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
 

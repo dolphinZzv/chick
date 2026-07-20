@@ -6,8 +6,10 @@ import (
 	"encoding/json"
 	"strconv"
 	"strings"
+	"time"
 
 	"chick/internal/models"
+	"chick/internal/notifications"
 )
 
 func parseID(s string) uint {
@@ -455,6 +457,49 @@ func feedbackRatingToInt(rating FeedbackRating) int {
 	default:
 		return 3
 	}
+}
+
+func webhookFromModel(w *models.Webhook) *Webhook {
+	return &Webhook{
+		ID:        formatID(w.ID),
+		ProjectID: formatID(w.ProjectID),
+		AgentID:   formatID(w.AgentID),
+		Agent:     agentFromModel(&w.Agent),
+		Name:      w.Name,
+		Secret:    w.Secret,
+		Enabled:   w.Enabled,
+		CreatedAt: w.CreatedAt.Format(time.RFC3339),
+	}
+}
+
+func notificationToEvent(n notifications.Notification) *NotificationEvent {
+	idStr := strconv.FormatUint(uint64(n.ID), 10)
+	notif := &NotificationEvent{
+		ID:               idStr,
+		Number:           int32(n.ID),
+		AgentID:          strconv.FormatUint(uint64(n.AgentID), 10),
+		NotificationType: string(n.Type),
+		Message:          n.Message,
+		Read:             n.Read,
+		CreatedAt:        n.CreatedAt,
+	}
+	if n.IssueID != 0 {
+		v := strconv.FormatUint(uint64(n.IssueID), 10)
+		notif.IssueID = &v
+	}
+	if n.ProposalID != 0 {
+		v := strconv.FormatUint(uint64(n.ProposalID), 10)
+		notif.ProposalID = &v
+	}
+	if n.TaskID != 0 {
+		v := strconv.FormatUint(uint64(n.TaskID), 10)
+		notif.TaskID = &v
+	}
+	if n.ProjectID != 0 {
+		v := strconv.FormatUint(uint64(n.ProjectID), 10)
+		notif.ProjectID = &v
+	}
+	return notif
 }
 
 func strPtr(s string) *string {

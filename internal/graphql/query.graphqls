@@ -23,4 +23,5 @@ type Query {
   notificationSettings(agentID: ID!): [NotificationSetting!]!
   notificationTypes: [NotificationTypeInfo!]!
   notifications(agentID: ID!): [NotificationEvent!]!
+  webhooks(projectID: ID!): [Webhook!]!
 }

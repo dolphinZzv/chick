@@ -271,6 +271,22 @@ type TimelineEvent struct {
 	Actor      *Agent         `json:"actor"`
 }
 
+type Webhook struct {
+	ID        string `json:"id"`
+	ProjectID string `json:"projectID"`
+	AgentID   string `json:"agentID"`
+	Agent     *Agent `json:"agent"`
+	Name      string `json:"name"`
+	Secret    string `json:"secret"`
+	Enabled   bool   `json:"enabled"`
+	CreatedAt string `json:"createdAt"`
+}
+
+type WebhookPayload struct {
+	Webhook     *Webhook `json:"webhook"`
+	CurlExample string   `json:"curlExample"`
+}
+
 type AgentKind string
 
 const (

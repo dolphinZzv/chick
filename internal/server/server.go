@@ -28,6 +28,7 @@ type Server struct {
 	TaskService     *service.TaskService
 	WorkflowService *service.WorkflowService
 	FeedbackService *service.FeedbackService
+	WebhookService  *service.WebhookService
 	Authenticator   *auth.Authenticator
 	NotifService    *notifications.Service
 	MatchingEngine  *matching.Engine
@@ -58,6 +59,7 @@ func New(cfg *config.Config) (*Server, error) {
 	feedbackRepo := gormrepo.NewFeedbackRepo(db)
 	proposalRepo := gormrepo.NewProposalRepo(db)
 	taskRepo := gormrepo.NewTaskRepo(db)
+	webhookRepo := gormrepo.NewWebhookRepo(db)
 
 	// Init auth
 	authn := auth.New(cfg.JWTSecret)
@@ -88,6 +90,7 @@ func New(cfg *config.Config) (*Server, error) {
 		Feedback:      feedbackRepo,
 		Proposal:      proposalRepo,
 		Task:          taskRepo,
+		Webhook:       webhookRepo,
 		DB:            db,
 	}
 
@@ -97,6 +100,7 @@ func New(cfg *config.Config) (*Server, error) {
 	taskSvc := service.NewTaskService(repos, taskRepo, timelineRepo, bus)
 	workflowSvc := service.NewWorkflowService(issueSvc)
 	feedbackSvc := service.NewFeedbackService(feedbackRepo, bus)
+	webhookSvc := service.NewWebhookService(repos, webhookRepo, issueRepo)
 
 	srv := &Server{
 		Config:          cfg,
@@ -110,6 +114,7 @@ func New(cfg *config.Config) (*Server, error) {
 		TaskService:     taskSvc,
 		WorkflowService: workflowSvc,
 		FeedbackService: feedbackSvc,
+		WebhookService:  webhookSvc,
 		Authenticator:   authn,
 		NotifService:    notifSvc,
 		MatchingEngine:  matchingEngine,

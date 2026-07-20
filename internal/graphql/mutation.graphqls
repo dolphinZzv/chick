@@ -59,4 +59,7 @@ type Mutation {
   updateNotificationSetting(agentID: ID!, notificationType: String!, enabled: Boolean!, channel: String): NotificationSetting!
   markNotificationRead(id: ID!): NotificationEvent!
   markAllNotificationsRead(agentID: ID!): Boolean!
+
+  createWebhook(projectID: ID!, agentID: ID!, name: String!): WebhookPayload!
+  deleteWebhook(id: ID!): Boolean!
 }

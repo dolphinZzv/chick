@@ -1,0 +1,15 @@
+type Webhook {
+  id: ID!
+  projectID: ID!
+  agentID: ID!
+  agent: Agent!
+  name: String!
+  secret: String!
+  enabled: Boolean!
+  createdAt: String!
+}
+
+type WebhookPayload {
+  webhook: Webhook!
+  curlExample: String!
+}

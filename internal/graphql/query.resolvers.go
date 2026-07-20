@@ -523,37 +523,21 @@ func (r *queryResolver) Notifications(ctx context.Context, agentID string) ([]*N
 	return result, nil
 }
 
+// Webhooks is the resolver for the webhooks field.
+func (r *queryResolver) Webhooks(ctx context.Context, projectID string) ([]*Webhook, error) {
+	pid := parseID(projectID)
+	webhooks, err := r.WebhookSvc.ListByProject(pid)
+	if err != nil {
+		return nil, fmt.Errorf("list webhooks: %w", err)
+	}
+	result := make([]*Webhook, len(webhooks))
+	for i, w := range webhooks {
+		result[i] = webhookFromModel(&w)
+	}
+	return result, nil
+}
+
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
 type queryResolver struct{ *Resolver }
-
-func notificationToEvent(n notifications.Notification) *NotificationEvent {
-	idStr := strconv.FormatUint(uint64(n.ID), 10)
-	notif := &NotificationEvent{
-		ID:               idStr,
-		Number:           int32(n.ID),
-		AgentID:          strconv.FormatUint(uint64(n.AgentID), 10),
-		NotificationType: string(n.Type),
-		Message:          n.Message,
-		Read:             n.Read,
-		CreatedAt:        n.CreatedAt,
-	}
-	if n.IssueID != 0 {
-		v := strconv.FormatUint(uint64(n.IssueID), 10)
-		notif.IssueID = &v
-	}
-	if n.ProposalID != 0 {
-		v := strconv.FormatUint(uint64(n.ProposalID), 10)
-		notif.ProposalID = &v
-	}
-	if n.TaskID != 0 {
-		v := strconv.FormatUint(uint64(n.TaskID), 10)
-		notif.TaskID = &v
-	}
-	if n.ProjectID != 0 {
-		v := strconv.FormatUint(uint64(n.ProjectID), 10)
-		notif.ProjectID = &v
-	}
-	return notif
-}

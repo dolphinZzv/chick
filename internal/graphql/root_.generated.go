@@ -177,6 +177,7 @@ type ComplexityRoot struct {
 		CreateProjectAgent        func(childComplexity int, projectID string, name string, kind AgentKind, role *ProjectRole, externalID *string, secret *string, capabilities []string, deviceInfo *string, modelInfo *string) int
 		CreateProposal            func(childComplexity int, projectID string, title string, description *string, priority Priority, labelIDs []string) int
 		CreateTask                func(childComplexity int, proposalID string, title string, description *string, priority *Priority, assigneeID *string) int
+		CreateWebhook             func(childComplexity int, projectID string, agentID string, name string) int
 		DeleteAgent               func(childComplexity int, id string) int
 		DeleteComment             func(childComplexity int, id string) int
 		DeleteIssue               func(childComplexity int, id string) int
@@ -185,6 +186,7 @@ type ComplexityRoot struct {
 		DeleteProject             func(childComplexity int, id string) int
 		DeleteProposal            func(childComplexity int, id string) int
 		DeleteTask                func(childComplexity int, id string) int
+		DeleteWebhook             func(childComplexity int, id string) int
 		LinkIssuesToTask          func(childComplexity int, taskID string, issueIDs []string) int
 		LoginAgent                func(childComplexity int, externalID string, secret string) int
 		MarkAllNotificationsRead  func(childComplexity int, agentID string) int
@@ -320,6 +322,7 @@ type ComplexityRoot struct {
 		ValidProposalTransitions func(childComplexity int, state ProposalState) int
 		ValidTaskTransitions     func(childComplexity int, state TaskState) int
 		ValidTransitions         func(childComplexity int, state IssueState) int
+		Webhooks                 func(childComplexity int, projectID string) int
 	}
 
 	RegisterResult struct {
@@ -368,6 +371,22 @@ type ComplexityRoot struct {
 		Payload    func(childComplexity int) int
 		ProposalID func(childComplexity int) int
 		TaskID     func(childComplexity int) int
+	}
+
+	Webhook struct {
+		Agent     func(childComplexity int) int
+		AgentID   func(childComplexity int) int
+		CreatedAt func(childComplexity int) int
+		Enabled   func(childComplexity int) int
+		ID        func(childComplexity int) int
+		Name      func(childComplexity int) int
+		ProjectID func(childComplexity int) int
+		Secret    func(childComplexity int) int
+	}
+
+	WebhookPayload struct {
+		CurlExample func(childComplexity int) int
+		Webhook     func(childComplexity int) int
 	}
 }
 
@@ -1258,6 +1277,18 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.ComplexityRoot.Mutation.CreateTask(childComplexity, args["proposalID"].(string), args["title"].(string), args["description"].(*string), args["priority"].(*Priority), args["assigneeID"].(*string)), true
 
+	case "Mutation.createWebhook":
+		if e.ComplexityRoot.Mutation.CreateWebhook == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createWebhook_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.ComplexityRoot.Mutation.CreateWebhook(childComplexity, args["projectID"].(string), args["agentID"].(string), args["name"].(string)), true
+
 	case "Mutation.deleteAgent":
 		if e.ComplexityRoot.Mutation.DeleteAgent == nil {
 			break
@@ -1353,6 +1384,18 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.Mutation.DeleteTask(childComplexity, args["id"].(string)), true
+
+	case "Mutation.deleteWebhook":
+		if e.ComplexityRoot.Mutation.DeleteWebhook == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteWebhook_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.ComplexityRoot.Mutation.DeleteWebhook(childComplexity, args["id"].(string)), true
 
 	case "Mutation.linkIssuesToTask":
 		if e.ComplexityRoot.Mutation.LinkIssuesToTask == nil {
@@ -2361,6 +2404,18 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.ComplexityRoot.Query.ValidTransitions(childComplexity, args["state"].(IssueState)), true
 
+	case "Query.webhooks":
+		if e.ComplexityRoot.Query.Webhooks == nil {
+			break
+		}
+
+		args, err := ec.field_Query_webhooks_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.ComplexityRoot.Query.Webhooks(childComplexity, args["projectID"].(string)), true
+
 	case "RegisterResult.agent":
 		if e.ComplexityRoot.RegisterResult.Agent == nil {
 			break
@@ -2602,6 +2657,76 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.ComplexityRoot.TimelineEvent.TaskID(childComplexity), true
 
+	case "Webhook.agent":
+		if e.ComplexityRoot.Webhook.Agent == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Webhook.Agent(childComplexity), true
+
+	case "Webhook.agentID":
+		if e.ComplexityRoot.Webhook.AgentID == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Webhook.AgentID(childComplexity), true
+
+	case "Webhook.createdAt":
+		if e.ComplexityRoot.Webhook.CreatedAt == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Webhook.CreatedAt(childComplexity), true
+
+	case "Webhook.enabled":
+		if e.ComplexityRoot.Webhook.Enabled == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Webhook.Enabled(childComplexity), true
+
+	case "Webhook.id":
+		if e.ComplexityRoot.Webhook.ID == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Webhook.ID(childComplexity), true
+
+	case "Webhook.name":
+		if e.ComplexityRoot.Webhook.Name == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Webhook.Name(childComplexity), true
+
+	case "Webhook.projectID":
+		if e.ComplexityRoot.Webhook.ProjectID == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Webhook.ProjectID(childComplexity), true
+
+	case "Webhook.secret":
+		if e.ComplexityRoot.Webhook.Secret == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Webhook.Secret(childComplexity), true
+
+	case "WebhookPayload.curlExample":
+		if e.ComplexityRoot.WebhookPayload.CurlExample == nil {
+			break
+		}
+
+		return e.ComplexityRoot.WebhookPayload.CurlExample(childComplexity), true
+
+	case "WebhookPayload.webhook":
+		if e.ComplexityRoot.WebhookPayload.Webhook == nil {
+			break
+		}
+
+		return e.ComplexityRoot.WebhookPayload.Webhook(childComplexity), true
+
 	}
 	return 0, false
 }
@@ -2700,7 +2825,7 @@ func newExecutionContext(
 	}
 }
 
-//go:embed "agent.graphqls" "comment.graphqls" "feedback.graphqls" "issue.graphqls" "label.graphqls" "milestone.graphqls" "mutation.graphqls" "notification.graphqls" "project.graphqls" "proposal.graphqls" "query.graphqls" "scalar.graphqls" "subscription.graphqls" "task.graphqls" "timeline.graphqls"
+//go:embed "agent.graphqls" "comment.graphqls" "feedback.graphqls" "issue.graphqls" "label.graphqls" "milestone.graphqls" "mutation.graphqls" "notification.graphqls" "project.graphqls" "proposal.graphqls" "query.graphqls" "scalar.graphqls" "subscription.graphqls" "task.graphqls" "timeline.graphqls" "webhook.graphqls"
 var sourcesFS embed.FS
 
 func sourceData(filename string) string {
@@ -2727,5 +2852,6 @@ var sources = []*ast.Source{
 	{Name: "subscription.graphqls", Input: sourceData("subscription.graphqls"), BuiltIn: false},
 	{Name: "task.graphqls", Input: sourceData("task.graphqls"), BuiltIn: false},
 	{Name: "timeline.graphqls", Input: sourceData("timeline.graphqls"), BuiltIn: false},
+	{Name: "webhook.graphqls", Input: sourceData("webhook.graphqls"), BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)

@@ -21,6 +21,7 @@ type Resolver struct {
 	TaskSvc      *service.TaskService
 	WorkflowSvc  *service.WorkflowService
 	FeedbackSvc  *service.FeedbackService
+	WebhookSvc   *service.WebhookService
 	NotifSvc     *notifications.Service
 	EventBus     *events.Bus
 	HumanReg     bool
@@ -36,6 +37,7 @@ func NewResolver(
 	taskSvc *service.TaskService,
 	workflowSvc *service.WorkflowService,
 	feedbackSvc *service.FeedbackService,
+	webhookSvc *service.WebhookService,
 	notifSvc *notifications.Service,
 	eventBus *events.Bus,
 	allowHumanRegistration bool,
@@ -49,6 +51,7 @@ func NewResolver(
 		TaskSvc:      taskSvc,
 		WorkflowSvc:  workflowSvc,
 		FeedbackSvc:  feedbackSvc,
+		WebhookSvc:   webhookSvc,
 		NotifSvc:     notifSvc,
 		EventBus:     eventBus,
 		HumanReg:     allowHumanRegistration,
