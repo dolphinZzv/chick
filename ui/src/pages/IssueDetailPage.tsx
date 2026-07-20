@@ -36,7 +36,7 @@ interface IssueDetail {
   difficulty: number | null;
   environment: string | null;
   branch: string | null;
-  link: string | null;
+  links: string[];
   createdAt: string;
   creator: { id: string; name: string };
   assignees: Array<{
@@ -226,8 +226,9 @@ export function IssueDetailPage() {
   const [editEnv, setEditEnv] = useState("");
   const [editingBranch, setEditingBranch] = useState(false);
   const [editBranch, setEditBranch] = useState("");
-  const [editingLink, setEditingLink] = useState(false);
-  const [editLink, setEditLink] = useState("");
+  const [editingLinks, setEditingLinks] = useState(false);
+  const [editLinks, setEditLinks] = useState<string[]>([]);
+  const [newLink, setNewLink] = useState("");
   const [projectAgents, setProjectAgents] = useState<Array<{ id: string; name: string }>>([]);
   const [showAssigneePicker, setShowAssigneePicker] = useState(false);
   const [transitions, setTransitions] = useState<string[]>([]);
@@ -247,7 +248,7 @@ export function IssueDetailPage() {
         `query issue($id: ID!) {
           issue(id: $id) {
             id number title description state priority dueDate
-            startedAt completedAt difficulty environment branch link
+            startedAt completedAt difficulty environment branch links
             createdAt
             creator { id name }
             assignees { id agent { id name } state }
@@ -321,7 +322,7 @@ export function IssueDetailPage() {
   // Subscribe to real-time issue updates
   useSubscription(
     `subscription issueUpdated($issueID: ID!) {
-      issueUpdated(issueID: $issueID) { id number title description state priority dueDate startedAt completedAt difficulty environment branch link createdAt closedAt creator { id name } assignees { id agent { id name } state } labels { id name color } milestone { id title } projectID }
+      issueUpdated(issueID: $issueID) { id number title description state priority dueDate startedAt completedAt difficulty environment branch links createdAt closedAt creator { id name } assignees { id agent { id name } state } labels { id name color } milestone { id title } projectID }
     }`,
     id ? { issueID: id } : undefined,
     (data: any) => {
@@ -460,11 +461,11 @@ export function IssueDetailPage() {
     if (!id) return;
     try {
       const json = await gql(
-        `mutation updateIssue($id: ID!, $title: String, $description: String, $priority: Priority, $milestoneId: ID, $difficulty: Int, $startedAt: Time, $completedAt: Time, $environment: String, $branch: String, $link: String) {
-          updateIssue(id: $id, title: $title, description: $description, priority: $priority, milestoneId: $milestoneId, difficulty: $difficulty, startedAt: $startedAt, completedAt: $completedAt, environment: $environment, branch: $branch, link: $link) {
-            id title description priority milestone { id title }
-          }
-        }`,
+         `mutation updateIssue($id: ID!, $title: String, $description: String, $priority: Priority, $milestoneId: ID, $difficulty: Int, $startedAt: Time, $completedAt: Time, $environment: String, $branch: String, $links: [String!]) {
+           updateIssue(id: $id, title: $title, description: $description, priority: $priority, milestoneId: $milestoneId, difficulty: $difficulty, startedAt: $startedAt, completedAt: $completedAt, environment: $environment, branch: $branch, links: $links) {
+             id title description priority milestone { id title } difficulty environment branch links startedAt completedAt
+           }
+         }`,
         { id, ...fields }
       );
       if (!json.errors && json.data) {
@@ -517,9 +518,25 @@ export function IssueDetailPage() {
     setEditingBranch(false);
   };
 
-  const handleSaveLink = async () => {
-    await handleUpdateIssue({ link: editLink || null });
-    setEditingLink(false);
+  const handleSaveLinks = async () => {
+    await handleUpdateIssue({ links: editLinks });
+    setEditingLinks(false);
+  };
+
+  const handleStartEditLinks = () => {
+    setEditLinks([...issue.links]);
+    setEditingLinks(true);
+  };
+
+  const handleAddNewLink = () => {
+    const trimmed = newLink.trim();
+    if (!trimmed) return;
+    setEditLinks([...editLinks, trimmed]);
+    setNewLink("");
+  };
+
+  const handleRemoveEditLink = (idx: number) => {
+    setEditLinks(editLinks.filter((_, i) => i !== idx));
   };
 
 
@@ -1176,21 +1193,52 @@ export function IssueDetailPage() {
         )}
       </div>
 
-      {/* Link */}
+      {/* Links */}
       <div className="border bg-card p-4 rounded-lg">
-        <div className="text-xs text-muted-foreground mb-1">链接</div>
-        {editingLink ? (
-          <div className="flex gap-1">
-            <Input value={editLink} onChange={(e) => setEditLink(e.target.value)} className="h-7 text-xs flex-1"
-              placeholder="https://..."
-              autoFocus onKeyDown={(e) => { if (e.key === "Enter") handleSaveLink(); if (e.key === "Escape") setEditingLink(false); }} />
-            <Button size="sm" className="h-7 text-xs" onClick={handleSaveLink}>确定</Button>
+        <div className="flex items-center justify-between mb-1">
+          <span className="text-xs text-muted-foreground">链接</span>
+          {!editingLinks && agent && (
+            <Button variant="ghost" size="sm" className="h-6 px-2 text-xs" onClick={handleStartEditLinks}>
+              <Plus className="h-3 w-3 mr-1" />
+              {issue.links.length > 0 ? "编辑" : "添加"}
+            </Button>
+          )}
+        </div>
+        {editingLinks ? (
+          <div className="space-y-2">
+            {editLinks.map((url, idx) => (
+              <div key={idx} className="flex items-center gap-1">
+                <Input value={url} onChange={(e) => { const u = [...editLinks]; u[idx] = e.target.value; setEditLinks(u); }}
+                  className="h-7 text-xs flex-1" />
+                <Button size="sm" variant="ghost" className="h-7 px-1 text-muted-foreground hover:text-destructive shrink-0"
+                  onClick={() => handleRemoveEditLink(idx)}>
+                  <X className="h-3 w-3" />
+                </Button>
+              </div>
+            ))}
+            <div className="flex items-center gap-1">
+              <Input value={newLink} onChange={(e) => setNewLink(e.target.value)}
+                placeholder="https://..." className="h-7 text-xs flex-1"
+                onKeyDown={(e) => { if (e.key === "Enter") handleAddNewLink(); }} />
+              <Button size="sm" className="h-7 text-xs shrink-0" onClick={handleAddNewLink} disabled={!newLink.trim()}>
+                <Plus className="h-3 w-3" />
+              </Button>
+            </div>
+            <div className="flex justify-end gap-1">
+              <Button size="sm" className="h-7 text-xs" onClick={handleSaveLinks}>确定</Button>
+              <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => setEditingLinks(false)}>取消</Button>
+            </div>
+          </div>
+        ) : issue.links.length > 0 ? (
+          <div className="space-y-1">
+            {issue.links.map((url, idx) => (
+              <div key={idx} className="flex items-center gap-1 text-sm group">
+                <a href={url} target="_blank" rel="noreferrer" className="text-primary underline hover:text-primary/80 truncate flex-1">{url}</a>
+              </div>
+            ))}
           </div>
         ) : (
-          <span className="text-sm cursor-pointer hover:text-primary"
-            onClick={() => { setEditLink(issue.link || ""); setEditingLink(true); }}>
-            {issue.link ? <a href={issue.link} target="_blank" rel="noreferrer" className="text-primary underline" onClick={(e) => e.stopPropagation()}>打开链接</a> : <span className="text-muted-foreground">未设置</span>}
-          </span>
+          <span className="text-sm text-muted-foreground">未设置</span>
         )}
       </div>
 

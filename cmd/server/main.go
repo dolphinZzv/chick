@@ -246,23 +246,31 @@ func handleMCPEvents(srv *server.Server) http.HandlerFunc {
 		// Subscribe to all relevant event types
 		var cancels []func()
 
+		sseSend := func(eventType events.EventType, payload interface{}) {
+			data, err := json.Marshal(map[string]interface{}{
+				"type":    string(eventType),
+				"payload": payload,
+			})
+			if err != nil {
+				log.Printf("[sse] marshal error: %v", err)
+				return
+			}
+			select {
+			case notifChan <- data:
+			default:
+			}
+		}
+
 		cancels = append(cancels, srv.EventBus.Subscribe(events.EventProposalCreated, func(evt events.Event) {
 			p, ok := evt.Payload.(events.ProposalCreatedPayload)
 			if !ok || !projectSet[p.ProjectID] {
 				return
 			}
-			data, _ := json.Marshal(map[string]interface{}{
-				"type": "proposal.created",
-				"payload": map[string]interface{}{
-					"proposalId": fmt.Sprintf("%d", p.ProposalID),
-					"projectId":  fmt.Sprintf("%d", p.ProjectID),
-					"authorId":   fmt.Sprintf("%d", p.AuthorID),
-				},
+			sseSend("proposal.created", map[string]interface{}{
+				"proposalId": fmt.Sprintf("%d", p.ProposalID),
+				"projectId":  fmt.Sprintf("%d", p.ProjectID),
+				"authorId":   fmt.Sprintf("%d", p.AuthorID),
 			})
-			select {
-			case notifChan <- data:
-			default:
-			}
 		}))
 
 		cancels = append(cancels, srv.EventBus.Subscribe(events.EventProposalStateChanged, func(evt events.Event) {
@@ -270,20 +278,13 @@ func handleMCPEvents(srv *server.Server) http.HandlerFunc {
 			if !ok || !projectSet[p.ProjectID] {
 				return
 			}
-			data, _ := json.Marshal(map[string]interface{}{
-				"type": "proposal.state_changed",
-				"payload": map[string]interface{}{
-					"proposalId": fmt.Sprintf("%d", p.ProposalID),
-					"projectId":  fmt.Sprintf("%d", p.ProjectID),
-					"from":       p.From,
-					"to":         p.To,
-					"actorId":    fmt.Sprintf("%d", p.ActorID),
-				},
+			sseSend("proposal.state_changed", map[string]interface{}{
+				"proposalId": fmt.Sprintf("%d", p.ProposalID),
+				"projectId":  fmt.Sprintf("%d", p.ProjectID),
+				"from":       p.From,
+				"to":         p.To,
+				"actorId":    fmt.Sprintf("%d", p.ActorID),
 			})
-			select {
-			case notifChan <- data:
-			default:
-			}
 		}))
 
 		cancels = append(cancels, srv.EventBus.Subscribe(events.EventTaskCreated, func(evt events.Event) {
@@ -291,18 +292,11 @@ func handleMCPEvents(srv *server.Server) http.HandlerFunc {
 			if !ok || !projectSet[p.ProjectID] {
 				return
 			}
-			data, _ := json.Marshal(map[string]interface{}{
-				"type": "task.created",
-				"payload": map[string]interface{}{
-					"taskId":     fmt.Sprintf("%d", p.TaskID),
-					"proposalId": fmt.Sprintf("%d", p.ProposalID),
-					"projectId":  fmt.Sprintf("%d", p.ProjectID),
-				},
+			sseSend("task.created", map[string]interface{}{
+				"taskId":     fmt.Sprintf("%d", p.TaskID),
+				"proposalId": fmt.Sprintf("%d", p.ProposalID),
+				"projectId":  fmt.Sprintf("%d", p.ProjectID),
 			})
-			select {
-			case notifChan <- data:
-			default:
-			}
 		}))
 
 		cancels = append(cancels, srv.EventBus.Subscribe(events.EventTaskStateChanged, func(evt events.Event) {
@@ -310,21 +304,14 @@ func handleMCPEvents(srv *server.Server) http.HandlerFunc {
 			if !ok || !projectSet[p.ProjectID] {
 				return
 			}
-			data, _ := json.Marshal(map[string]interface{}{
-				"type": "task.state_changed",
-				"payload": map[string]interface{}{
-					"taskId":     fmt.Sprintf("%d", p.TaskID),
-					"proposalId": fmt.Sprintf("%d", p.ProposalID),
-					"projectId":  fmt.Sprintf("%d", p.ProjectID),
-					"from":       p.From,
-					"to":         p.To,
-					"actorId":    fmt.Sprintf("%d", p.ActorID),
-				},
+			sseSend("task.state_changed", map[string]interface{}{
+				"taskId":     fmt.Sprintf("%d", p.TaskID),
+				"proposalId": fmt.Sprintf("%d", p.ProposalID),
+				"projectId":  fmt.Sprintf("%d", p.ProjectID),
+				"from":       p.From,
+				"to":         p.To,
+				"actorId":    fmt.Sprintf("%d", p.ActorID),
 			})
-			select {
-			case notifChan <- data:
-			default:
-			}
 		}))
 
 		cancels = append(cancels, srv.EventBus.Subscribe(events.EventIssueCreated, func(evt events.Event) {
@@ -332,18 +319,11 @@ func handleMCPEvents(srv *server.Server) http.HandlerFunc {
 			if !ok || !projectSet[p.ProjectID] {
 				return
 			}
-			data, _ := json.Marshal(map[string]interface{}{
-				"type": "issue.created",
-				"payload": map[string]interface{}{
-					"issueId":   fmt.Sprintf("%d", p.IssueID),
-					"projectId": fmt.Sprintf("%d", p.ProjectID),
-					"creatorId": fmt.Sprintf("%d", p.CreatorID),
-				},
+			sseSend("issue.created", map[string]interface{}{
+				"issueId":   fmt.Sprintf("%d", p.IssueID),
+				"projectId": fmt.Sprintf("%d", p.ProjectID),
+				"creatorId": fmt.Sprintf("%d", p.CreatorID),
 			})
-			select {
-			case notifChan <- data:
-			default:
-			}
 		}))
 
 		cancels = append(cancels, srv.EventBus.Subscribe(events.EventIssueStateChanged, func(evt events.Event) {
@@ -351,20 +331,13 @@ func handleMCPEvents(srv *server.Server) http.HandlerFunc {
 			if !ok || !projectSet[p.ProjectID] {
 				return
 			}
-			data, _ := json.Marshal(map[string]interface{}{
-				"type": "issue.state_changed",
-				"payload": map[string]interface{}{
-					"issueId":   fmt.Sprintf("%d", p.IssueID),
-					"projectId": fmt.Sprintf("%d", p.ProjectID),
-					"from":      p.From,
-					"to":        p.To,
-					"actorId":   fmt.Sprintf("%d", p.ActorID),
-				},
+			sseSend("issue.state_changed", map[string]interface{}{
+				"issueId":   fmt.Sprintf("%d", p.IssueID),
+				"projectId": fmt.Sprintf("%d", p.ProjectID),
+				"from":      p.From,
+				"to":        p.To,
+				"actorId":   fmt.Sprintf("%d", p.ActorID),
 			})
-			select {
-			case notifChan <- data:
-			default:
-			}
 		}))
 
 		cancels = append(cancels, srv.EventBus.Subscribe(events.EventIssueAssigneeChanged, func(evt events.Event) {
@@ -372,19 +345,12 @@ func handleMCPEvents(srv *server.Server) http.HandlerFunc {
 			if !ok || !projectSet[p.ProjectID] {
 				return
 			}
-			data, _ := json.Marshal(map[string]interface{}{
-				"type": "issue.assignee_changed",
-				"payload": map[string]interface{}{
-					"issueId":   fmt.Sprintf("%d", p.IssueID),
-					"projectId": fmt.Sprintf("%d", p.ProjectID),
-					"agentId":   fmt.Sprintf("%d", p.AgentID),
-					"action":    p.Action,
-				},
+			sseSend("issue.assignee_changed", map[string]interface{}{
+				"issueId":   fmt.Sprintf("%d", p.IssueID),
+				"projectId": fmt.Sprintf("%d", p.ProjectID),
+				"agentId":   fmt.Sprintf("%d", p.AgentID),
+				"action":    p.Action,
 			})
-			select {
-			case notifChan <- data:
-			default:
-			}
 		}))
 
 		cancels = append(cancels, srv.EventBus.Subscribe(events.EventCommentAdded, func(evt events.Event) {
@@ -392,19 +358,12 @@ func handleMCPEvents(srv *server.Server) http.HandlerFunc {
 			if !ok || !projectSet[p.ProjectID] {
 				return
 			}
-			data, _ := json.Marshal(map[string]interface{}{
-				"type": "comment.added",
-				"payload": map[string]interface{}{
-					"commentId": fmt.Sprintf("%d", p.CommentID),
-					"issueId":   fmt.Sprintf("%d", p.IssueID),
-					"projectId": fmt.Sprintf("%d", p.ProjectID),
-					"authorId":  fmt.Sprintf("%d", p.AuthorID),
-				},
+			sseSend("comment.added", map[string]interface{}{
+				"commentId": fmt.Sprintf("%d", p.CommentID),
+				"issueId":   fmt.Sprintf("%d", p.IssueID),
+				"projectId": fmt.Sprintf("%d", p.ProjectID),
+				"authorId":  fmt.Sprintf("%d", p.AuthorID),
 			})
-			select {
-			case notifChan <- data:
-			default:
-			}
 		}))
 
 		// Cleanup subscriptions on disconnect

@@ -1,0 +1,208 @@
+#!/usr/bin/env bash
+# chick 开发环境启动脚本
+# 架构: Caddy (:8090) → [ Vite dev (:5173) | Go backend (:9090) ]
+#
+# 用法:
+#   ./dev         # 启动全部
+#   ./dev stop    # 停止全部
+#   ./dev restart # 重启全部
+#   ./dev status  # 查看状态
+
+set -euo pipefail
+
+# ─── 配置 ─────────────────────────────────────────────────
+BACKEND_PORT=9091
+VITE_PORT=5173
+CADDY_PORT=9090
+LOG_DIR="/tmp/chick-dev"
+
+# ─── 保证日志目录存在 ─────────────────────────────────────
+mkdir -p "$LOG_DIR"
+
+# ─── 子进程追踪 ───────────────────────────────────────────
+PIDS=()
+
+cleanup() {
+    log "正在停止..."
+    for pid in "${PIDS[@]}"; do
+        kill "$pid" 2>/dev/null || true
+    done
+    # 按端口兜底清理
+    for port in $CADDY_PORT $VITE_PORT $BACKEND_PORT; do
+        kill_port "$port"
+    done
+    ok "全部已停止"
+}
+
+# ─── 辅助函数 ─────────────────────────────────────────────
+log()  { echo "[dev] $*"; }
+err()  { echo "[dev] ❌ $*" >&2; }
+ok()   { echo "[dev] ✅ $*"; }
+warn() { echo "[dev] ⚠️  $*"; }
+
+find_pid_by_port() {
+    lsof -ti:"$1" 2>/dev/null || true
+}
+
+kill_port() {
+    local port=$1
+    local pid
+    pid=$(find_pid_by_port "$port")
+    if [ -n "$pid" ]; then
+        kill "$pid" 2>/dev/null || true
+        log "已释放端口 $port (PID $pid)"
+    fi
+}
+
+wait_port() {
+    local port=$1
+    local max=30
+    local i=0
+    while ! lsof -ti:"$port" >/dev/null 2>&1; do
+        i=$((i+1))
+        if [ $i -ge $max ]; then
+            return 1
+        fi
+        sleep 0.5
+    done
+    return 0
+}
+
+# ─── 启动后端 ─────────────────────────────────────────────
+start_backend() {
+    # 确保后端产物最新
+    log "构建 Go 后端..."
+    cd "$PROJECT_ROOT"
+    go build -o bin/chick-dev ./cmd/server/
+
+    # 启动后端 (nohup)
+    log "启动后端 (port $BACKEND_PORT)..."
+    cd "$PROJECT_ROOT"
+    CHICK_DB_DRIVER=sqlite3 \
+    CHICK_DB_DSN="file:dev.db?_pragma=journal_mode(WAL)" \
+    CHICK_PORT=$BACKEND_PORT \
+    CHICK_ALLOW_HUMAN_REGISTRATION=true \
+    CHICK_ALLOWED_ORIGINS="*" \
+    CHICK_JWT_SECRET="chick-dev-secret-key-2024" \
+    CHICK_REDIS_ADDR="localhost:6379" \
+    CHICK_REDIS_DB=1 \
+        nohup ./bin/chick-dev &>"$LOG_DIR/backend.log" &
+    local pid=$!
+    PIDS+=($pid)
+    log "后端 PID: $pid"
+
+    if wait_port "$BACKEND_PORT"; then
+        ok "后端已在 http://localhost:$BACKEND_PORT 运行"
+    else
+        err "后端启动失败，查看日志: $LOG_DIR/backend.log"
+        return 1
+    fi
+}
+
+# ─── 启动 Vite ────────────────────────────────────────────
+start_vite() {
+    log "启动 Vite 前端 (port $VITE_PORT)..."
+    cd "$PROJECT_ROOT/ui"
+    nohup npx vite --port "$VITE_PORT" &>"$LOG_DIR/vite.log" &
+    local pid=$!
+    PIDS+=($pid)
+    log "Vite PID: $pid"
+
+    # Vite 启动稍快，直接等
+    sleep 2
+    if wait_port "$VITE_PORT"; then
+        ok "Vite dev 已在 http://localhost:$VITE_PORT 运行"
+    else
+        err "Vite 启动失败，查看日志: $LOG_DIR/vite.log"
+        return 1
+    fi
+}
+
+# ─── 启动 Caddy ───────────────────────────────────────────
+start_caddy() {
+    log "启动 Caddy (port $CADDY_PORT)..."
+    cd "$PROJECT_ROOT"
+    nohup caddy run --config Caddyfile --adapter caddyfile &>"$LOG_DIR/caddy.log" &
+    local pid=$!
+    PIDS+=($pid)
+    log "Caddy PID: $pid"
+
+    sleep 1
+    if wait_port "$CADDY_PORT"; then
+        ok "Caddy 已在 http://localhost:$CADDY_PORT 运行"
+    else
+        err "Caddy 启动失败，查看日志: $LOG_DIR/caddy.log"
+        return 1
+    fi
+}
+
+# ─── 停止全部 ─────────────────────────────────────────────
+stop_all() {
+    log "停止全部服务..."
+    for port in $CADDY_PORT $VITE_PORT $BACKEND_PORT; do
+        kill_port "$port"
+    done
+    ok "全部已停止"
+}
+
+# ─── 查看状态 ─────────────────────────────────────────────
+status() {
+    echo "═══════════════════════════════════════"
+    echo "  Chick 开发环境状态"
+    echo "═══════════════════════════════════════"
+    for name in "后端 :$BACKEND_PORT" "Vite :$VITE_PORT" "Caddy :$CADDY_PORT"; do
+        local label="${name%% *}"
+        local port="${name##*:}"
+        local pid
+        pid=$(find_pid_by_port "$port")
+        if [ -n "$pid" ]; then
+            printf "  ✅ %-8s :%-5s PID %s\n" "$label" "$port" "$pid"
+        else
+            printf "  ⬛ %-8s :%-5s 未运行\n" "$label" "$port"
+        fi
+    done
+    echo "═══════════════════════════════════════"
+    echo "  入口: http://localhost:$CADDY_PORT"
+    echo "  日志: $LOG_DIR/"
+    echo "═══════════════════════════════════════"
+}
+
+# ─── 主入口 ───────────────────────────────────────────────
+PROJECT_ROOT="$(cd "$(dirname "$0")" && pwd)"
+export PROJECT_ROOT
+
+ACTION="${1:-start}"
+
+case "$ACTION" in
+    start)
+        stop_all 2>/dev/null || true
+        sleep 1
+        start_backend
+        start_vite
+        start_caddy
+        echo ""
+        ok "开发环境就绪 → http://localhost:$CADDY_PORT"
+        echo ""
+        echo "  前端热更新: http://localhost:$VITE_PORT"
+        echo "  GraphQL:    http://localhost:$BACKEND_PORT/graphql"
+        echo "  MCP SSE:    http://localhost:$BACKEND_PORT/mcp/events"
+        ;;
+    stop)
+        stop_all
+        ;;
+    restart)
+        stop_all
+        sleep 1
+        start_backend
+        start_vite
+        start_caddy
+        ok "开发环境重启完成 → http://localhost:$CADDY_PORT"
+        ;;
+    status)
+        status
+        ;;
+    *)
+        echo "用法: $0 {start|stop|restart|status}"
+        exit 1
+        ;;
+esac

@@ -375,23 +375,23 @@ func (ec *executionContext) fieldContext_Issue_branch(_ context.Context, field g
 	return fc, nil
 }
 
-func (ec *executionContext) _Issue_link(ctx context.Context, field graphql.CollectedField, obj *Issue) (ret graphql.Marshaler) {
+func (ec *executionContext) _Issue_links(ctx context.Context, field graphql.CollectedField, obj *Issue) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_Issue_link,
+		ec.fieldContext_Issue_links,
 		func(ctx context.Context) (any, error) {
-			return obj.Link, nil
+			return obj.Links, nil
 		},
 		nil,
-		ec.marshalOString2ᚖstring,
+		ec.marshalOString2ᚕstringᚄ,
 		true,
 		false,
 	)
 }
 
-func (ec *executionContext) fieldContext_Issue_link(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Issue_links(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Issue",
 		Field:      field,
@@ -789,8 +789,8 @@ func (ec *executionContext) fieldContext_Issue_children(_ context.Context, field
 				return ec.fieldContext_Issue_environment(ctx, field)
 			case "branch":
 				return ec.fieldContext_Issue_branch(ctx, field)
-			case "link":
-				return ec.fieldContext_Issue_link(ctx, field)
+			case "links":
+				return ec.fieldContext_Issue_links(ctx, field)
 			case "closedAt":
 				return ec.fieldContext_Issue_closedAt(ctx, field)
 			case "startedAt":
@@ -1193,8 +1193,8 @@ func (ec *executionContext) fieldContext_IssueConnection_edges(_ context.Context
 				return ec.fieldContext_Issue_environment(ctx, field)
 			case "branch":
 				return ec.fieldContext_Issue_branch(ctx, field)
-			case "link":
-				return ec.fieldContext_Issue_link(ctx, field)
+			case "links":
+				return ec.fieldContext_Issue_links(ctx, field)
 			case "closedAt":
 				return ec.fieldContext_Issue_closedAt(ctx, field)
 			case "startedAt":
@@ -1323,8 +1323,8 @@ func (ec *executionContext) _Issue(ctx context.Context, sel ast.SelectionSet, ob
 			out.Values[i] = ec._Issue_environment(ctx, field, obj)
 		case "branch":
 			out.Values[i] = ec._Issue_branch(ctx, field, obj)
-		case "link":
-			out.Values[i] = ec._Issue_link(ctx, field, obj)
+		case "links":
+			out.Values[i] = ec._Issue_links(ctx, field, obj)
 		case "closedAt":
 			out.Values[i] = ec._Issue_closedAt(ctx, field, obj)
 		case "startedAt":
@@ -1651,6 +1651,43 @@ func (ec *executionContext) marshalOIssueAssignee2ᚕᚖchickᚋinternalᚋgraph
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
 		return ec.marshalNIssueAssignee2ᚖchickᚋinternalᚋgraphqlᚐIssueAssignee(ctx, sel, v[i])
+	})
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) unmarshalOIssueState2ᚕchickᚋinternalᚋgraphqlᚐIssueStateᚄ(ctx context.Context, v any) ([]IssueState, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
+	var err error
+	res := make([]IssueState, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNIssueState2chickᚋinternalᚋgraphqlᚐIssueState(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalOIssueState2ᚕchickᚋinternalᚋgraphqlᚐIssueStateᚄ(ctx context.Context, sel ast.SelectionSet, v []IssueState) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
+		fc := graphql.GetFieldContext(ctx)
+		fc.Result = &v[i]
+		return ec.marshalNIssueState2chickᚋinternalᚋgraphqlᚐIssueState(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {

@@ -462,8 +462,8 @@ func TestSearchIssues(t *testing.T) {
 	proj, _ := projectSvc.Create("SearchTest", "")
 	projectSvc.AddMember(proj.ID, agent.ID, models.ProjectRoleMember)
 
-	issueSvc.Create(proj.ID, agent.ID, "Fix login bug", "Users cannot login", models.PriorityHigh, nil, nil, nil, nil, nil, nil, nil, nil, nil)
-	issueSvc.Create(proj.ID, agent.ID, "Add tests", "Need unit tests", models.PriorityMedium, nil, nil, nil, nil, nil, nil, nil, nil, nil)
+	issueSvc.Create(service.IssueCreateInput{ProjectID: proj.ID, CreatorID: agent.ID, Title: "Fix login bug", Description: "Users cannot login", Priority: models.PriorityHigh})
+	issueSvc.Create(service.IssueCreateInput{ProjectID: proj.ID, CreatorID: agent.ID, Title: "Add tests", Description: "Need unit tests", Priority: models.PriorityMedium})
 
 	result := call(t, srv, "tools/call", map[string]interface{}{
 		"name": "search_issues",
@@ -605,7 +605,7 @@ func TestMCPCreateIssue_WithExtraFields(t *testing.T) {
 			"priority":    "high",
 			"environment": "staging",
 			"branch":      "feature/test",
-			"link":        "http://example.com",
+			"links":       []interface{}{"http://example.com"},
 			"difficulty":  3,
 		},
 	}, agent.ID)
@@ -618,8 +618,9 @@ func TestMCPCreateIssue_WithExtraFields(t *testing.T) {
 	if result["branch"] != "feature/test" {
 		t.Errorf("expected branch 'feature/test', got %v", result["branch"])
 	}
-	if result["link"] != "http://example.com" {
-		t.Errorf("expected link 'http://example.com', got %v", result["link"])
+	links := result["links"].([]interface{})
+	if len(links) != 1 || links[0] != "http://example.com" {
+		t.Errorf("expected links ['http://example.com'], got %v", result["links"])
 	}
 }
 
@@ -667,7 +668,7 @@ func TestMCPEditIssue_WithExtraFields(t *testing.T) {
 			"issueId":     issueID,
 			"environment": "production",
 			"branch":      "main",
-			"link":        "https://example.com/pr/1",
+			"links":       []interface{}{"https://example.com/pr/1"},
 			"difficulty":  4,
 		},
 	}, agent.ID)
@@ -678,8 +679,9 @@ func TestMCPEditIssue_WithExtraFields(t *testing.T) {
 	if result["branch"] != "main" {
 		t.Errorf("expected branch 'main', got %v", result["branch"])
 	}
-	if result["link"] != "https://example.com/pr/1" {
-		t.Errorf("expected link 'https://example.com/pr/1', got %v", result["link"])
+	links := result["links"].([]interface{})
+	if len(links) != 1 || links[0] != "https://example.com/pr/1" {
+		t.Errorf("expected links ['https://example.com/pr/1'], got %v", result["links"])
 	}
 }
 

@@ -609,8 +609,8 @@ members { agent { id number name kind status capabilities deviceInfo modelInfo l
                   <Button
                     size="icon"
                     variant="outline"
-                    onClick={() => {
-                      navigator.clipboard.writeText(createdToken || "");
+                    onClick={async () => {
+                      try { await navigator.clipboard?.writeText(createdToken || ""); } catch {}
                       setTokenCopied(true);
                       setTimeout(() => setTokenCopied(false), 2000);
                     }}
@@ -883,8 +883,8 @@ function CopyBlock({ cmd, cmdCopied, setCmdCopied }: { cmd: string; cmdCopied: b
         size="icon"
         variant="outline"
         className="absolute top-2 right-2 h-7 w-7"
-        onClick={() => {
-          navigator.clipboard.writeText(cmd);
+        onClick={async () => {
+          try { await navigator.clipboard?.writeText(cmd); } catch {}
           setCmdCopied(true);
           setTimeout(() => setCmdCopied(false), 2000);
         }}

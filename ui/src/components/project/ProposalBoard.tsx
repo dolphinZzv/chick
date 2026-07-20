@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CreateProposalDialog } from "@/components/project/CreateProposalDialog";
 import { CreateTaskDialog } from "@/components/project/CreateTaskDialog";
+import { ScrollGradient } from "./ScrollGradient";
 
 interface Agent {
   id: string;
@@ -58,6 +59,7 @@ interface Props {
 
 export function ProposalBoard({ projectId, proposals, onRefresh }: Props) {
   const [taskDialog, setTaskDialog] = useState<{ open: boolean; proposalId: string }>({ open: false, proposalId: "" });
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const grouped = columns.map((col) => ({
     ...col,
@@ -70,7 +72,8 @@ export function ProposalBoard({ projectId, proposals, onRefresh }: Props) {
         <CreateProposalDialog projectId={projectId} onCreated={onRefresh} />
       </div>
 
-      <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none">
+      <ScrollGradient scrollRef={scrollRef}>
+        <div ref={scrollRef} className="flex gap-3 overflow-x-auto pb-2 scrollbar-none">
         {grouped.map((col) => (
           <div key={col.state} className="flex flex-col gap-2 min-w-[220px] w-72 shrink-0">
             <div className="flex items-center justify-between px-1">
@@ -136,7 +139,8 @@ export function ProposalBoard({ projectId, proposals, onRefresh }: Props) {
             )}
           </div>
         ))}
-      </div>
+        </div>
+      </ScrollGradient>
 
       {taskDialog.open && (
         <CreateTaskDialog

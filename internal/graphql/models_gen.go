@@ -81,7 +81,7 @@ type Issue struct {
 	DueDate          *time.Time       `json:"dueDate,omitempty"`
 	Environment      *string          `json:"environment,omitempty"`
 	Branch           *string          `json:"branch,omitempty"`
-	Link             *string          `json:"link,omitempty"`
+	Links            []string         `json:"links,omitempty"`
 	ClosedAt         *time.Time       `json:"closedAt,omitempty"`
 	StartedAt        *time.Time       `json:"startedAt,omitempty"`
 	CompletedAt      *time.Time       `json:"completedAt,omitempty"`

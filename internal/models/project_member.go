@@ -13,8 +13,8 @@ const (
 
 type ProjectMember struct {
 	ID        uint        `gorm:"primaryKey;autoIncrement"`
-	ProjectID uint        `gorm:"not null;index"`
-	AgentID   uint        `gorm:"not null;index"`
+	ProjectID uint        `gorm:"not null;index;uniqueIndex:idx_project_agent"`
+	AgentID   uint        `gorm:"not null;index;uniqueIndex:idx_project_agent"`
 	Role      ProjectRole `gorm:"type:varchar(20);not null;default:member"`
 	CreatedAt time.Time   `gorm:"autoCreateTime"`
 

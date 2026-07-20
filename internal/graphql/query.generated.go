@@ -26,7 +26,7 @@ type QueryResolver interface {
 	Labels(ctx context.Context, projectID string, group *string) ([]*Label, error)
 	Milestones(ctx context.Context, projectID string, state *MilestoneState) ([]*Milestone, error)
 	Issue(ctx context.Context, id string) (*Issue, error)
-	Issues(ctx context.Context, projectID string, state *IssueState, priority *Priority, assigneeID *string, labelIDs []string, search *string, limit *int32, offset *int32) (*IssueConnection, error)
+	Issues(ctx context.Context, projectID string, state *IssueState, states []IssueState, priority *Priority, assigneeID *string, labelIDs []string, search *string, limit *int32, offset *int32) (*IssueConnection, error)
 	Proposal(ctx context.Context, id string) (*Proposal, error)
 	Proposals(ctx context.Context, projectID string, state *ProposalState, priority *Priority, search *string, limit *int32, offset *int32) (*ProposalConnection, error)
 	ValidProposalTransitions(ctx context.Context, state ProposalState) ([]ProposalState, error)
@@ -155,36 +155,41 @@ func (ec *executionContext) field_Query_issues_args(ctx context.Context, rawArgs
 		return nil, err
 	}
 	args["state"] = arg1
-	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "priority", ec.unmarshalOPriority2ᚖchickᚋinternalᚋgraphqlᚐPriority)
+	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "states", ec.unmarshalOIssueState2ᚕchickᚋinternalᚋgraphqlᚐIssueStateᚄ)
 	if err != nil {
 		return nil, err
 	}
-	args["priority"] = arg2
-	arg3, err := graphql.ProcessArgField(ctx, rawArgs, "assigneeID", ec.unmarshalOID2ᚖstring)
+	args["states"] = arg2
+	arg3, err := graphql.ProcessArgField(ctx, rawArgs, "priority", ec.unmarshalOPriority2ᚖchickᚋinternalᚋgraphqlᚐPriority)
 	if err != nil {
 		return nil, err
 	}
-	args["assigneeID"] = arg3
-	arg4, err := graphql.ProcessArgField(ctx, rawArgs, "labelIDs", ec.unmarshalOID2ᚕstringᚄ)
+	args["priority"] = arg3
+	arg4, err := graphql.ProcessArgField(ctx, rawArgs, "assigneeID", ec.unmarshalOID2ᚖstring)
 	if err != nil {
 		return nil, err
 	}
-	args["labelIDs"] = arg4
-	arg5, err := graphql.ProcessArgField(ctx, rawArgs, "search", ec.unmarshalOString2ᚖstring)
+	args["assigneeID"] = arg4
+	arg5, err := graphql.ProcessArgField(ctx, rawArgs, "labelIDs", ec.unmarshalOID2ᚕstringᚄ)
 	if err != nil {
 		return nil, err
 	}
-	args["search"] = arg5
-	arg6, err := graphql.ProcessArgField(ctx, rawArgs, "limit", ec.unmarshalOInt2ᚖint32)
+	args["labelIDs"] = arg5
+	arg6, err := graphql.ProcessArgField(ctx, rawArgs, "search", ec.unmarshalOString2ᚖstring)
 	if err != nil {
 		return nil, err
 	}
-	args["limit"] = arg6
-	arg7, err := graphql.ProcessArgField(ctx, rawArgs, "offset", ec.unmarshalOInt2ᚖint32)
+	args["search"] = arg6
+	arg7, err := graphql.ProcessArgField(ctx, rawArgs, "limit", ec.unmarshalOInt2ᚖint32)
 	if err != nil {
 		return nil, err
 	}
-	args["offset"] = arg7
+	args["limit"] = arg7
+	arg8, err := graphql.ProcessArgField(ctx, rawArgs, "offset", ec.unmarshalOInt2ᚖint32)
+	if err != nil {
+		return nil, err
+	}
+	args["offset"] = arg8
 	return args, nil
 }
 
@@ -949,8 +954,8 @@ func (ec *executionContext) fieldContext_Query_issue(ctx context.Context, field 
 				return ec.fieldContext_Issue_environment(ctx, field)
 			case "branch":
 				return ec.fieldContext_Issue_branch(ctx, field)
-			case "link":
-				return ec.fieldContext_Issue_link(ctx, field)
+			case "links":
+				return ec.fieldContext_Issue_links(ctx, field)
 			case "closedAt":
 				return ec.fieldContext_Issue_closedAt(ctx, field)
 			case "startedAt":
@@ -1001,7 +1006,7 @@ func (ec *executionContext) _Query_issues(ctx context.Context, field graphql.Col
 		ec.fieldContext_Query_issues,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.Resolvers.Query().Issues(ctx, fc.Args["projectID"].(string), fc.Args["state"].(*IssueState), fc.Args["priority"].(*Priority), fc.Args["assigneeID"].(*string), fc.Args["labelIDs"].([]string), fc.Args["search"].(*string), fc.Args["limit"].(*int32), fc.Args["offset"].(*int32))
+			return ec.Resolvers.Query().Issues(ctx, fc.Args["projectID"].(string), fc.Args["state"].(*IssueState), fc.Args["states"].([]IssueState), fc.Args["priority"].(*Priority), fc.Args["assigneeID"].(*string), fc.Args["labelIDs"].([]string), fc.Args["search"].(*string), fc.Args["limit"].(*int32), fc.Args["offset"].(*int32))
 		},
 		nil,
 		ec.marshalNIssueConnection2ᚖchickᚋinternalᚋgraphqlᚐIssueConnection,

@@ -23,11 +23,10 @@ func (r *Resolver) requireProjectMember(ctx context.Context, projectID uint) (ui
 	if err != nil {
 		return 0, err
 	}
-	role, err := r.ProjectSvc.GetMemberRole(projectID, agentID)
+	_, err = r.ProjectSvc.GetMemberRole(projectID, agentID)
 	if err != nil {
 		return 0, errors.New("无权访问该项目")
 	}
-	_ = role
 	return agentID, nil
 }
 

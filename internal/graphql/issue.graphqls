@@ -48,7 +48,7 @@ type Issue {
   dueDate: Time
   environment: String
   branch: String
-  link: String
+  links: [String!]
   closedAt: Time
   startedAt: Time
   completedAt: Time

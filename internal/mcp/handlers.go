@@ -87,7 +87,7 @@ func (h *Handlers) RegisterAll(registry *ToolRegistry) {
 			"milestoneId": StringParam("Milestone ID to associate"),
 			"environment": StringParam("Environment name, e.g. staging, production"),
 			"branch":      StringParam("Branch name"),
-			"link":        StringParam("Related links (one per line for multiple)"),
+			"links":       ArrayParam("Related links (URLs)", "string"),
 			"difficulty":  NumberParam("Implementation difficulty (1-5)"),
 			"startedAt":   StringParam("Start processing time (RFC3339)"),
 			"completedAt": StringParam("End processing time (RFC3339)"),
@@ -113,7 +113,7 @@ func (h *Handlers) RegisterAll(registry *ToolRegistry) {
 						"assigneeIds": ArrayParam("Agent IDs to assign", "string"),
 						"environment": StringParam("Environment name, e.g. staging, production"),
 						"branch":      StringParam("Branch name"),
-						"link":        StringParam("Related links (one per line for multiple)"),
+						"links":       ArrayParam("Related links (URLs)", "string"),
 					},
 					"required": []string{"title"},
 				},
@@ -132,7 +132,7 @@ func (h *Handlers) RegisterAll(registry *ToolRegistry) {
 			"priority":    StringParam("New priority: critical / high / medium / low"),
 			"environment": StringParam("Environment name, e.g. staging, production"),
 			"branch":      StringParam("Branch name"),
-			"link":        StringParam("Related links (one per line for multiple)"),
+			"links":       ArrayParam("Related links (URLs)", "string"),
 			"difficulty":  NumberParam("Implementation difficulty (1-5)"),
 			"startedAt":   StringParam("Start processing time (RFC3339)"),
 			"completedAt": StringParam("End processing time (RFC3339)"),
@@ -806,16 +806,16 @@ func (h *Handlers) handleSearchTasks(id json.RawMessage, params json.RawMessage,
 
 func (h *Handlers) handleEditIssue(id json.RawMessage, params json.RawMessage, actorID uint, remoteAddr string) Response {
 	var p struct {
-		IssueID     string `json:"issueId"`
-		Title       string `json:"title"`
-		Description string `json:"description"`
-		Priority    string `json:"priority"`
-		Environment string `json:"environment"`
-		Branch      string `json:"branch"`
-		Link        string `json:"link"`
-		Difficulty  int    `json:"difficulty"`
-		StartedAt   string `json:"startedAt"`
-		CompletedAt string `json:"completedAt"`
+		IssueID     string   `json:"issueId"`
+		Title       string   `json:"title"`
+		Description string   `json:"description"`
+		Priority    string   `json:"priority"`
+		Environment string   `json:"environment"`
+		Branch      string   `json:"branch"`
+		Links       []string `json:"links"`
+		Difficulty  int      `json:"difficulty"`
+		StartedAt   string   `json:"startedAt"`
+		CompletedAt string   `json:"completedAt"`
 	}
 	if err := json.Unmarshal(params, &p); err != nil {
 		return NewError(id, -32602, "Invalid params: "+err.Error())
@@ -877,7 +877,7 @@ func (h *Handlers) handleEditIssue(id json.RawMessage, params json.RawMessage, a
 		completedAt = &t
 	}
 
-	issue, err := h.issueSvc.Update(uint(issueID), p.Title, p.Description, priority, nil, nil, strPtr(p.Environment), strPtr(p.Branch), strPtr(p.Link), startedAt, completedAt, diff)
+	issue, err := h.issueSvc.Update(uint(issueID), p.Title, p.Description, priority, nil, nil, strPtr(p.Environment), strPtr(p.Branch), mcpLinksToJson(p.Links), startedAt, completedAt, diff)
 	if err != nil {
 		return NewInternalError(id, err.Error())
 	}
@@ -890,7 +890,7 @@ func (h *Handlers) handleEditIssue(id json.RawMessage, params json.RawMessage, a
 		"priority":    string(issue.Priority),
 		"environment": nilStr(issue.Environment),
 		"branch":      nilStr(issue.Branch),
-		"link":        nilStr(issue.Link),
+		"links":       mcpParseLinks(issue.Link),
 	})
 }
 
@@ -903,7 +903,7 @@ func (h *Handlers) handleCreateIssue(id json.RawMessage, params json.RawMessage,
 		MilestoneID string   `json:"milestoneId"`
 		Environment string   `json:"environment"`
 		Branch      string   `json:"branch"`
-		Link        string   `json:"link"`
+		Links       []string `json:"links"`
 		Difficulty  int      `json:"difficulty"`
 		StartedAt   string   `json:"startedAt"`
 		CompletedAt string   `json:"completedAt"`
@@ -971,8 +971,8 @@ func (h *Handlers) handleCreateIssue(id json.RawMessage, params json.RawMessage,
 		}
 		completedAt = &t
 	}
-	env, branch, link := strPtr(p.Environment), strPtr(p.Branch), strPtr(p.Link)
-	issue, err := h.issueSvc.Create(projectID, creatorID, p.Title, p.Description, priority, assigneeIDs, nil, milestoneID, env, branch, link, diff, startedAt, completedAt)
+	env, branch := strPtr(p.Environment), strPtr(p.Branch)
+	issue, err := h.issueSvc.Create(service.IssueCreateInput{ProjectID: projectID, CreatorID: creatorID, Title: p.Title, Description: p.Description, Priority: priority, AssigneeIDs: assigneeIDs, MilestoneID: milestoneID, Environment: env, Branch: branch, Link: mcpLinksToJson(p.Links), Difficulty: diff, StartedAt: startedAt, CompletedAt: completedAt})
 	if err != nil {
 		return NewInternalError(id, err.Error())
 	}
@@ -983,7 +983,7 @@ func (h *Handlers) handleCreateIssue(id json.RawMessage, params json.RawMessage,
 		"state":       string(issue.State),
 		"environment": nilStr(issue.Environment),
 		"branch":      nilStr(issue.Branch),
-		"link":        nilStr(issue.Link),
+		"links":       mcpParseLinks(issue.Link),
 	})
 }
 
@@ -1016,7 +1016,7 @@ func (h *Handlers) handleCreateIssuesBatch(id json.RawMessage, params json.RawMe
 			AssigneeIDs []string `json:"assigneeIds"`
 			Environment string   `json:"environment"`
 			Branch      string   `json:"branch"`
-			Link        string   `json:"link"`
+			Links       []string `json:"links"`
 		}
 		if err := json.Unmarshal(raw, &issue); err != nil {
 			return NewError(id, -32602, fmt.Sprintf("issues[%d]: invalid params: %s", i, err))
@@ -1042,7 +1042,7 @@ func (h *Handlers) handleCreateIssuesBatch(id json.RawMessage, params json.RawMe
 			}
 		}
 
-		created, err := h.issueSvc.Create(projectID, creatorID, issue.Title, issue.Description, priority, assigneeIDs, nil, nil, strPtr(issue.Environment), strPtr(issue.Branch), strPtr(issue.Link), nil, nil, nil)
+		created, err := h.issueSvc.Create(service.IssueCreateInput{ProjectID: projectID, CreatorID: creatorID, Title: issue.Title, Description: issue.Description, Priority: priority, AssigneeIDs: assigneeIDs, Environment: strPtr(issue.Environment), Branch: strPtr(issue.Branch), Link: mcpLinksToJson(issue.Links)})
 		if err != nil {
 			return NewInternalError(id, fmt.Sprintf("issues[%d]: %s", i, err.Error()))
 		}
@@ -1277,7 +1277,7 @@ func (h *Handlers) handleSubmitRequirement(id json.RawMessage, params json.RawMe
 		return NewInternalError(id, err.Error())
 	}
 
-	issue, err := h.issueSvc.Create(projectID, authorID, p.Title, p.Description, models.PriorityMedium, nil, nil, nil, nil, nil, nil, nil, nil, nil)
+	issue, err := h.issueSvc.Create(service.IssueCreateInput{ProjectID: projectID, CreatorID: authorID, Title: p.Title, Description: p.Description, Priority: models.PriorityMedium})
 	if err != nil {
 		return NewInternalError(id, err.Error())
 	}
@@ -1421,4 +1421,41 @@ func (h *Handlers) handleUpdateNotificationSetting(id json.RawMessage, params js
 func (h *Handlers) handleListNotificationTypes(id json.RawMessage, params json.RawMessage, agentID uint, remoteAddr string) Response {
 	types := notifications.AllNotificationTypes()
 	return NewResponse(id, map[string]interface{}{"types": types})
+}
+
+// mcpLinksToJson converts []string to a JSON array string for DB storage.
+func mcpLinksToJson(links []string) *string {
+	if len(links) == 0 {
+		return nil
+	}
+	for i := range links {
+		links[i] = strings.TrimSpace(links[i])
+	}
+	filtered := make([]string, 0, len(links))
+	for _, s := range links {
+		if s != "" {
+			filtered = append(filtered, s)
+		}
+	}
+	if len(filtered) == 0 {
+		return nil
+	}
+	b, err := json.Marshal(filtered)
+	if err != nil {
+		return nil
+	}
+	s := string(b)
+	return &s
+}
+
+// mcpParseLinks converts a JSON array string from DB to []string.
+func mcpParseLinks(link *string) []string {
+	if link == nil || *link == "" {
+		return []string{}
+	}
+	var links []string
+	if err := json.Unmarshal([]byte(*link), &links); err == nil {
+		return links
+	}
+	return []string{strings.TrimSpace(*link)}
 }

@@ -67,7 +67,7 @@ func (s *Server) handleInitialize(id json.RawMessage, params json.RawMessage) Re
 				"subscribe": false,
 			},
 			"resourceTemplates": map[string]interface{}{},
-			"prompts": map[string]interface{}{},
+			"prompts":           map[string]interface{}{},
 		},
 		"serverInfo": map[string]interface{}{
 			"name":    "chick",
@@ -107,15 +107,19 @@ func (s *Server) handleToolsCall(id json.RawMessage, params json.RawMessage, age
 
 	// Wrap result in standard MCP content blocks (spec 2024-11-05)
 	if resp.Error == nil && resp.Result != nil {
-		data, _ := json.Marshal(resp.Result)
-		resp.Result = map[string]interface{}{
-			"content": []interface{}{
-				map[string]interface{}{
-					"type": "text",
-					"text": string(data),
+		data, err := json.Marshal(resp.Result)
+		if err != nil {
+			log.Printf("[mcp] failed to marshal result: %v", err)
+		} else {
+			resp.Result = map[string]interface{}{
+				"content": []interface{}{
+					map[string]interface{}{
+						"type": "text",
+						"text": string(data),
+					},
 				},
-			},
-			"isError": false,
+				"isError": false,
+			}
 		}
 	}
 

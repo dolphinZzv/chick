@@ -37,7 +37,7 @@ func setupIssueTest(t *testing.T) (*service.IssueService, *service.AgentService,
 	agentSvc := service.NewAgentService(agentRepo, bus, nil, true)
 	proposalRepo := gormrepo.NewProposalRepo(db)
 	taskRepo := gormrepo.NewTaskRepo(db)
-		commentSvc := service.NewCommentService(db, commentRepo, timelineRepo, issueRepo, proposalRepo, taskRepo, bus)
+	commentSvc := service.NewCommentService(db, commentRepo, timelineRepo, issueRepo, proposalRepo, taskRepo, bus)
 	issueSvc := service.NewIssueService(db, issueRepo, assigneeRepo, timelineRepo, projectRepo, bus)
 	workflowSvc := service.NewWorkflowService(issueSvc)
 
@@ -52,7 +52,7 @@ func TestCreateIssue_AutoNumber(t *testing.T) {
 	p, _ := projectSvc.Create("Test", "")
 	pid := p.ID
 
-	issue1, err := issueSvc.Create(pid, 1, "First", "", models.PriorityMedium, nil, nil, nil, nil, nil, nil, nil, nil, nil)
+	issue1, err := issueSvc.Create(service.IssueCreateInput{ProjectID: pid, CreatorID: 1, Title: "First", Priority: models.PriorityMedium})
 	if err != nil {
 		t.Fatalf("create first issue: %v", err)
 	}
@@ -60,7 +60,7 @@ func TestCreateIssue_AutoNumber(t *testing.T) {
 		t.Errorf("expected number 1, got %d", issue1.Number)
 	}
 
-	issue2, err := issueSvc.Create(pid, 1, "Second", "", models.PriorityMedium, nil, nil, nil, nil, nil, nil, nil, nil, nil)
+	issue2, err := issueSvc.Create(service.IssueCreateInput{ProjectID: pid, CreatorID: 1, Title: "Second", Priority: models.PriorityMedium})
 	if err != nil {
 		t.Fatalf("create second issue: %v", err)
 	}
@@ -75,7 +75,7 @@ func TestCreateIssue_WithAssignees(t *testing.T) {
 	p, _ := projectSvc.Create("Test", "")
 	agent, _ := agentSvc.Register("coder", models.AgentKindAI, "coder-1", "secret", []string{"CODING"}, "", "")
 
-	issue, err := issueSvc.Create(p.ID, 1, "Task", "", models.PriorityHigh, []uint{agent.ID}, nil, nil, nil, nil, nil, nil, nil, nil)
+	issue, err := issueSvc.Create(service.IssueCreateInput{ProjectID: p.ID, CreatorID: 1, Title: "Task", Priority: models.PriorityHigh, AssigneeIDs: []uint{agent.ID}})
 	if err != nil {
 		t.Fatalf("create issue: %v", err)
 	}
@@ -91,7 +91,7 @@ func TestTransitionIssue_Valid(t *testing.T) {
 	issueSvc, _, projectSvc, workflowSvc := setupIssueTest(t)
 	p, _ := projectSvc.Create("Test", "")
 
-	issue, _ := issueSvc.Create(p.ID, 1, "Test", "", models.PriorityMedium, nil, nil, nil, nil, nil, nil, nil, nil, nil)
+	issue, _ := issueSvc.Create(service.IssueCreateInput{ProjectID: p.ID, CreatorID: 1, Title: "Test", Priority: models.PriorityMedium})
 
 	// OPEN -> IN_PROGRESS
 	issue, err := workflowSvc.Transition(issue.ID, models.IssueStateInProgress, 1, nil)
@@ -125,7 +125,7 @@ func TestTransitionIssue_Invalid(t *testing.T) {
 	issueSvc, _, projectSvc, workflowSvc := setupIssueTest(t)
 	p, _ := projectSvc.Create("Test", "")
 
-	issue, _ := issueSvc.Create(p.ID, 1, "Test", "", models.PriorityMedium, nil, nil, nil, nil, nil, nil, nil, nil, nil)
+	issue, _ := issueSvc.Create(service.IssueCreateInput{ProjectID: p.ID, CreatorID: 1, Title: "Test", Priority: models.PriorityMedium})
 
 	// OPEN -> CLOSED (invalid, must go through IN_PROGRESS -> REVIEW)
 	_, err := workflowSvc.Transition(issue.ID, models.IssueStateClosedCompleted, 1, nil)
@@ -138,7 +138,7 @@ func TestTransitionIssue_AutoSetTimestamps(t *testing.T) {
 	issueSvc, _, projectSvc, workflowSvc := setupIssueTest(t)
 	p, _ := projectSvc.Create("Test", "")
 
-	issue, _ := issueSvc.Create(p.ID, 1, "Test", "", models.PriorityMedium, nil, nil, nil, nil, nil, nil, nil, nil, nil)
+	issue, _ := issueSvc.Create(service.IssueCreateInput{ProjectID: p.ID, CreatorID: 1, Title: "Test", Priority: models.PriorityMedium})
 
 	if issue.StartedAt != nil {
 		t.Fatal("expected startedAt to be nil on create")
@@ -187,7 +187,7 @@ func TestCreateIssue_WithExtraFields(t *testing.T) {
 	startedAt := now.Add(-time.Hour)
 	completedAt := now
 
-	issue, err := issueSvc.Create(p.ID, 1, "With extra", "", models.PriorityHigh, nil, nil, nil, &env, &branch, &link, &diff, &startedAt, &completedAt)
+	issue, err := issueSvc.Create(service.IssueCreateInput{ProjectID: p.ID, CreatorID: 1, Title: "With extra", Priority: models.PriorityHigh, Environment: &env, Branch: &branch, Link: &link, Difficulty: &diff, StartedAt: &startedAt, CompletedAt: &completedAt})
 	if err != nil {
 		t.Fatalf("create issue with extra fields: %v", err)
 	}
@@ -216,11 +216,10 @@ func TestUpdateIssue_ExtraFields(t *testing.T) {
 	issueSvc, _, projectSvc, _ := setupIssueTest(t)
 	p, _ := projectSvc.Create("Test", "")
 
-	issue, _ := issueSvc.Create(p.ID, 1, "Update me", "", models.PriorityMedium, nil, nil, nil, nil, nil, nil, nil, nil, nil)
+	issue, _ := issueSvc.Create(service.IssueCreateInput{ProjectID: p.ID, CreatorID: 1, Title: "Update me", Priority: models.PriorityMedium})
 
 	env := "production"
 	diff := 5
-	
 
 	updated, err := issueSvc.Update(issue.ID, "", "", models.Priority(""), nil, nil, &env, nil, nil, nil, nil, &diff)
 	if err != nil {
@@ -267,11 +266,11 @@ func TestAddComment(t *testing.T) {
 	projectSvc := service.NewProjectService(projectRepo, memberRepo, labelRepo, milestoneRepo)
 	agentSvc := service.NewAgentService(agentRepo, bus, nil, true)
 	issueSvc := service.NewIssueService(db, issueRepo, assigneeRepo, timelineRepo, projectRepo, bus)
-commentSvc := service.NewCommentService(db, commentRepo, timelineRepo, issueRepo, proposalRepo, taskRepo, bus)
+	commentSvc := service.NewCommentService(db, commentRepo, timelineRepo, issueRepo, proposalRepo, taskRepo, bus)
 
 	p, _ := projectSvc.Create("Test", "")
 	agent, _ := agentSvc.Register("user", models.AgentKindHuman, "user-1", "secret", nil, "", "")
-	issue, _ := issueSvc.Create(p.ID, agent.ID, "Issue", "", models.PriorityMedium, nil, nil, nil, nil, nil, nil, nil, nil, nil)
+	issue, _ := issueSvc.Create(service.IssueCreateInput{ProjectID: p.ID, CreatorID: agent.ID, Title: "Issue", Priority: models.PriorityMedium})
 
 	comment, err := commentSvc.Create(issue.ID, agent.ID, "Hello world", models.CommentMarkdown, nil)
 	if err != nil {
@@ -298,9 +297,9 @@ func TestListIssues(t *testing.T) {
 	issueSvc, _, projectSvc, _ := setupIssueTest(t)
 	p, _ := projectSvc.Create("Test", "")
 
-	issueSvc.Create(p.ID, 1, "Alpha", "", models.PriorityHigh, nil, nil, nil, nil, nil, nil, nil, nil, nil)
-	issueSvc.Create(p.ID, 1, "Beta", "", models.PriorityMedium, nil, nil, nil, nil, nil, nil, nil, nil, nil)
-	issueSvc.Create(p.ID, 1, "Gamma", "", models.PriorityLow, nil, nil, nil, nil, nil, nil, nil, nil, nil)
+	issueSvc.Create(service.IssueCreateInput{ProjectID: p.ID, CreatorID: 1, Title: "Alpha", Priority: models.PriorityHigh})
+	issueSvc.Create(service.IssueCreateInput{ProjectID: p.ID, CreatorID: 1, Title: "Beta", Priority: models.PriorityMedium})
+	issueSvc.Create(service.IssueCreateInput{ProjectID: p.ID, CreatorID: 1, Title: "Gamma", Priority: models.PriorityLow})
 
 	// List all
 	pid := p.ID
@@ -366,7 +365,7 @@ func TestTransitionIssue_CreatorRestricted(t *testing.T) {
 	ac := false
 	projectSvc.UpdateConfig(p.ID, &ac, nil)
 
-	issue, _ := issueSvc.Create(p.ID, creator.ID, "Test", "", models.PriorityMedium, nil, nil, nil, nil, nil, nil, nil, nil, nil)
+	issue, _ := issueSvc.Create(service.IssueCreateInput{ProjectID: p.ID, CreatorID: creator.ID, Title: "Test", Priority: models.PriorityMedium})
 
 	// Creator is a regular member, not owner/maintainer, not an assignee — should be denied
 	_, err := workflowSvc.Transition(issue.ID, models.IssueStateInProgress, creator.ID, nil)
@@ -385,7 +384,7 @@ func TestTransitionIssue_CreatorRestricted_AsOwner(t *testing.T) {
 	ac := false
 	projectSvc.UpdateConfig(p.ID, &ac, nil)
 
-	issue, _ := issueSvc.Create(p.ID, creator.ID, "Test", "", models.PriorityMedium, nil, nil, nil, nil, nil, nil, nil, nil, nil)
+	issue, _ := issueSvc.Create(service.IssueCreateInput{ProjectID: p.ID, CreatorID: creator.ID, Title: "Test", Priority: models.PriorityMedium})
 
 	// Creator is owner — should be allowed
 	issue, err := workflowSvc.Transition(issue.ID, models.IssueStateInProgress, creator.ID, nil)
@@ -407,7 +406,7 @@ func TestTransitionIssue_CreatorRestricted_AsMaintainer(t *testing.T) {
 	ac := false
 	projectSvc.UpdateConfig(p.ID, &ac, nil)
 
-	issue, _ := issueSvc.Create(p.ID, creator.ID, "Test", "", models.PriorityMedium, nil, nil, nil, nil, nil, nil, nil, nil, nil)
+	issue, _ := issueSvc.Create(service.IssueCreateInput{ProjectID: p.ID, CreatorID: creator.ID, Title: "Test", Priority: models.PriorityMedium})
 
 	issue, err := workflowSvc.Transition(issue.ID, models.IssueStateInProgress, creator.ID, nil)
 	if err != nil {
@@ -429,7 +428,7 @@ func TestTransitionIssue_CreatorRestricted_AsAssignee(t *testing.T) {
 	projectSvc.UpdateConfig(p.ID, &ac, nil)
 
 	// Creator is also an assignee of the issue
-	issue, _ := issueSvc.Create(p.ID, creator.ID, "Test", "", models.PriorityMedium, []uint{creator.ID}, nil, nil, nil, nil, nil, nil, nil, nil)
+	issue, _ := issueSvc.Create(service.IssueCreateInput{ProjectID: p.ID, CreatorID: creator.ID, Title: "Test", Priority: models.PriorityMedium, AssigneeIDs: []uint{creator.ID}})
 
 	issue, err := workflowSvc.Transition(issue.ID, models.IssueStateInProgress, creator.ID, nil)
 	if err != nil {
@@ -451,7 +450,7 @@ func TestTransitionIssue_RequireCreatorCloseApproval(t *testing.T) {
 	rc := true
 	projectSvc.UpdateConfig(p.ID, nil, &rc)
 
-	issue, _ := issueSvc.Create(p.ID, creator.ID, "Test", "", models.PriorityMedium, nil, nil, nil, nil, nil, nil, nil, nil, nil)
+	issue, _ := issueSvc.Create(service.IssueCreateInput{ProjectID: p.ID, CreatorID: creator.ID, Title: "Test", Priority: models.PriorityMedium})
 
 	// Other agent transitions: open -> in_progress -> review
 	issue, err := workflowSvc.Transition(issue.ID, models.IssueStateInProgress, other.ID, nil)

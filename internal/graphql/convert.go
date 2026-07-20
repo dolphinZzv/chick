@@ -3,14 +3,63 @@ package graph
 import (
 	"crypto/rand"
 	"encoding/hex"
+	"encoding/json"
 	"strconv"
+	"strings"
 
 	"chick/internal/models"
 )
 
 func parseID(s string) uint {
-	id, _ := strconv.ParseUint(s, 10, 64)
+	id, err := strconv.ParseUint(s, 10, 64)
+	if err != nil {
+		return 0
+	}
 	return uint(id)
+}
+
+// parseLinks converts a JSON array string from DB to []string.
+// Falls back to single-element array for plain text (backward compat).
+func parseLinks(link *string) []string {
+	if link == nil || *link == "" {
+		return []string{}
+	}
+	var links []string
+	if err := json.Unmarshal([]byte(*link), &links); err == nil {
+		return links
+	}
+	// Backward compat: plain text URL, not JSON array
+	return []string{strings.TrimSpace(*link)}
+}
+
+// linksToJson converts []string to a JSON array string for DB storage.
+func linksToJson(links []string) *string {
+	if len(links) == 0 {
+		return nil
+	}
+	for i := range links {
+		links[i] = strings.TrimSpace(links[i])
+	}
+	links = filterEmpty(links)
+	if len(links) == 0 {
+		return nil
+	}
+	b, err := json.Marshal(links)
+	if err != nil {
+		return nil
+	}
+	s := string(b)
+	return &s
+}
+
+func filterEmpty(ss []string) []string {
+	result := make([]string, 0, len(ss))
+	for _, s := range ss {
+		if s != "" {
+			result = append(result, s)
+		}
+	}
+	return result
 }
 
 func formatID(id uint) string {
@@ -108,7 +157,7 @@ func issueFromModel(i *models.Issue) *Issue {
 		DueDate:     i.DueDate,
 		Environment: i.Environment,
 		Branch:      i.Branch,
-		Link:        i.Link,
+		Links:       parseLinks(i.Link),
 		ClosedAt:    i.ClosedAt,
 		StartedAt:   i.StartedAt,
 		CompletedAt: i.CompletedAt,

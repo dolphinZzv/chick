@@ -32,8 +32,8 @@ type MutationResolver interface {
 	AddProjectMember(ctx context.Context, projectID string, agentID string, role ProjectRole) (*ProjectMember, error)
 	UpdateProjectMember(ctx context.Context, projectID string, agentID string, role ProjectRole) (*ProjectMember, error)
 	RemoveProjectMember(ctx context.Context, projectID string, agentID string) (bool, error)
-	CreateIssue(ctx context.Context, projectID string, title string, description *string, priority Priority, assigneeIDs []string, labelIDs []string, milestoneID *string, environment *string, branch *string, link *string) (*Issue, error)
-	UpdateIssue(ctx context.Context, id string, title *string, description *string, priority *Priority, dueDate *time.Time, milestoneID *string, environment *string, branch *string, link *string, startedAt *time.Time, completedAt *time.Time, difficulty *int32) (*Issue, error)
+	CreateIssue(ctx context.Context, projectID string, title string, description *string, priority Priority, assigneeIDs []string, labelIDs []string, milestoneID *string, environment *string, branch *string, links []string) (*Issue, error)
+	UpdateIssue(ctx context.Context, id string, title *string, description *string, priority *Priority, dueDate *time.Time, milestoneID *string, environment *string, branch *string, links []string, startedAt *time.Time, completedAt *time.Time, difficulty *int32) (*Issue, error)
 	DeleteIssue(ctx context.Context, id string) (bool, error)
 	TransitionIssue(ctx context.Context, id string, newState IssueState, actorID string, note *string) (*Issue, error)
 	AddAssignee(ctx context.Context, issueID string, agentID string) (*IssueAssignee, error)
@@ -304,11 +304,11 @@ func (ec *executionContext) field_Mutation_createIssue_args(ctx context.Context,
 		return nil, err
 	}
 	args["branch"] = arg8
-	arg9, err := graphql.ProcessArgField(ctx, rawArgs, "link", ec.unmarshalOString2ᚖstring)
+	arg9, err := graphql.ProcessArgField(ctx, rawArgs, "links", ec.unmarshalOString2ᚕstringᚄ)
 	if err != nil {
 		return nil, err
 	}
-	args["link"] = arg9
+	args["links"] = arg9
 	return args, nil
 }
 
@@ -967,11 +967,11 @@ func (ec *executionContext) field_Mutation_updateIssue_args(ctx context.Context,
 		return nil, err
 	}
 	args["branch"] = arg7
-	arg8, err := graphql.ProcessArgField(ctx, rawArgs, "link", ec.unmarshalOString2ᚖstring)
+	arg8, err := graphql.ProcessArgField(ctx, rawArgs, "links", ec.unmarshalOString2ᚕstringᚄ)
 	if err != nil {
 		return nil, err
 	}
-	args["link"] = arg8
+	args["links"] = arg8
 	arg9, err := graphql.ProcessArgField(ctx, rawArgs, "startedAt", ec.unmarshalOTime2ᚖtimeᚐTime)
 	if err != nil {
 		return nil, err
@@ -2105,7 +2105,7 @@ func (ec *executionContext) _Mutation_createIssue(ctx context.Context, field gra
 		ec.fieldContext_Mutation_createIssue,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.Resolvers.Mutation().CreateIssue(ctx, fc.Args["projectID"].(string), fc.Args["title"].(string), fc.Args["description"].(*string), fc.Args["priority"].(Priority), fc.Args["assigneeIDs"].([]string), fc.Args["labelIDs"].([]string), fc.Args["milestoneId"].(*string), fc.Args["environment"].(*string), fc.Args["branch"].(*string), fc.Args["link"].(*string))
+			return ec.Resolvers.Mutation().CreateIssue(ctx, fc.Args["projectID"].(string), fc.Args["title"].(string), fc.Args["description"].(*string), fc.Args["priority"].(Priority), fc.Args["assigneeIDs"].([]string), fc.Args["labelIDs"].([]string), fc.Args["milestoneId"].(*string), fc.Args["environment"].(*string), fc.Args["branch"].(*string), fc.Args["links"].([]string))
 		},
 		nil,
 		ec.marshalNIssue2ᚖchickᚋinternalᚋgraphqlᚐIssue,
@@ -2146,8 +2146,8 @@ func (ec *executionContext) fieldContext_Mutation_createIssue(ctx context.Contex
 				return ec.fieldContext_Issue_environment(ctx, field)
 			case "branch":
 				return ec.fieldContext_Issue_branch(ctx, field)
-			case "link":
-				return ec.fieldContext_Issue_link(ctx, field)
+			case "links":
+				return ec.fieldContext_Issue_links(ctx, field)
 			case "closedAt":
 				return ec.fieldContext_Issue_closedAt(ctx, field)
 			case "startedAt":
@@ -2198,7 +2198,7 @@ func (ec *executionContext) _Mutation_updateIssue(ctx context.Context, field gra
 		ec.fieldContext_Mutation_updateIssue,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.Resolvers.Mutation().UpdateIssue(ctx, fc.Args["id"].(string), fc.Args["title"].(*string), fc.Args["description"].(*string), fc.Args["priority"].(*Priority), fc.Args["dueDate"].(*time.Time), fc.Args["milestoneId"].(*string), fc.Args["environment"].(*string), fc.Args["branch"].(*string), fc.Args["link"].(*string), fc.Args["startedAt"].(*time.Time), fc.Args["completedAt"].(*time.Time), fc.Args["difficulty"].(*int32))
+			return ec.Resolvers.Mutation().UpdateIssue(ctx, fc.Args["id"].(string), fc.Args["title"].(*string), fc.Args["description"].(*string), fc.Args["priority"].(*Priority), fc.Args["dueDate"].(*time.Time), fc.Args["milestoneId"].(*string), fc.Args["environment"].(*string), fc.Args["branch"].(*string), fc.Args["links"].([]string), fc.Args["startedAt"].(*time.Time), fc.Args["completedAt"].(*time.Time), fc.Args["difficulty"].(*int32))
 		},
 		nil,
 		ec.marshalNIssue2ᚖchickᚋinternalᚋgraphqlᚐIssue,
@@ -2239,8 +2239,8 @@ func (ec *executionContext) fieldContext_Mutation_updateIssue(ctx context.Contex
 				return ec.fieldContext_Issue_environment(ctx, field)
 			case "branch":
 				return ec.fieldContext_Issue_branch(ctx, field)
-			case "link":
-				return ec.fieldContext_Issue_link(ctx, field)
+			case "links":
+				return ec.fieldContext_Issue_links(ctx, field)
 			case "closedAt":
 				return ec.fieldContext_Issue_closedAt(ctx, field)
 			case "startedAt":
@@ -2373,8 +2373,8 @@ func (ec *executionContext) fieldContext_Mutation_transitionIssue(ctx context.Co
 				return ec.fieldContext_Issue_environment(ctx, field)
 			case "branch":
 				return ec.fieldContext_Issue_branch(ctx, field)
-			case "link":
-				return ec.fieldContext_Issue_link(ctx, field)
+			case "links":
+				return ec.fieldContext_Issue_links(ctx, field)
 			case "closedAt":
 				return ec.fieldContext_Issue_closedAt(ctx, field)
 			case "startedAt":
@@ -2946,8 +2946,8 @@ func (ec *executionContext) fieldContext_Mutation_addLabels(ctx context.Context,
 				return ec.fieldContext_Issue_environment(ctx, field)
 			case "branch":
 				return ec.fieldContext_Issue_branch(ctx, field)
-			case "link":
-				return ec.fieldContext_Issue_link(ctx, field)
+			case "links":
+				return ec.fieldContext_Issue_links(ctx, field)
 			case "closedAt":
 				return ec.fieldContext_Issue_closedAt(ctx, field)
 			case "startedAt":
@@ -3039,8 +3039,8 @@ func (ec *executionContext) fieldContext_Mutation_removeLabels(ctx context.Conte
 				return ec.fieldContext_Issue_environment(ctx, field)
 			case "branch":
 				return ec.fieldContext_Issue_branch(ctx, field)
-			case "link":
-				return ec.fieldContext_Issue_link(ctx, field)
+			case "links":
+				return ec.fieldContext_Issue_links(ctx, field)
 			case "closedAt":
 				return ec.fieldContext_Issue_closedAt(ctx, field)
 			case "startedAt":

@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Provider as UrqlProvider } from "urql";
 import { ThemeProvider } from "next-themes";
@@ -6,20 +7,38 @@ import { urqlClient } from "@/lib/urql";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ErrorBoundary } from "@/components/shared/ErrorBoundary";
 import { Layout } from "@/components/layout/Layout";
-import { LoginPage } from "@/pages/LoginPage";
-import { ProjectDetailPage } from "@/pages/ProjectDetailPage";
-import { IssueDetailPage } from "@/pages/IssueDetailPage";
-import { ProposalDetailPage } from "@/pages/ProposalDetailPage";
-import { TaskDetailPage } from "@/pages/TaskDetailPage";
-import { AgentDetailPage } from "@/pages/AgentDetailPage";
-import { ProjectsPage } from "@/pages/ProjectsPage";
-import { ProjectSettingsPage } from "@/pages/ProjectSettingsPage";
-import { NotFoundPage } from "@/pages/NotFoundPage";
+import { Skeleton } from "@/components/ui/skeleton";
+
+const LoginPage = lazy(() => import("@/pages/LoginPage").then(m => ({ default: m.LoginPage })));
+const ProjectDetailPage = lazy(() => import("@/pages/ProjectDetailPage").then(m => ({ default: m.ProjectDetailPage })));
+const IssueDetailPage = lazy(() => import("@/pages/IssueDetailPage").then(m => ({ default: m.IssueDetailPage })));
+const ProposalDetailPage = lazy(() => import("@/pages/ProposalDetailPage").then(m => ({ default: m.ProposalDetailPage })));
+const TaskDetailPage = lazy(() => import("@/pages/TaskDetailPage").then(m => ({ default: m.TaskDetailPage })));
+const AgentDetailPage = lazy(() => import("@/pages/AgentDetailPage").then(m => ({ default: m.AgentDetailPage })));
+const ProjectsPage = lazy(() => import("@/pages/ProjectsPage").then(m => ({ default: m.ProjectsPage })));
+const ProjectSettingsPage = lazy(() => import("@/pages/ProjectSettingsPage").then(m => ({ default: m.ProjectSettingsPage })));
+const NotFoundPage = lazy(() => import("@/pages/NotFoundPage").then(m => ({ default: m.NotFoundPage })));
+
+function PageLoading() {
+  return (
+    <div className="flex items-center justify-center min-h-[60vh] p-8">
+      <div className="space-y-4 w-full max-w-lg">
+        <Skeleton className="h-8 w-2/3" />
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-5/6" />
+        <Skeleton className="h-32 w-full" />
+        <Skeleton className="h-4 w-3/4" />
+      </div>
+    </div>
+  );
+}
 
 function PageBoundary({ children }: { children: React.ReactNode }) {
   return (
     <ErrorBoundary>
-      {children}
+      <Suspense fallback={<PageLoading />}>
+        {children}
+      </Suspense>
     </ErrorBoundary>
   );
 }

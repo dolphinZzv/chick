@@ -307,7 +307,10 @@ func (s *Service) markAllReadRedis(agentID uint) error {
 			continue
 		}
 		n.Read = true
-		updated, _ := json.Marshal(n)
+		updated, err := json.Marshal(n)
+		if err != nil {
+			continue
+		}
 		writePipe.Set(ctx, notifDataKey(n.ID), updated, 0)
 	}
 	_, err := writePipe.Exec(ctx)
@@ -456,7 +459,10 @@ func (s *Service) markReadRedis(id uint) error {
 		return fmt.Errorf("unmarshal: %w", err)
 	}
 	n.Read = true
-	updated, _ := json.Marshal(n)
+	updated, err := json.Marshal(n)
+	if err != nil {
+		return fmt.Errorf("marshal notification: %w", err)
+	}
 	return s.rdb.Set(ctx, key, updated, 0).Err()
 }
 

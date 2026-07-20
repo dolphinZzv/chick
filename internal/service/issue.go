@@ -15,12 +15,29 @@ import (
 )
 
 type IssueService struct {
-	db            *gorm.DB
-	issueRepo     repository.IssueRepository
-	assigneeRepo  repository.IssueAssigneeRepository
-	timelineRepo  repository.TimelineRepository
-	projectRepo   repository.ProjectRepository
-	eventBus      *events.Bus
+	db           *gorm.DB
+	issueRepo    repository.IssueRepository
+	assigneeRepo repository.IssueAssigneeRepository
+	timelineRepo repository.TimelineRepository
+	projectRepo  repository.ProjectRepository
+	eventBus     *events.Bus
+}
+
+type IssueCreateInput struct {
+	ProjectID   uint
+	CreatorID   uint
+	Title       string
+	Description string
+	Priority    models.Priority
+	AssigneeIDs []uint
+	LabelIDs    []uint
+	MilestoneID *uint
+	Environment *string
+	Branch      *string
+	Link        *string
+	Difficulty  *int
+	StartedAt   *time.Time
+	CompletedAt *time.Time
 }
 
 func NewIssueService(
@@ -41,7 +58,7 @@ func NewIssueService(
 	}
 }
 
-func (s *IssueService) Create(projectID, creatorID uint, title, description string, priority models.Priority, assigneeIDs, labelIDs []uint, milestoneID *uint, environment, branch, link *string, difficulty *int, startedAt, completedAt *time.Time) (*models.Issue, error) {
+func (s *IssueService) Create(input IssueCreateInput) (*models.Issue, error) {
 	var issue *models.Issue
 
 	err := s.db.Transaction(func(tx *gorm.DB) error {
@@ -49,25 +66,25 @@ func (s *IssueService) Create(projectID, creatorID uint, title, description stri
 		txAssigneeRepo := gormrepo.NewIssueAssigneeRepo(tx)
 
 		issue = &models.Issue{
-			ProjectID:   projectID,
-			Title:       title,
-			Description: description,
+			ProjectID:   input.ProjectID,
+			Title:       input.Title,
+			Description: input.Description,
 			State:       models.IssueStateOpen,
-			Priority:    priority,
-			CreatorID:   creatorID,
-			MilestoneID: milestoneID,
-			Environment: environment,
-			Branch:      branch,
-			Link:        link,
-			Difficulty:  difficulty,
-			StartedAt:   startedAt,
-			CompletedAt: completedAt,
+			Priority:    input.Priority,
+			CreatorID:   input.CreatorID,
+			MilestoneID: input.MilestoneID,
+			Environment: input.Environment,
+			Branch:      input.Branch,
+			Link:        input.Link,
+			Difficulty:  input.Difficulty,
+			StartedAt:   input.StartedAt,
+			CompletedAt: input.CompletedAt,
 		}
 		if err := txIssueRepo.Create(issue); err != nil {
 			return fmt.Errorf("create issue: %w", err)
 		}
 
-		for _, agentID := range assigneeIDs {
+		for _, agentID := range input.AssigneeIDs {
 			ia := &models.IssueAssignee{
 				IssueID: issue.ID,
 				AgentID: agentID,
@@ -78,7 +95,7 @@ func (s *IssueService) Create(projectID, creatorID uint, title, description stri
 			}
 		}
 
-		for _, labelID := range labelIDs {
+		for _, labelID := range input.LabelIDs {
 			if err := txIssueRepo.AddLabel(issue.ID, labelID); err != nil {
 				return fmt.Errorf("add label %d: %w", labelID, err)
 			}
@@ -93,7 +110,7 @@ func (s *IssueService) Create(projectID, creatorID uint, title, description stri
 	// Timeline event (best-effort, outside transaction)
 	event := &models.TimelineEvent{
 		IssueID:   &issue.ID,
-		ActorID:   creatorID,
+		ActorID:   input.CreatorID,
 		EventType: models.EventIssueCreated,
 		Payload:   nil,
 	}
@@ -107,20 +124,20 @@ func (s *IssueService) Create(projectID, creatorID uint, title, description stri
 			Type: events.EventIssueCreated,
 			Payload: events.IssueCreatedPayload{
 				IssueID:     issue.ID,
-				ProjectID:   projectID,
-				CreatorID:   creatorID,
-				LabelIDs:    labelIDs,
-				AssigneeIDs: assigneeIDs,
+				ProjectID:   input.ProjectID,
+				CreatorID:   input.CreatorID,
+				LabelIDs:    input.LabelIDs,
+				AssigneeIDs: input.AssigneeIDs,
 			},
 		})
 
 		// Notify each assignee individually
-		for _, aid := range assigneeIDs {
+		for _, aid := range input.AssigneeIDs {
 			s.eventBus.Publish(events.Event{
 				Type: events.EventIssueAssigneeChanged,
 				Payload: events.IssueAssigneeChangedPayload{
 					IssueID:   issue.ID,
-					ProjectID: projectID,
+					ProjectID: input.ProjectID,
 					AgentID:   aid,
 					Action:    "assigned",
 				},

@@ -1,5 +1,5 @@
 .PHONY: all build build-prod test test-all test-integration generate coverage coverage-html clean \
-        check ui-build start stop prod dev prod-service dev-service
+        check ui-build start stop prod dev prod-service dev-service deploy
 
 # ─── 门禁检查（启动前）────────────────────────────────────
 
@@ -76,7 +76,7 @@ stop:
 # ─── 测试 ──────────────────────────────────────────────────
 
 test:
-	go test -race -count=1 ./internal/auth/ ./internal/config/ ./internal/events/ ./internal/matching/ ./internal/mcp/ ./internal/notifications/ ./internal/repository/gorm/ ./internal/server/ ./internal/service/
+	go test -race -count=1 ./internal/...
 
 test-all:
 	go test -race -count=1 ./internal/...
@@ -93,7 +93,7 @@ generate:
 # ─── 覆盖率 ────────────────────────────────────────────────
 
 coverage:
-	go test -count=1 -coverprofile=coverage.out ./internal/auth/ ./internal/config/ ./internal/events/ ./internal/matching/ ./internal/mcp/ ./internal/notifications/ ./internal/repository/gorm/ ./internal/server/ ./internal/service/
+	go test -count=1 -coverprofile=coverage.out ./internal/...
 	go tool cover -func=coverage.out | grep total
 
 coverage-html:
@@ -144,41 +144,42 @@ prod: build-prod ui-build prod-service
 build-prod:
 	go build -ldflags="-s -w" -o bin/chick-prod ./cmd/server/
 
-# ─── 本地开发 ──────────────────────────────────────────────
+# ─── 远程部署（101 生产机）─────────────────────────────────
 
-# 本地开发：构建 + 启动（SQLite + 端口 8082），不部署到生产
-.PHONY: dev
+DEPLOY_HOST ?= 47.95.200.101
+DEPLOY_SSH_PORT ?= 10022
+DEPLOY_USER ?= root
+DEPLOY_PATH ?= /opt/chick
+DEPLOY_SERVICE ?= chick-prod
+DEPLOY_HEALTH_PORT ?= 18080
 
-dev: ui-build build
-	@echo "=== 释放端口 8082 ==="
-	@for i in 1 2 3; do \
-		pid=$$(lsof -ti:8082 2>/dev/null || true); \
-		if [ -z "$$pid" ]; then break; fi; \
-		echo "  Port 8082 occupied by PID $$pid, killing... (attempt $$i)"; \
-		kill $$pid 2>/dev/null || kill -9 $$pid 2>/dev/null || true; \
-		sleep 1; \
-	done; \
-	pid=$$(lsof -ti:8082 2>/dev/null || true); \
-	if [ -n "$$pid" ]; then \
-		echo "  ❌ Port 8082 still occupied by PID $$pid, cannot start"; \
-		exit 1; \
-	fi; \
-	echo "  ✅ Port 8082 available"
-	@echo "=== 启动开发服务 ==="
-		CHICK_ALLOW_HUMAN_REGISTRATION=true \
-			CHICK_ALLOWED_ORIGINS="*" \
-		CHICK_JWT_SECRET="$${CHICK_JWT_SECRET:-chick-dev-secret-key-2024}" \
-		CHICK_PORT=8082 \
-		nohup ./bin/chick &>/tmp/chick-dev.log &
+.PHONY: deploy
+
+deploy: build-prod ui-build
+	@echo "=== 部署到 $(DEPLOY_HOST):$(DEPLOY_SSH_PORT) ==="
+	ssh -p $(DEPLOY_SSH_PORT) $(DEPLOY_USER)@$(DEPLOY_HOST) "install -d $(DEPLOY_PATH)/ui/dist"
+	ssh -p $(DEPLOY_SSH_PORT) $(DEPLOY_USER)@$(DEPLOY_HOST) "systemctl stop $(DEPLOY_SERVICE)"
+	cat bin/chick-prod | ssh -p $(DEPLOY_SSH_PORT) $(DEPLOY_USER)@$(DEPLOY_HOST) "cat > $(DEPLOY_PATH)/chick-server && chmod +x $(DEPLOY_PATH)/chick-server"
+	tar c -C ui/dist . | ssh -p $(DEPLOY_SSH_PORT) $(DEPLOY_USER)@$(DEPLOY_HOST) "tar x -C $(DEPLOY_PATH)/ui/dist"
+	@echo "=== 启动服务 ==="
+	ssh -p $(DEPLOY_SSH_PORT) $(DEPLOY_USER)@$(DEPLOY_HOST) "systemctl start $(DEPLOY_SERVICE)"
 	@sleep 2
 	@echo "=== 健康检查 ==="
-	@status=$$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8082/health 2>/dev/null); \
+	@status=$$(curl -s -o /dev/null -w "%{http_code}" http://$(DEPLOY_HOST):$(DEPLOY_HEALTH_PORT)/health 2>/dev/null); \
 	if [ "$$status" = "200" ]; then \
-		echo "  ✅ 开发服务运行正常 (HTTP $$status)"; \
+		echo "  ✅ 生产服务运行正常 (HTTP $$status)"; \
 	else \
-		echo "  ❌ 健康检查失败 (HTTP $$status)，查看日志: /tmp/chick-dev.log"; \
+		echo "  ❌ 健康检查失败 (HTTP $$status)"; \
 	fi
-	@echo "=== 启动完成: http://0.0.0.0:8082 ==="
+	@echo "=== 部署完成: http://$(DEPLOY_HOST):$(DEPLOY_HEALTH_PORT) ==="
+
+# ─── 本地开发 ──────────────────────────────────────────────
+
+# 本地开发：委托给 ./dev 脚本
+.PHONY: dev
+
+dev:
+	./dev start
 
 # ─── 清理 ──────────────────────────────────────────────────
 

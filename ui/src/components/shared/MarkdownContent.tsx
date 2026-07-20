@@ -3,21 +3,25 @@ import Markdown from "react-markdown";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
-import mermaid from "mermaid";
-
-mermaid.initialize({
-  startOnLoad: false,
-  theme: "default",
-  securityLevel: "loose",
-});
 
 function MermaidBlock({ code }: { code: string }) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (ref.current) {
+    let cancelled = false;
+    async function render() {
+      if (!ref.current) return;
+      const mermaid = (await import("mermaid")).default;
+      if (cancelled) return;
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: "default",
+        securityLevel: "loose",
+      });
       mermaid.run({ nodes: [ref.current] });
     }
+    render();
+    return () => { cancelled = true; };
   }, [code]);
 
   return (
@@ -30,6 +34,10 @@ function MermaidBlock({ code }: { code: string }) {
 }
 
 export function MarkdownContent({ content }: { content: string }) {
+  useEffect(() => {
+    import("highlight.js/styles/a11y-dark.css");
+  }, []);
+
   return (
     <div className="prose prose-sm dark:prose-invert max-w-none">
       <Markdown

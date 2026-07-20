@@ -15,6 +15,7 @@ import {
 import { gql } from "@/lib/graphql";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ScrollGradient } from "./ScrollGradient";
 import { DraggableIssue, SimpleIssueCard, type Issue, type Label, type Milestone } from "./IssueBoard";
 
 const PAGE_SIZE = 20;
@@ -318,6 +319,7 @@ export function KanbanBoard({
   const [closedLoading, setClosedLoading] = useState(true);
   const [closedLoadingMore, setClosedLoadingMore] = useState(false);
   const [localRefreshKey, setLocalRefreshKey] = useState(0);
+  const boardScrollRef = useRef<HTMLDivElement>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
@@ -435,13 +437,15 @@ export function KanbanBoard({
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <div
-          className={
-            isDesktop
-              ? "flex gap-3 overflow-x-auto pb-2 scrollbar-none"
-              : "flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-none"
-          }
-        >
+        <ScrollGradient scrollRef={boardScrollRef}>
+          <div
+            ref={boardScrollRef}
+            className={
+              isDesktop
+                ? "flex gap-3 overflow-x-auto pb-2 scrollbar-none"
+                : "flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-none"
+            }
+          >
           {columns.map((col) => (
             <KanbanColumn
               key={col.state}
@@ -462,7 +466,8 @@ export function KanbanBoard({
               onOptimisticMove={handleOptimisticMove}
             />
           ))}
-        </div>
+          </div>
+        </ScrollGradient>
         <DragOverlay>
           {activeIssue ? (
             <div

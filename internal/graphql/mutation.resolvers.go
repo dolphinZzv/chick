@@ -8,6 +8,7 @@ package graph
 import (
 	"chick/internal/auth"
 	"chick/internal/models"
+	"chick/internal/service"
 	"context"
 	"errors"
 	"fmt"
@@ -295,7 +296,7 @@ func (r *mutationResolver) RemoveProjectMember(ctx context.Context, projectID st
 }
 
 // CreateIssue is the resolver for the createIssue field.
-func (r *mutationResolver) CreateIssue(ctx context.Context, projectID string, title string, description *string, priority Priority, assigneeIDs []string, labelIDs []string, milestoneID *string, environment *string, branch *string, link *string) (*Issue, error) {
+func (r *mutationResolver) CreateIssue(ctx context.Context, projectID string, title string, description *string, priority Priority, assigneeIDs []string, labelIDs []string, milestoneID *string, environment *string, branch *string, links []string) (*Issue, error) {
 	pid := parseID(projectID)
 	agentID, err := r.requireIssueProjectMemberByProject(ctx, pid)
 	if err != nil {
@@ -318,7 +319,7 @@ func (r *mutationResolver) CreateIssue(ctx context.Context, projectID string, ti
 		v := parseID(*milestoneID)
 		mid = &v
 	}
-	issue, err := r.IssueSvc.Create(pid, agentID, title, desc, models.Priority(priority), assigneeUintIDs, labelUintIDs, mid, environment, branch, link, nil, nil, nil)
+	issue, err := r.IssueSvc.Create(service.IssueCreateInput{ProjectID: pid, CreatorID: agentID, Title: title, Description: desc, Priority: models.Priority(priority), AssigneeIDs: assigneeUintIDs, LabelIDs: labelUintIDs, MilestoneID: mid, Environment: environment, Branch: branch, Link: linksToJson(links)})
 	if err != nil {
 		return nil, fmt.Errorf("create issue: %w", err)
 	}
@@ -326,7 +327,7 @@ func (r *mutationResolver) CreateIssue(ctx context.Context, projectID string, ti
 }
 
 // UpdateIssue is the resolver for the updateIssue field.
-func (r *mutationResolver) UpdateIssue(ctx context.Context, id string, title *string, description *string, priority *Priority, dueDate *time.Time, milestoneID *string, environment *string, branch *string, link *string, startedAt *time.Time, completedAt *time.Time, difficulty *int32) (*Issue, error) {
+func (r *mutationResolver) UpdateIssue(ctx context.Context, id string, title *string, description *string, priority *Priority, dueDate *time.Time, milestoneID *string, environment *string, branch *string, links []string, startedAt *time.Time, completedAt *time.Time, difficulty *int32) (*Issue, error) {
 	iid := parseID(id)
 	if _, err := r.requireIssueProjectMember(ctx, iid); err != nil {
 		return nil, err
@@ -362,7 +363,10 @@ func (r *mutationResolver) UpdateIssue(ctx context.Context, id string, title *st
 		d := int(*difficulty)
 		diff = &d
 	}
-	issue, err := r.IssueSvc.Update(iid, t, d, p, nt, mid, environment, branch, link, startedAt, completedAt, diff)
+	if links == nil {
+		links = []string{}
+	}
+	issue, err := r.IssueSvc.Update(iid, t, d, p, nt, mid, environment, branch, linksToJson(links), startedAt, completedAt, diff)
 	if err != nil {
 		return nil, fmt.Errorf("update issue: %w", err)
 	}

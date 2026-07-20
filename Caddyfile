@@ -1,0 +1,19 @@
+{
+    auto_https off
+}
+
+:9090 {
+    # API → Go 后端
+    reverse_proxy /graphql localhost:9091
+
+    reverse_proxy /mcp* localhost:9091
+    reverse_proxy /health localhost:9091
+
+    # 其余 → Vite 前端
+    reverse_proxy localhost:5173 {
+        header_up Host {host}
+        header_up X-Real-IP {remote}
+        header_up X-Forwarded-For {remote}
+        header_up X-Forwarded-Proto {scheme}
+    }
+}

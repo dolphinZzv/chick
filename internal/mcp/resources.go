@@ -11,12 +11,12 @@ import (
 )
 
 type Resources struct {
-	resources  []ResourceDefinition
-	projectSvc *service.ProjectService
-	agentSvc   *service.AgentService
-	issueSvc   *service.IssueService
+	resources   []ResourceDefinition
+	projectSvc  *service.ProjectService
+	agentSvc    *service.AgentService
+	issueSvc    *service.IssueService
 	proposalSvc *service.ProposalService
-	taskSvc    *service.TaskService
+	taskSvc     *service.TaskService
 }
 
 func NewResources(projectSvc *service.ProjectService, agentSvc *service.AgentService, issueSvc *service.IssueService, proposalSvc *service.ProposalService, taskSvc *service.TaskService) *Resources {
@@ -187,12 +187,15 @@ func (r *Resources) readProject(uri string, id uint) (interface{}, error) {
 			"role":    string(m.Role),
 		})
 	}
-	data, _ := json.Marshal(map[string]interface{}{
+	data, err := json.Marshal(map[string]interface{}{
 		"id":          fmt.Sprintf("%d", p.ID),
 		"name":        p.Name,
 		"description": p.Description,
 		"members":     memberList,
 	})
+	if err != nil {
+		return nil, fmt.Errorf("marshal project: %w", err)
+	}
 	return map[string]interface{}{
 		"uri":      uri,
 		"mimeType": "application/json",
@@ -218,7 +221,7 @@ func (r *Resources) readIssue(uri string, projectID uint, number uint) (interfac
 	if found == nil {
 		return nil, fmt.Errorf("issue #%d not found in project %d", number, projectID)
 	}
-	data, _ := json.Marshal(map[string]interface{}{
+	data, err := json.Marshal(map[string]interface{}{
 		"id":          fmt.Sprintf("%d", found.ID),
 		"number":      found.Number,
 		"title":       found.Title,
@@ -226,6 +229,9 @@ func (r *Resources) readIssue(uri string, projectID uint, number uint) (interfac
 		"state":       string(found.State),
 		"priority":    string(found.Priority),
 	})
+	if err != nil {
+		return nil, fmt.Errorf("marshal issue: %w", err)
+	}
 	return map[string]interface{}{
 		"uri":      uri,
 		"mimeType": "application/json",
@@ -238,7 +244,7 @@ func (r *Resources) readAgent(uri string, id uint) (interface{}, error) {
 	if err != nil {
 		return nil, fmt.Errorf("agent not found: %w", err)
 	}
-	data, _ := json.Marshal(map[string]interface{}{
+	data, err := json.Marshal(map[string]interface{}{
 		"id":           fmt.Sprintf("%d", a.ID),
 		"number":       a.Number,
 		"name":         a.Name,
@@ -249,8 +255,11 @@ func (r *Resources) readAgent(uri string, id uint) (interface{}, error) {
 		"deviceInfo":   a.DeviceInfo,
 		"modelInfo":    a.ModelInfo,
 		"lastIp":       a.LastIP,
-			"tokenPreview": maskToken(a.Token),
+		"tokenPreview": maskToken(a.Token),
 	})
+	if err != nil {
+		return nil, fmt.Errorf("marshal agent: %w", err)
+	}
 	return map[string]interface{}{
 		"uri":      uri,
 		"mimeType": "application/json",
@@ -276,7 +285,7 @@ func (r *Resources) readProposal(uri string, projectID uint, number uint) (inter
 	if found == nil {
 		return nil, fmt.Errorf("proposal #%d not found in project %d", number, projectID)
 	}
-	data, _ := json.Marshal(map[string]interface{}{
+	data, err := json.Marshal(map[string]interface{}{
 		"id":          fmt.Sprintf("%d", found.ID),
 		"number":      found.Number,
 		"title":       found.Title,
@@ -284,6 +293,9 @@ func (r *Resources) readProposal(uri string, projectID uint, number uint) (inter
 		"state":       string(found.State),
 		"priority":    string(found.Priority),
 	})
+	if err != nil {
+		return nil, fmt.Errorf("marshal proposal: %w", err)
+	}
 	return map[string]interface{}{
 		"uri":      uri,
 		"mimeType": "application/json",
@@ -294,7 +306,7 @@ func (r *Resources) readProposal(uri string, projectID uint, number uint) (inter
 func (r *Resources) readTask(uri string, proposalID uint, number uint) (interface{}, error) {
 	tasks, _, err := r.taskSvc.List(models.TaskFilter{
 		ProposalID: &proposalID,
-		Limit:     1,
+		Limit:      1,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("task not found: %w", err)
@@ -309,7 +321,7 @@ func (r *Resources) readTask(uri string, proposalID uint, number uint) (interfac
 	if found == nil {
 		return nil, fmt.Errorf("task #%d not found in proposal %d", number, proposalID)
 	}
-	data, _ := json.Marshal(map[string]interface{}{
+	data, err := json.Marshal(map[string]interface{}{
 		"id":          fmt.Sprintf("%d", found.ID),
 		"number":      found.Number,
 		"title":       found.Title,
@@ -317,6 +329,9 @@ func (r *Resources) readTask(uri string, proposalID uint, number uint) (interfac
 		"state":       string(found.State),
 		"priority":    string(found.Priority),
 	})
+	if err != nil {
+		return nil, fmt.Errorf("marshal task: %w", err)
+	}
 	return map[string]interface{}{
 		"uri":      uri,
 		"mimeType": "application/json",

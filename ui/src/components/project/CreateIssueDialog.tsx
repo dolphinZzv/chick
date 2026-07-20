@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Plus, ChevronDown, ChevronRight } from "lucide-react";
+import { Plus, ChevronDown, ChevronRight, X } from "lucide-react";
 import { toast } from "sonner";
 import { gql } from "@/lib/graphql";
 
@@ -42,7 +42,7 @@ const createIssueSchema = z.object({
   priority: z.string().min(1, "请选择优先级"),
   environment: z.string().optional(),
   branch: z.string().optional(),
-  link: z.string().optional(),
+
 });
 
 type CreateIssueForm = z.infer<typeof createIssueSchema>;
@@ -71,6 +71,8 @@ export function CreateIssueDialog({
   const [selectedLabelIds, setSelectedLabelIds] = useState<string[]>([]);
   const [selectedMilestoneId, setSelectedMilestoneId] = useState<string>("");
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [dialogLinks, setDialogLinks] = useState<string[]>([]);
+  const [newLinkInput, setNewLinkInput] = useState("");
 
   const {
     register,
@@ -81,7 +83,7 @@ export function CreateIssueDialog({
     formState: { errors },
   } = useForm<CreateIssueForm>({
     resolver: zodResolver(createIssueSchema),
-    defaultValues: { title: "", description: "", priority: "medium", environment: "", branch: "", link: "" },
+    defaultValues: { title: "", description: "", priority: "medium", environment: "", branch: "" },
   });
 
   const currentPriority = watch("priority");
@@ -92,6 +94,8 @@ export function CreateIssueDialog({
     setSelectedMilestoneId("");
     setShowAdvanced(false);
     setError("");
+    setDialogLinks([]);
+    setNewLinkInput("");
     Promise.all([
       gql(
         `query labels($projectId: ID!) { labels(projectID: $projectId) { id name color } }`,
@@ -118,9 +122,9 @@ export function CreateIssueDialog({
     setError("");
 
     try {
-      const json = await gql(
-        `mutation createIssue($pid: ID!, $title: String!, $description: String, $priority: Priority!, $labelIDs: [ID!], $milestoneId: ID, $environment: String, $branch: String, $link: String) {
-          createIssue(projectID: $pid, title: $title, description: $description, priority: $priority, labelIDs: $labelIDs, milestoneId: $milestoneId, environment: $environment, branch: $branch, link: $link) { id number title }
+       const json = await gql(
+        `mutation createIssue($pid: ID!, $title: String!, $description: String, $priority: Priority!, $labelIDs: [ID!], $milestoneId: ID, $environment: String, $branch: String, $links: [String!]) {
+          createIssue(projectID: $pid, title: $title, description: $description, priority: $priority, labelIDs: $labelIDs, milestoneId: $milestoneId, environment: $environment, branch: $branch, links: $links) { id number title }
         }`,
         {
           pid: projectId,
@@ -131,7 +135,7 @@ export function CreateIssueDialog({
           milestoneId: selectedMilestoneId || null,
           environment: data.environment || null,
           branch: data.branch || null,
-          link: data.link || null,
+          links: dialogLinks,
         }
       );
       if (json.errors) {
@@ -288,9 +292,32 @@ export function CreateIssueDialog({
                     <span className="text-xs font-medium text-muted-foreground w-12 shrink-0">分支</span>
                     <Input placeholder="分支名称" className="h-8 text-xs" {...register("branch")} />
                   </div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-xs font-medium text-muted-foreground w-12 shrink-0">链接</span>
-                    <Input placeholder="相关链接" className="h-8 text-xs" {...register("link")} />
+                  <div className="space-y-1.5">
+                    <span className="text-xs font-medium text-muted-foreground">链接</span>
+                    {dialogLinks.map((url, idx) => (
+                      <div key={idx} className="flex items-center gap-1">
+                        <span className="text-xs text-muted-foreground flex-1 truncate">{url}</span>
+                        <button type="button" className="text-muted-foreground hover:text-destructive" onClick={() => setDialogLinks(dialogLinks.filter((_, i) => i !== idx))}>
+                          <X className="h-3 w-3" />
+                        </button>
+                      </div>
+                    ))}
+                    <div className="flex items-center gap-1">
+                      <Input placeholder="https://..." className="h-8 text-xs flex-1" value={newLinkInput}
+                        onChange={(e) => setNewLinkInput(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            const t = newLinkInput.trim();
+                            if (t) { setDialogLinks([...dialogLinks, t]); setNewLinkInput(""); }
+                          }
+                        }} />
+                      <Button type="button" size="sm" className="h-8 text-xs shrink-0"
+                        disabled={!newLinkInput.trim()}
+                        onClick={() => { const t = newLinkInput.trim(); if (t) { setDialogLinks([...dialogLinks, t]); setNewLinkInput(""); } }}>
+                        <Plus className="h-3 w-3" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
               )}

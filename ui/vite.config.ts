@@ -28,14 +28,23 @@ export default defineConfig({
       },
     },
   },
+  test: {
+    globals: true,
+    environment: "jsdom",
+    setupFiles: ["./src/test-setup.ts"],
+    include: ["src/**/*.test.{ts,tsx}"],
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
+  },
   server: {
     proxy: {
       "/graphql": {
-        target: "http://localhost:8080",
+        target: "http://localhost:9091",
         ws: true,
       },
-      "/mcp": "http://localhost:8080",
-      "/health": "http://localhost:8080",
+      "/mcp": "http://localhost:9091",
+      "/health": "http://localhost:9091",
     },
   },
 });
