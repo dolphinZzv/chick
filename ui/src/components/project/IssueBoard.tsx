@@ -16,18 +16,18 @@ import { Badge } from "@/components/ui/badge";
 import { GripVertical } from "lucide-react";
 import { toast } from "sonner";
 
-interface Label {
+export interface Label {
   id: string;
   name: string;
   color: string | null;
 }
 
-interface Milestone {
+export interface Milestone {
   id: string;
   title: string;
 }
 
-interface Issue {
+export interface Issue {
   id: string;
   number: number;
   title: string;
@@ -38,6 +38,7 @@ interface Issue {
   milestone: Milestone | null;
   startedAt: string | null;
   completedAt: string | null;
+  links: string[];
 }
 
 interface Column {
@@ -104,7 +105,7 @@ function LabelsDisplay({ labels, onRemove }: { labels: Label[]; onRemove?: (id: 
   );
 }
 
-function DraggableIssue({
+export function DraggableIssue({
   issue,
 }: {
   issue: Issue;
@@ -159,11 +160,14 @@ function DraggableIssue({
       {issue.completedAt && (
         <p className="mt-1 text-[10px] text-muted-foreground">完成 {new Date(issue.completedAt).toLocaleDateString()}</p>
       )}
+      {issue.links && issue.links.length > 0 && (
+        <p className="mt-1 text-[10px] text-muted-foreground">🔗 {issue.links.length} 个链接</p>
+      )}
     </Link>
   );
 }
 
-function SimpleIssueCard({
+export function SimpleIssueCard({
   issue,
   onTransition,
   projectLabels,
@@ -383,6 +387,11 @@ function SimpleIssueCard({
       {issue.completedAt && (
         <div className="px-3 pb-1">
           <p className="text-[10px] text-muted-foreground">完成 {new Date(issue.completedAt).toLocaleDateString()}</p>
+        </div>
+      )}
+      {issue.links && issue.links.length > 0 && (
+        <div className="px-3 pb-1">
+          <p className="text-[10px] text-muted-foreground">🔗 {issue.links.length} 个链接</p>
         </div>
       )}
       {transitions.length > 0 && (

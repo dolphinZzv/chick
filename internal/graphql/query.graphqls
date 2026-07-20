@@ -9,7 +9,7 @@ type Query {
   labels(projectID: ID!, group: String): [Label!]!
   milestones(projectID: ID!, state: MilestoneState): [Milestone!]!
   issue(id: ID!): Issue
-  issues(projectID: ID!, state: IssueState, priority: Priority, assigneeID: ID, labelIDs: [ID!], search: String, limit: Int, offset: Int): IssueConnection!
+  issues(projectID: ID!, state: IssueState, states: [IssueState!], priority: Priority, assigneeID: ID, labelIDs: [ID!], search: String, limit: Int, offset: Int): IssueConnection!
   proposal(id: ID!): Proposal
   proposals(projectID: ID!, state: ProposalState, priority: Priority, search: String, limit: Int, offset: Int): ProposalConnection!
   validProposalTransitions(state: ProposalState!): [ProposalState!]!

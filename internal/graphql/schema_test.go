@@ -196,7 +196,7 @@ func TestGraphQL_IssueIntegration(t *testing.T) {
 	}
 
 	// Issue list
-	conn, err := r.Query().Issues(ctx, project.ID, nil, nil, nil, nil, nil, nil, nil)
+	conn, err := r.Query().Issues(ctx, project.ID, nil, nil, nil, nil, nil, nil, nil, nil)
 	if err != nil {
 		t.Fatalf("issues: %v", err)
 	}

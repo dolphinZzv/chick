@@ -163,13 +163,18 @@ func (r *queryResolver) Issue(ctx context.Context, id string) (*Issue, error) {
 }
 
 // Issues is the resolver for the issues field.
-func (r *queryResolver) Issues(ctx context.Context, projectID string, state *IssueState, priority *Priority, assigneeID *string, labelIDs []string, search *string, limit *int32, offset *int32) (*IssueConnection, error) {
+func (r *queryResolver) Issues(ctx context.Context, projectID string, state *IssueState, states []IssueState, priority *Priority, assigneeID *string, labelIDs []string, search *string, limit *int32, offset *int32) (*IssueConnection, error) {
 	pid := parseID(projectID)
 	if _, err := r.requireProjectMember(ctx, pid); err != nil {
 		return nil, err
 	}
 	filter := models.IssueFilter{ProjectID: uintPtr(pid)}
-	if state != nil {
+	if len(states) > 0 {
+		filter.State = make([]models.IssueState, len(states))
+		for i, s := range states {
+			filter.State[i] = models.IssueState(s)
+		}
+	} else if state != nil {
 		filter.State = []models.IssueState{models.IssueState(*state)}
 	}
 	if priority != nil {
@@ -523,7 +528,6 @@ func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
 type queryResolver struct{ *Resolver }
 
-// notificationToEvent converts an internal Notification to a GraphQL NotificationEvent.
 func notificationToEvent(n notifications.Notification) *NotificationEvent {
 	idStr := strconv.FormatUint(uint64(n.ID), 10)
 	notif := &NotificationEvent{

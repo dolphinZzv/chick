@@ -1,10 +1,10 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import { gql } from "@/lib/graphql";
 import { useAuth } from "@/hooks/useAuth";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { CreateIssueDialog } from "@/components/project/CreateIssueDialog";
-import { IssueBoard } from "@/components/project/IssueBoard";
+import { KanbanBoard } from "@/components/project/KanbanBoard";
 import { ProposalBoard } from "@/components/project/ProposalBoard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
@@ -38,19 +38,6 @@ interface Milestone {
   title: string;
 }
 
-interface Issue {
-  id: string;
-  number: number;
-  title: string;
-  state: string;
-  priority: string;
-  assignees: Array<{ agent: { id: string; name: string } }>;
-  labels: Label[];
-  milestone: Milestone | null;
-  startedAt: string | null;
-  completedAt: string | null;
-}
-
 interface Project {
   id: string;
   name: string;
@@ -80,7 +67,6 @@ export function ProjectDetailPage() {
   const isDesktop = useMediaQuery("(min-width: 1024px)");
 
   const [project, setProject] = useState<Project | null>(null);
-  const [issues, setIssues] = useState<Issue[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -95,6 +81,7 @@ export function ProjectDetailPage() {
   const [validTransitions, setValidTransitions] = useState<Record<string, string[]>>({});
   const [activeTab, setActiveTab] = useState<"issues" | "proposals">("issues");
   const [proposals, setProposals] = useState<any[]>([]);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   // Debounce search input before sending to backend
   useEffect(() => {
@@ -107,22 +94,8 @@ export function ProjectDetailPage() {
     setLoading(true);
     setError(null);
 
-    const issueVars: Record<string, unknown> = { projectId: id };
-    if (debouncedSearch) issueVars.search = debouncedSearch;
-    if (priorityFilter !== "all") issueVars.priority = priorityFilter;
-    if (labelFilter.length > 0) issueVars.labelIDs = labelFilter;
-    if (assigneeFilter !== "all") issueVars.assigneeID = assigneeFilter;
-
     Promise.all([
       gql(`query project($id: ID!) { project(id: $id) { id name description } }`, { id }),
-      gql(
-        `query issues($projectId: ID!, $search: String, $priority: Priority, $labelIDs: [ID!], $assigneeID: ID) {
-          issues(projectID: $projectId, search: $search, priority: $priority, labelIDs: $labelIDs, assigneeID: $assigneeID) {
-            edges { id number title state priority startedAt completedAt assignees { agent { id name } } labels { id name color } milestone { id title } }
-          }
-        }`,
-        issueVars
-      ),
       gql(`query labels($projectId: ID!) { labels(projectID: $projectId) { id name color } }`, { projectId: id }),
       gql(`query milestones($projectId: ID!) { milestones(projectID: $projectId) { id title } }`, { projectId: id }),
       gql(
@@ -134,13 +107,11 @@ export function ProjectDetailPage() {
       ),
     ])
       .then((results) => {
-        const pJson = results[0]; const iJson = results[1]; const lJson = results[2]; const mJson = results[3];
-        const propJson = results[4];
-        const transitionResults = results.slice(5) as Array<{ data?: { validTransitions: string[] }; errors?: any }>;
+        const pJson = results[0]; const lJson = results[1]; const mJson = results[2];
+        const propJson = results[3];
+        const transitionResults = results.slice(4) as Array<{ data?: { validTransitions: string[] }; errors?: any }>;
         if (pJson.errors) { setError(pJson.errors[0].message); return; }
-        if (iJson.errors) { setError(iJson.errors[0].message); return; }
         setProject(pJson.data.project);
-        setIssues(iJson.data.issues.edges);
         if (!lJson.errors) setProjectLabels(lJson.data.labels);
         if (!mJson.errors) setProjectMilestones(mJson.data.milestones);
         if (!propJson.errors) setProposals(propJson.data.proposals.edges);
@@ -152,18 +123,23 @@ export function ProjectDetailPage() {
       })
       .catch(() => setError("网络错误"))
       .finally(() => setLoading(false));
-  }, [id, debouncedSearch, priorityFilter, labelFilter, assigneeFilter]);
+  }, [id]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
   // Auto-refresh when tab becomes visible (covers background updates)
   useEffect(() => {
     const onVisible = () => {
-      if (document.visibilityState === "visible") fetchData();
+      if (document.visibilityState === "visible") {
+        fetchData();
+        setRefreshKey((k) => k + 1);
+      }
     };
     document.addEventListener("visibilitychange", onVisible);
     return () => document.removeEventListener("visibilitychange", onVisible);
   }, [fetchData]);
+
+  const triggerRefresh = () => setRefreshKey((k) => k + 1);
 
   const handleTransition = async (issueId: string, toState: string, note?: string) => {
     const targetLabel = columns.find((c) => c.state === toState)?.label || toState;
@@ -179,7 +155,7 @@ export function ProjectDetailPage() {
       throw new Error(json.errors[0].message);
     }
     toast.success("状态变更成功");
-    fetchData();
+    triggerRefresh();
   };
 
   const handleAddLabel = async (issueId: string, labelId: string) => {
@@ -188,8 +164,8 @@ export function ProjectDetailPage() {
       { issueID: issueId, labelIDs: [labelId] }
     );
     if (!json.errors) {
-      setIssues((prev) => prev.map((i) => i.id === issueId ? { ...i, labels: json.data.addLabels.labels } : i));
       toast.success("标签已添加");
+      triggerRefresh();
     } else {
       toast.error(json.errors[0].message);
     }
@@ -202,8 +178,8 @@ export function ProjectDetailPage() {
       { issueID: issueId, labelIDs: [labelId] }
     );
     if (!json.errors) {
-      setIssues((prev) => prev.map((i) => i.id === issueId ? { ...i, labels: json.data.removeLabels.labels } : i));
       toast.success("标签已移除");
+      triggerRefresh();
     } else {
       toast.error(json.errors[0].message);
     }
@@ -215,8 +191,8 @@ export function ProjectDetailPage() {
       { id: issueId, milestoneId: milestoneId || null }
     );
     if (!json.errors) {
-      setIssues((prev) => prev.map((i) => i.id === issueId ? { ...i, milestone: json.data.updateIssue.milestone } : i));
       toast.success("里程碑已更新");
+      triggerRefresh();
     } else {
       toast.error(json.errors[0].message);
     }
@@ -250,24 +226,13 @@ export function ProjectDetailPage() {
     return null;
   };
 
-  // Milestone filter is applied client-side (backend doesn't support it directly)
-  const filteredIssues = issues.filter((issue) => {
-    if (milestoneFilter !== "all") {
-      if (!issue.milestone || issue.milestone.id !== milestoneFilter) return false;
-    }
-    return true;
-  });
-
-  // Extract unique assignees from all fetched issues
-  const allAssignees = issues.reduce<Array<{ id: string; name: string }>>((acc, issue) => {
-    (issue.assignees || []).forEach((a) => {
-      if (!acc.some((x) => x.id === a.agent.id)) acc.push(a.agent);
-    });
-    return acc;
-  }, []);
-
-  const activeIssues = filteredIssues.filter((i) => !i.state.startsWith("closed"));
-  const closed = filteredIssues.filter((i) => i.state.startsWith("closed"));
+  const filters = {
+    search: debouncedSearch,
+    priority: priorityFilter,
+    labelIDs: labelFilter,
+    assigneeID: assigneeFilter,
+    milestoneID: milestoneFilter,
+  };
 
   if (loading) return (
     <div className="space-y-4">
@@ -325,7 +290,7 @@ export function ProjectDetailPage() {
         {agent && (
           <CreateIssueDialog
             projectId={id!}
-            onCreated={fetchData}
+            onCreated={() => { fetchData(); triggerRefresh(); }}
           />
         )}
         <Input
@@ -392,18 +357,16 @@ export function ProjectDetailPage() {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">全部成员</SelectItem>
-            {allAssignees.map((a) => (
-              <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>
-            ))}
           </SelectContent>
         </Select>
       </div>
 
-      {/* Kanban board with dnd-kit */}
-      <IssueBoard
+      <KanbanBoard
+        projectId={id!}
         columns={columns}
-        issues={activeIssues}
         isDesktop={isDesktop}
+        filters={filters}
+        refreshKey={refreshKey}
         onTransition={handleTransition}
         projectLabels={projectLabels}
         projectMilestones={projectMilestones}
@@ -414,23 +377,6 @@ export function ProjectDetailPage() {
         onCreateMilestone={handleCreateMilestone}
         validTransitions={validTransitions}
       />
-
-      {/* Closed issues */}
-      {closed.length > 0 && (
-        <details>
-          <summary className="cursor-pointer text-sm text-muted-foreground">
-            已关闭 ({closed.length})
-          </summary>
-          <div className="mt-1 space-y-0.5">
-            {closed.map((issue) => (
-              <Link key={issue.id} to={`/issues/${issue.id}`} className="block rounded px-2 py-0.5 text-sm hover:bg-accent">
-                <span className="text-muted-foreground line-through">#{issue.id}</span>{" "}
-                <span className="text-muted-foreground line-through">{issue.title}</span>
-              </Link>
-            ))}
-          </div>
-        </details>
-      )}
         </>
       )}
 
