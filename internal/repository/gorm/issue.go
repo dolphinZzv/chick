@@ -80,12 +80,12 @@ func (r *IssueRepo) List(filter models.IssueFilter) ([]models.Issue, int64, erro
 		return nil, 0, err
 	}
 
-	if filter.OrderBy != "" {
+	if col := models.SanitizeOrderBy(filter.OrderBy); col != "" {
 		dir := "DESC"
 		if filter.OrderDir == "ASC" {
 			dir = "ASC"
 		}
-		q = q.Order(filter.OrderBy + " " + dir)
+		q = q.Order(col + " " + dir)
 	} else {
 		q = q.Order("created_at DESC")
 	}

@@ -7,7 +7,7 @@ import (
 	"log"
 	"net"
 	"net/http"
-	_ "net/http/pprof"
+	"net/http/pprof"
 	"os"
 	"os/signal"
 	"strings"
@@ -68,6 +68,17 @@ func main() {
 		w.Header().Set("Content-Type", "application/json")
 		w.Write([]byte(`{"status":"ok"}`))
 	})
+
+	// pprof (auth required, only when enabled)
+	if cfg.PprofEnabled {
+		pprofMux := http.NewServeMux()
+		pprofMux.HandleFunc("/debug/pprof/", pprof.Index)
+		pprofMux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
+		pprofMux.HandleFunc("/debug/pprof/profile", pprof.Profile)
+		pprofMux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
+		pprofMux.HandleFunc("/debug/pprof/trace", pprof.Trace)
+		http.Handle("/debug/pprof/", authMW(pprofMux))
+	}
 
 	// MCP OAuth discovery — not supported
 	http.Handle("/.well-known/", corsMW(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

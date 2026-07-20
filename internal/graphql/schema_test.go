@@ -10,6 +10,7 @@ import (
 	"chick/internal/auth"
 	"chick/internal/config"
 	"chick/internal/events"
+	"chick/internal/repository"
 	gormrepo "chick/internal/repository/gorm"
 	"chick/internal/server"
 	"chick/internal/service"
@@ -44,10 +45,27 @@ func setupTestResolver(t *testing.T) *Resolver {
 
 	projectSvc := service.NewProjectService(projectRepo, memberRepo, labelRepo, milestoneRepo)
 	agentSvc := service.NewAgentService(agentRepo, bus, nil, true)
-	commentSvc := service.NewCommentService(db, commentRepo, timelineRepo, issueRepo, proposalRepo, taskRepo, bus)
-	issueSvc := service.NewIssueService(db, issueRepo, assigneeRepo, timelineRepo, projectRepo, bus)
-	proposalSvc := service.NewProposalService(db, proposalRepo, taskRepo, timelineRepo, bus)
-	taskSvc := service.NewTaskService(db, taskRepo, timelineRepo, bus)
+
+	repos := &repository.Repositories{
+		Project:       projectRepo,
+		ProjectMember: memberRepo,
+		Agent:         agentRepo,
+		Issue:         issueRepo,
+		IssueAssignee: assigneeRepo,
+		Comment:       commentRepo,
+		Label:         labelRepo,
+		Milestone:     milestoneRepo,
+		Timeline:      timelineRepo,
+		Feedback:      feedbackRepo,
+		Proposal:      proposalRepo,
+		Task:          taskRepo,
+		DB:            db,
+	}
+
+	commentSvc := service.NewCommentService(repos, commentRepo, timelineRepo, issueRepo, proposalRepo, taskRepo, bus)
+	issueSvc := service.NewIssueService(repos, issueRepo, assigneeRepo, timelineRepo, projectRepo, bus)
+	proposalSvc := service.NewProposalService(repos, proposalRepo, taskRepo, timelineRepo, bus)
+	taskSvc := service.NewTaskService(repos, taskRepo, timelineRepo, bus)
 	workflowSvc := service.NewWorkflowService(issueSvc)
 	feedbackSvc := service.NewFeedbackService(feedbackRepo, bus)
 

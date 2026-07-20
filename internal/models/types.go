@@ -1,6 +1,28 @@
 package models
 
-import "time"
+import (
+	"strings"
+	"time"
+)
+
+// allowedOrderColumns defines safe column names for ORDER BY clauses.
+var allowedOrderColumns = map[string]bool{
+	"created_at": true,
+	"updated_at": true,
+	"priority":   true,
+	"title":      true,
+	"number":     true,
+	"state":      true,
+}
+
+// SanitizeOrderBy returns a safe ORDER BY column or empty string if invalid.
+func SanitizeOrderBy(column string) string {
+	column = strings.TrimSpace(strings.ToLower(column))
+	if allowedOrderColumns[column] {
+		return column
+	}
+	return ""
+}
 
 type IssueFilter struct {
 	ProjectID   *uint

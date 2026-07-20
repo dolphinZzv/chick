@@ -15,7 +15,7 @@ import (
 )
 
 type IssueService struct {
-	db           *gorm.DB
+	repos        *repository.Repositories
 	issueRepo    repository.IssueRepository
 	assigneeRepo repository.IssueAssigneeRepository
 	timelineRepo repository.TimelineRepository
@@ -40,8 +40,22 @@ type IssueCreateInput struct {
 	CompletedAt *time.Time
 }
 
+type IssueUpdateInput struct {
+	Title       *string
+	Description *string
+	Priority    *models.Priority
+	DueDate     *models.UnixNullTime
+	MilestoneID *uint
+	Environment *string
+	Branch      *string
+	Link        *string
+	StartedAt   *time.Time
+	CompletedAt *time.Time
+	Difficulty  *int
+}
+
 func NewIssueService(
-	db *gorm.DB,
+	repos *repository.Repositories,
 	issueRepo repository.IssueRepository,
 	assigneeRepo repository.IssueAssigneeRepository,
 	timelineRepo repository.TimelineRepository,
@@ -49,7 +63,7 @@ func NewIssueService(
 	eventBus *events.Bus,
 ) *IssueService {
 	return &IssueService{
-		db:           db,
+		repos:        repos,
 		issueRepo:    issueRepo,
 		assigneeRepo: assigneeRepo,
 		timelineRepo: timelineRepo,
@@ -61,7 +75,7 @@ func NewIssueService(
 func (s *IssueService) Create(input IssueCreateInput) (*models.Issue, error) {
 	var issue *models.Issue
 
-	err := s.db.Transaction(func(tx *gorm.DB) error {
+	err := s.repos.Transaction(func(tx *gorm.DB) error {
 		txIssueRepo := gormrepo.NewIssueRepo(tx)
 		txAssigneeRepo := gormrepo.NewIssueAssigneeRepo(tx)
 
@@ -164,7 +178,7 @@ func (s *IssueService) TransitionState(id uint, newState models.IssueState, acto
 	var oldState models.IssueState
 	var projectID uint
 
-	err := s.db.Transaction(func(tx *gorm.DB) error {
+	err := s.repos.Transaction(func(tx *gorm.DB) error {
 		// Lock the row to prevent concurrent transitions
 		var current models.Issue
 		if err := tx.Model(&models.Issue{}).Select("state,project_id,creator_id,started_at,completed_at").Clauses(clause.Locking{Strength: "UPDATE"}).First(&current, id).Error; err != nil {
@@ -354,57 +368,56 @@ func (s *IssueService) UpdateAssigneeState(issueID, agentID uint, state models.A
 	return nil, fmt.Errorf("assignee not found")
 }
 
-func (s *IssueService) Update(id uint, title, description string, priority models.Priority, dueDate *models.UnixNullTime, milestoneID *uint, environment, branch, link *string, startedAt, completedAt *time.Time, difficulty *int) (*models.Issue, error) {
+func (s *IssueService) Update(id uint, input IssueUpdateInput) (*models.Issue, error) {
 	changes := map[string]interface{}{}
-	if title != "" {
-		changes["title"] = title
+	if input.Title != nil && *input.Title != "" {
+		changes["title"] = *input.Title
 	}
-	if description != "" {
-		changes["description"] = description
+	if input.Description != nil && *input.Description != "" {
+		changes["description"] = *input.Description
 	}
-	if priority != "" {
-		changes["priority"] = priority
+	if input.Priority != nil && *input.Priority != "" {
+		changes["priority"] = *input.Priority
 	}
-	if dueDate != nil && dueDate.Valid {
-		changes["due_date"] = dueDate.Time
+	if input.DueDate != nil && input.DueDate.Valid {
+		changes["due_date"] = input.DueDate.Time
 	}
-	if milestoneID != nil {
-		if *milestoneID == 0 {
-			// 0 sentinel means "explicitly clear milestone"
+	if input.MilestoneID != nil {
+		if *input.MilestoneID == 0 {
 			changes["milestone_id"] = nil
 		} else {
-			changes["milestone_id"] = *milestoneID
+			changes["milestone_id"] = *input.MilestoneID
 		}
 	}
-	if environment != nil {
-		if *environment == "" {
+	if input.Environment != nil {
+		if *input.Environment == "" {
 			changes["environment"] = nil
 		} else {
-			changes["environment"] = *environment
+			changes["environment"] = *input.Environment
 		}
 	}
-	if branch != nil {
-		if *branch == "" {
+	if input.Branch != nil {
+		if *input.Branch == "" {
 			changes["branch"] = nil
 		} else {
-			changes["branch"] = *branch
+			changes["branch"] = *input.Branch
 		}
 	}
-	if link != nil {
-		if *link == "" {
+	if input.Link != nil {
+		if *input.Link == "" {
 			changes["link"] = nil
 		} else {
-			changes["link"] = *link
+			changes["link"] = *input.Link
 		}
 	}
-	if startedAt != nil {
-		changes["started_at"] = *startedAt
+	if input.StartedAt != nil {
+		changes["started_at"] = *input.StartedAt
 	}
-	if completedAt != nil {
-		changes["completed_at"] = *completedAt
+	if input.CompletedAt != nil {
+		changes["completed_at"] = *input.CompletedAt
 	}
-	if difficulty != nil {
-		changes["difficulty"] = *difficulty
+	if input.Difficulty != nil {
+		changes["difficulty"] = *input.Difficulty
 	}
 	if len(changes) == 0 {
 		return s.issueRepo.GetByID(id)

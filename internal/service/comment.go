@@ -12,7 +12,7 @@ import (
 )
 
 type CommentService struct {
-	db           *gorm.DB
+	repos        *repository.Repositories
 	commentRepo  repository.CommentRepository
 	timelineRepo repository.TimelineRepository
 	issueRepo    repository.IssueRepository
@@ -21,14 +21,14 @@ type CommentService struct {
 	eventBus     *events.Bus
 }
 
-func NewCommentService(db *gorm.DB, commentRepo repository.CommentRepository, timelineRepo repository.TimelineRepository, issueRepo repository.IssueRepository, proposalRepo repository.ProposalRepository, taskRepo repository.TaskRepository, eventBus *events.Bus) *CommentService {
-	return &CommentService{db: db, commentRepo: commentRepo, timelineRepo: timelineRepo, issueRepo: issueRepo, proposalRepo: proposalRepo, taskRepo: taskRepo, eventBus: eventBus}
+func NewCommentService(repos *repository.Repositories, commentRepo repository.CommentRepository, timelineRepo repository.TimelineRepository, issueRepo repository.IssueRepository, proposalRepo repository.ProposalRepository, taskRepo repository.TaskRepository, eventBus *events.Bus) *CommentService {
+	return &CommentService{repos: repos, commentRepo: commentRepo, timelineRepo: timelineRepo, issueRepo: issueRepo, proposalRepo: proposalRepo, taskRepo: taskRepo, eventBus: eventBus}
 }
 
 func (s *CommentService) Create(issueID, authorID uint, body string, contentType models.CommentContentType, parentID *uint) (*models.Comment, error) {
 	var c *models.Comment
 
-	err := s.db.Transaction(func(tx *gorm.DB) error {
+	err := s.repos.Transaction(func(tx *gorm.DB) error {
 		txCommentRepo := gormrepo.NewCommentRepo(tx)
 		txTimelineRepo := gormrepo.NewTimelineRepo(tx)
 
@@ -110,7 +110,7 @@ func (s *CommentService) Delete(id uint) error {
 func (s *CommentService) CreateForProposal(proposalID, authorID uint, body string, contentType models.CommentContentType, parentID *uint) (*models.Comment, error) {
 	var c *models.Comment
 
-	err := s.db.Transaction(func(tx *gorm.DB) error {
+	err := s.repos.Transaction(func(tx *gorm.DB) error {
 		txCommentRepo := gormrepo.NewCommentRepo(tx)
 		txTimelineRepo := gormrepo.NewTimelineRepo(tx)
 
@@ -165,7 +165,7 @@ func (s *CommentService) CreateForProposal(proposalID, authorID uint, body strin
 func (s *CommentService) CreateForTask(taskID, authorID uint, body string, contentType models.CommentContentType, parentID *uint) (*models.Comment, error) {
 	var c *models.Comment
 
-	err := s.db.Transaction(func(tx *gorm.DB) error {
+	err := s.repos.Transaction(func(tx *gorm.DB) error {
 		txCommentRepo := gormrepo.NewCommentRepo(tx)
 		txTimelineRepo := gormrepo.NewTimelineRepo(tx)
 

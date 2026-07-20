@@ -11,6 +11,7 @@ import (
 	"chick/internal/mcp"
 	"chick/internal/models"
 	"chick/internal/notifications"
+	"chick/internal/repository"
 	gormrepo "chick/internal/repository/gorm"
 	"chick/internal/server"
 	"chick/internal/service"
@@ -53,10 +54,26 @@ func setupTest(t *testing.T) (*mcp.Server, *service.ProjectService, *service.Age
 	// Init services
 	projectSvc := service.NewProjectService(projectRepo, memberRepo, labelRepo, milestoneRepo)
 	agentSvc := service.NewAgentService(agentRepo, bus, nil, true)
-	commentSvc := service.NewCommentService(db, commentRepo, timelineRepo, issueRepo, proposalRepo, taskRepo, bus)
-	issueSvc := service.NewIssueService(db, issueRepo, assigneeRepo, timelineRepo, projectRepo, bus)
-	proposalSvc := service.NewProposalService(db, proposalRepo, taskRepo, timelineRepo, bus)
-	taskSvc := service.NewTaskService(db, taskRepo, timelineRepo, bus)
+
+	repos := &repository.Repositories{
+		Project:       projectRepo,
+		ProjectMember: memberRepo,
+		Agent:         agentRepo,
+		Issue:         issueRepo,
+		IssueAssignee: assigneeRepo,
+		Comment:       commentRepo,
+		Label:         labelRepo,
+		Milestone:     milestoneRepo,
+		Timeline:      timelineRepo,
+		Proposal:      proposalRepo,
+		Task:          taskRepo,
+		DB:            db,
+	}
+
+	commentSvc := service.NewCommentService(repos, commentRepo, timelineRepo, issueRepo, proposalRepo, taskRepo, bus)
+	issueSvc := service.NewIssueService(repos, issueRepo, assigneeRepo, timelineRepo, projectRepo, bus)
+	proposalSvc := service.NewProposalService(repos, proposalRepo, taskRepo, timelineRepo, bus)
+	taskSvc := service.NewTaskService(repos, taskRepo, timelineRepo, bus)
 	workflowSvc := service.NewWorkflowService(issueSvc)
 
 	// Init MCP
@@ -396,10 +413,26 @@ func TestSubmitRequirement(t *testing.T) {
 
 	projectSvc := service.NewProjectService(projectRepo, memberRepo, labelRepo, milestoneRepo)
 	agentSvc := service.NewAgentService(agentRepo, bus, nil, true)
-	issueSvc := service.NewIssueService(db, issueRepo, assigneeRepo, timelineRepo, projectRepo, bus)
-	proposalSvc := service.NewProposalService(db, proposalRepo, taskRepo, timelineRepo, bus)
-	taskSvc := service.NewTaskService(db, taskRepo, timelineRepo, bus)
-	commentSvc := service.NewCommentService(db, commentRepo, timelineRepo, issueRepo, proposalRepo, taskRepo, bus)
+
+	repos2 := &repository.Repositories{
+		Project:       projectRepo,
+		ProjectMember: memberRepo,
+		Agent:         agentRepo,
+		Issue:         issueRepo,
+		IssueAssignee: assigneeRepo,
+		Comment:       commentRepo,
+		Label:         labelRepo,
+		Milestone:     milestoneRepo,
+		Timeline:      timelineRepo,
+		Proposal:      proposalRepo,
+		Task:          taskRepo,
+		DB:            db,
+	}
+
+	issueSvc := service.NewIssueService(repos2, issueRepo, assigneeRepo, timelineRepo, projectRepo, bus)
+	proposalSvc := service.NewProposalService(repos2, proposalRepo, taskRepo, timelineRepo, bus)
+	taskSvc := service.NewTaskService(repos2, taskRepo, timelineRepo, bus)
+	commentSvc := service.NewCommentService(repos2, commentRepo, timelineRepo, issueRepo, proposalRepo, taskRepo, bus)
 	workflowSvc := service.NewWorkflowService(issueSvc)
 
 	agent, err := agentSvc.Register("req-agent", models.AgentKindAI, "req-001", "secret", nil, "", "")

@@ -877,7 +877,17 @@ func (h *Handlers) handleEditIssue(id json.RawMessage, params json.RawMessage, a
 		completedAt = &t
 	}
 
-	issue, err := h.issueSvc.Update(uint(issueID), p.Title, p.Description, priority, nil, nil, strPtr(p.Environment), strPtr(p.Branch), mcpLinksToJson(p.Links), startedAt, completedAt, diff)
+	issue, err := h.issueSvc.Update(uint(issueID), service.IssueUpdateInput{
+		Title:       strPtr(p.Title),
+		Description: strPtr(p.Description),
+		Priority:    &priority,
+		Environment: strPtr(p.Environment),
+		Branch:      strPtr(p.Branch),
+		Link:        mcpLinksToJson(p.Links),
+		StartedAt:   startedAt,
+		CompletedAt: completedAt,
+		Difficulty:  diff,
+	})
 	if err != nil {
 		return NewInternalError(id, err.Error())
 	}

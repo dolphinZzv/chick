@@ -15,7 +15,7 @@ import (
 )
 
 type ProposalService struct {
-	db           *gorm.DB
+	repos        *repository.Repositories
 	proposalRepo repository.ProposalRepository
 	taskRepo     repository.TaskRepository
 	timelineRepo repository.TimelineRepository
@@ -23,14 +23,14 @@ type ProposalService struct {
 }
 
 func NewProposalService(
-	db *gorm.DB,
+	repos *repository.Repositories,
 	proposalRepo repository.ProposalRepository,
 	taskRepo repository.TaskRepository,
 	timelineRepo repository.TimelineRepository,
 	eventBus *events.Bus,
 ) *ProposalService {
 	return &ProposalService{
-		db:           db,
+		repos:        repos,
 		proposalRepo: proposalRepo,
 		taskRepo:     taskRepo,
 		timelineRepo: timelineRepo,
@@ -60,7 +60,7 @@ func (s *ProposalService) ValidTransitions(state models.ProposalState) ([]models
 func (s *ProposalService) Create(projectID, authorID uint, title, description string, priority models.Priority, labelIDs []uint) (*models.Proposal, error) {
 	var proposal *models.Proposal
 
-	err := s.db.Transaction(func(tx *gorm.DB) error {
+	err := s.repos.Transaction(func(tx *gorm.DB) error {
 		txProposalRepo := gormrepo.NewProposalRepo(tx)
 
 		proposal = &models.Proposal{
@@ -123,7 +123,7 @@ func (s *ProposalService) TransitionState(id uint, newState models.ProposalState
 	var oldState models.ProposalState
 	var projectID uint
 
-	err := s.db.Transaction(func(tx *gorm.DB) error {
+	err := s.repos.Transaction(func(tx *gorm.DB) error {
 		var current models.Proposal
 		if err := tx.Model(&models.Proposal{}).Select("state,project_id").
 			Clauses(clause.Locking{Strength: "UPDATE"}).First(&current, id).Error; err != nil {
@@ -226,7 +226,7 @@ func (s *ProposalService) Review(id, reviewerID uint, approved bool, note *strin
 }
 
 func (s *ProposalService) transitionWithReview(id uint, targetState models.ProposalState, reviewerID uint, note *string) (*models.Proposal, error) {
-	err := s.db.Transaction(func(tx *gorm.DB) error {
+	err := s.repos.Transaction(func(tx *gorm.DB) error {
 		if err := tx.Model(&models.Proposal{}).Where("id = ?", id).
 			Updates(map[string]interface{}{
 				"reviewer_id": reviewerID,

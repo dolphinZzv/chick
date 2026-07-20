@@ -8,6 +8,7 @@ import (
 	"chick/internal/events"
 	"chick/internal/matching"
 	"chick/internal/notifications"
+	"chick/internal/repository"
 	gormrepo "chick/internal/repository/gorm"
 	"chick/internal/service"
 
@@ -15,21 +16,21 @@ import (
 )
 
 type Server struct {
-	Config          *config.Config
-	DB              *gorm.DB
-	EventBus        *events.Bus
+	Config   *config.Config
+	DB       *gorm.DB
+	EventBus *events.Bus
 
-	ProjectService   *service.ProjectService
-	AgentService     *service.AgentService
-	IssueService     *service.IssueService
-	CommentService   *service.CommentService
-	ProposalService  *service.ProposalService
-	TaskService      *service.TaskService
-	WorkflowService  *service.WorkflowService
-	FeedbackService  *service.FeedbackService
-	Authenticator    *auth.Authenticator
-	NotifService     *notifications.Service
-	MatchingEngine   *matching.Engine
+	ProjectService  *service.ProjectService
+	AgentService    *service.AgentService
+	IssueService    *service.IssueService
+	CommentService  *service.CommentService
+	ProposalService *service.ProposalService
+	TaskService     *service.TaskService
+	WorkflowService *service.WorkflowService
+	FeedbackService *service.FeedbackService
+	Authenticator   *auth.Authenticator
+	NotifService    *notifications.Service
+	MatchingEngine  *matching.Engine
 }
 
 func New(cfg *config.Config) (*Server, error) {
@@ -73,28 +74,45 @@ func New(cfg *config.Config) (*Server, error) {
 	// Init services
 	projectSvc := service.NewProjectService(projectRepo, memberRepo, labelRepo, milestoneRepo)
 	agentSvc := service.NewAgentService(agentRepo, bus, authn, cfg.AllowHumanRegistration)
-	commentSvc := service.NewCommentService(db, commentRepo, timelineRepo, issueRepo, proposalRepo, taskRepo, bus)
-	issueSvc := service.NewIssueService(db, issueRepo, assigneeRepo, timelineRepo, projectRepo, bus)
-	proposalSvc := service.NewProposalService(db, proposalRepo, taskRepo, timelineRepo, bus)
-	taskSvc := service.NewTaskService(db, taskRepo, timelineRepo, bus)
+
+	repos := &repository.Repositories{
+		Project:       projectRepo,
+		ProjectMember: memberRepo,
+		Agent:         agentRepo,
+		Issue:         issueRepo,
+		IssueAssignee: assigneeRepo,
+		Comment:       commentRepo,
+		Label:         labelRepo,
+		Milestone:     milestoneRepo,
+		Timeline:      timelineRepo,
+		Feedback:      feedbackRepo,
+		Proposal:      proposalRepo,
+		Task:          taskRepo,
+		DB:            db,
+	}
+
+	commentSvc := service.NewCommentService(repos, commentRepo, timelineRepo, issueRepo, proposalRepo, taskRepo, bus)
+	issueSvc := service.NewIssueService(repos, issueRepo, assigneeRepo, timelineRepo, projectRepo, bus)
+	proposalSvc := service.NewProposalService(repos, proposalRepo, taskRepo, timelineRepo, bus)
+	taskSvc := service.NewTaskService(repos, taskRepo, timelineRepo, bus)
 	workflowSvc := service.NewWorkflowService(issueSvc)
 	feedbackSvc := service.NewFeedbackService(feedbackRepo, bus)
 
 	srv := &Server{
-		Config:           cfg,
-		DB:               db,
-		EventBus:         bus,
-		ProjectService:   projectSvc,
-		AgentService:     agentSvc,
-		IssueService:     issueSvc,
-		CommentService:   commentSvc,
-		ProposalService:  proposalSvc,
-		TaskService:      taskSvc,
-		WorkflowService:  workflowSvc,
-		FeedbackService:  feedbackSvc,
-		Authenticator:    authn,
-		NotifService:     notifSvc,
-		MatchingEngine:   matchingEngine,
+		Config:          cfg,
+		DB:              db,
+		EventBus:        bus,
+		ProjectService:  projectSvc,
+		AgentService:    agentSvc,
+		IssueService:    issueSvc,
+		CommentService:  commentSvc,
+		ProposalService: proposalSvc,
+		TaskService:     taskSvc,
+		WorkflowService: workflowSvc,
+		FeedbackService: feedbackSvc,
+		Authenticator:   authn,
+		NotifService:    notifSvc,
+		MatchingEngine:  matchingEngine,
 	}
 
 	log.Println("[server] initialized")

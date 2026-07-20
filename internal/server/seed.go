@@ -37,7 +37,7 @@ func SeedData(db *gorm.DB) error {
 	if err := db.Create(admin).Error; err != nil {
 		return fmt.Errorf("seed: create admin: %w", err)
 	}
-	log.Printf("[seed] created admin agent (externalID=admin, secret=admin, token=%s)", token)
+	log.Printf("[seed] created admin agent (externalID=admin, token=%s)", token)
 
 	// ── Demo project ─────────────────────────────────────────
 	project := &models.Project{

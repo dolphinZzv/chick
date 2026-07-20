@@ -366,7 +366,19 @@ func (r *mutationResolver) UpdateIssue(ctx context.Context, id string, title *st
 	if links == nil {
 		links = []string{}
 	}
-	issue, err := r.IssueSvc.Update(iid, t, d, p, nt, mid, environment, branch, linksToJson(links), startedAt, completedAt, diff)
+	issue, err := r.IssueSvc.Update(iid, service.IssueUpdateInput{
+		Title:       &t,
+		Description: &d,
+		Priority:    &p,
+		DueDate:     nt,
+		MilestoneID: mid,
+		Environment: environment,
+		Branch:      branch,
+		Link:        linksToJson(links),
+		StartedAt:   startedAt,
+		CompletedAt: completedAt,
+		Difficulty:  diff,
+	})
 	if err != nil {
 		return nil, fmt.Errorf("update issue: %w", err)
 	}

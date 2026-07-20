@@ -64,12 +64,12 @@ func (r *ProposalRepo) List(filter models.ProposalFilter) ([]models.Proposal, in
 		return nil, 0, err
 	}
 
-	if filter.OrderBy != "" {
+	if col := models.SanitizeOrderBy(filter.OrderBy); col != "" {
 		dir := "DESC"
 		if filter.OrderDir == "ASC" {
 			dir = "ASC"
 		}
-		q = q.Order(filter.OrderBy + " " + dir)
+		q = q.Order(col + " " + dir)
 	} else {
 		q = q.Order("created_at DESC")
 	}
@@ -79,8 +79,8 @@ func (r *ProposalRepo) List(filter models.ProposalFilter) ([]models.Proposal, in
 
 	var proposals []models.Proposal
 	err := q.Preload("Author").Preload("Reviewer").Preload("Labels").Preload("Tasks", func(db *gorm.DB) *gorm.DB {
-			return db.Order("number ASC")
-		}).Find(&proposals).Error
+		return db.Order("number ASC")
+	}).Find(&proposals).Error
 	return proposals, total, err
 }
 

@@ -15,20 +15,20 @@ import (
 )
 
 type TaskService struct {
-	db           *gorm.DB
+	repos        *repository.Repositories
 	taskRepo     repository.TaskRepository
 	timelineRepo repository.TimelineRepository
 	eventBus     *events.Bus
 }
 
 func NewTaskService(
-	db *gorm.DB,
+	repos *repository.Repositories,
 	taskRepo repository.TaskRepository,
 	timelineRepo repository.TimelineRepository,
 	eventBus *events.Bus,
 ) *TaskService {
 	return &TaskService{
-		db:           db,
+		repos:        repos,
 		taskRepo:     taskRepo,
 		timelineRepo: timelineRepo,
 		eventBus:     eventBus,
@@ -54,7 +54,7 @@ func (s *TaskService) ValidTransitions(state models.TaskState) ([]models.TaskSta
 func (s *TaskService) Create(proposalID, projectID, authorID uint, title, description string, priority models.Priority, assigneeID *uint) (*models.Task, error) {
 	var task *models.Task
 
-	err := s.db.Transaction(func(tx *gorm.DB) error {
+	err := s.repos.Transaction(func(tx *gorm.DB) error {
 		txTaskRepo := gormrepo.NewTaskRepo(tx)
 
 		task = &models.Task{
@@ -125,7 +125,7 @@ func (s *TaskService) TransitionState(id uint, newState models.TaskState, actorI
 	var oldState models.TaskState
 	var proposalID uint
 
-	err := s.db.Transaction(func(tx *gorm.DB) error {
+	err := s.repos.Transaction(func(tx *gorm.DB) error {
 		var current models.Task
 		if err := tx.Model(&models.Task{}).Select("state,proposal_id").
 			Clauses(clause.Locking{Strength: "UPDATE"}).First(&current, id).Error; err != nil {
