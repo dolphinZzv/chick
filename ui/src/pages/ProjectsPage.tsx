@@ -46,7 +46,7 @@ export function ProjectsPage() {
   if (loading) {
     return (
       <div className="space-y-4">
-        <h1 className="text-lg font-medium">项目</h1>
+        <h1 className="text-2xl font-semibold">项目</h1>
         <div className="grid gap-2 lg:grid-cols-2">
           {[1, 2, 3].map((i) => <Skeleton key={i} className="h-16 w-full" />)}
         </div>
@@ -59,9 +59,9 @@ export function ProjectsPage() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-lg font-medium">项目</h1>
+        <h1 className="text-2xl font-semibold">项目</h1>
         <Button size="sm" onClick={() => setCreateOpen(true)}>
-          <Plus className="mr-1 size-3.5" />创建项目
+          <Plus className="mr-1 h-4 w-4" />创建项目
         </Button>
       </div>
 
@@ -98,7 +98,7 @@ export function ProjectsPage() {
               onChange={e => setNewName(e.target.value)}
               placeholder="项目名称"
               required
-              className="w-full border-b bg-transparent py-1.5 text-sm outline-none placeholder:text-muted-foreground/40 focus:border-foreground transition-colors"
+              className="w-full rounded-md border-b bg-transparent py-1.5 text-sm outline-none placeholder:text-muted-foreground/40 focus:border-foreground transition-colors"
             />
             <textarea
               value={newDesc}
@@ -108,7 +108,7 @@ export function ProjectsPage() {
               className="w-full resize-none border-b bg-transparent py-1.5 text-sm outline-none placeholder:text-muted-foreground/40 focus:border-foreground transition-colors"
             />
             <div className="flex justify-end gap-2 pt-2">
-              <Button type="button" variant="ghost" size="sm" onClick={() => setCreateOpen(false)}>取消</Button>
+              <Button type="button" variant="outline" size="sm" onClick={() => setCreateOpen(false)}>取消</Button>
               <Button type="submit" size="sm" disabled={creating}>{creating ? "创建中..." : "创建"}</Button>
             </div>
           </form>
@@ -123,7 +123,7 @@ export function ProjectsPage() {
             <Link
               key={p.id}
               to={`/projects/${p.id}`}
-              className="block rounded-lg border bg-card p-3.5 transition-colors hover:bg-accent"
+              className="block rounded-lg border bg-card p-4 transition-colors hover:bg-accent"
             >
               <h3 className="text-sm font-medium">{p.name}</h3>
               {p.description && (

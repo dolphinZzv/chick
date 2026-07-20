@@ -136,7 +136,7 @@ export function ProposalDetailPage() {
 
   return (
     <div className="space-y-5 max-w-3xl">
-      <Link to={-1 as any} className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
+      <Link to={-1 as any} className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
         ← 返回
       </Link>
 
@@ -146,7 +146,7 @@ export function ProposalDetailPage() {
           <Badge variant="outline" className="text-xs">{priorityLabels[proposal.priority] || proposal.priority}</Badge>
           <span className="text-xs text-muted-foreground">#{proposal.number}</span>
         </div>
-        <h1 className="text-base font-medium mt-1.5">{proposal.title}</h1>
+        <h1 className="text-2xl font-semibold mt-1.5">{proposal.title}</h1>
         <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
           <span>{proposal.author.name}</span>
           <span>创建于 {relativeTime(proposal.createdAt)}</span>
@@ -167,7 +167,7 @@ export function ProposalDetailPage() {
       </div>
 
       {proposal.reviewer && (
-        <div className="rounded-lg border bg-card p-3 space-y-1">
+        <div className="rounded-lg border bg-card p-4 space-y-1">
           <p className="text-sm">评审人: <span className="font-medium">{proposal.reviewer.name}</span></p>
           {proposal.reviewNote && <div className="text-sm"><MarkdownContent content={proposal.reviewNote} /></div>}
           {proposal.reviewedAt && <p className="text-xs text-muted-foreground">{relativeTime(proposal.reviewedAt)}</p>}
@@ -210,7 +210,7 @@ export function ProposalDetailPage() {
           <MessageSquare className="size-3.5" />评论 ({comments.length})
         </h2>
         {comments.map((c) => (
-          <div key={c.id} className="rounded-lg border bg-card p-3">
+          <div key={c.id} className="rounded-lg border bg-card p-4">
             <div className="flex items-center gap-2">
               <Avatar className="size-5"><AvatarFallback className="text-[10px]">{c.author.name.charAt(0)}</AvatarFallback></Avatar>
               <span className="text-xs font-medium">{c.author.name}</span>
@@ -220,7 +220,7 @@ export function ProposalDetailPage() {
           </div>
         ))}
         {agent && (
-          <div className="rounded-lg border bg-card p-3">
+          <div className="rounded-lg border bg-card p-4">
             <Textarea value={newComment} onChange={(e) => setNewComment(e.target.value)} placeholder="输入评论... (⌘+Enter 发送)" rows={2} className="text-sm"
               onKeyDown={(e) => { if ((e.metaKey || e.ctrlKey) && e.key === "Enter" && newComment.trim()) { e.preventDefault(); handleComment(); } }} />
             <div className="mt-2 flex justify-end">

@@ -22,7 +22,6 @@ const WorkflowSettings = lazy(() => import("@/pages/settings/WorkflowSettings").
 const AgentSettings = lazy(() => import("@/pages/settings/AgentSettings").then(m => ({ default: m.AgentSettings })));
 const LabelSettings = lazy(() => import("@/pages/settings/LabelSettings").then(m => ({ default: m.LabelSettings })));
 const MilestoneSettings = lazy(() => import("@/pages/settings/MilestoneSettings").then(m => ({ default: m.MilestoneSettings })));
-const NotificationSettings = lazy(() => import("@/pages/settings/NotificationSettings").then(m => ({ default: m.NotificationSettings })));
 const NotFoundPage = lazy(() => import("@/pages/NotFoundPage").then(m => ({ default: m.NotFoundPage })));
 
 function PageLoading() {
@@ -69,7 +68,6 @@ export default function App() {
                     <Route path="agents" element={<PageBoundary><AgentSettings /></PageBoundary>} />
                     <Route path="labels" element={<PageBoundary><LabelSettings /></PageBoundary>} />
                     <Route path="milestones" element={<PageBoundary><MilestoneSettings /></PageBoundary>} />
-                    <Route path="notifications" element={<PageBoundary><NotificationSettings /></PageBoundary>} />
                   </Route>
                   <Route path="/issues/:id" element={<PageBoundary><IssueDetailPage /></PageBoundary>} />
                   <Route path="/proposals/:id" element={<PageBoundary><ProposalDetailPage /></PageBoundary>} />

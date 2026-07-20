@@ -85,7 +85,7 @@ export function IssueCommentSection({ issueId, agentId, comments, onRefresh }: I
                     onKeyDown={(e) => { if ((e.metaKey || e.ctrlKey) && e.key === "Enter" && replyText.trim()) { e.preventDefault(); handleComment(parent.id); } }} />
                 )}
                 <div className="mt-1 flex justify-end gap-1">
-                  <Button size="sm" className="min-h-[44px]" aria-label="发送回复" onClick={() => handleComment(parent.id)} disabled={!replyText.trim()}><Send className="h-3 w-3 mr-1" />发送</Button>
+                  <Button size="xs" aria-label="发送回复" onClick={() => handleComment(parent.id)} disabled={!replyText.trim()}><Send className="h-3 w-3" />发送</Button>
                 </div>
               </div>
             )}
@@ -122,8 +122,8 @@ export function IssueCommentSection({ issueId, agentId, comments, onRefresh }: I
               onKeyDown={(e) => { if ((e.metaKey || e.ctrlKey) && e.key === "Enter" && newComment.trim()) { e.preventDefault(); handleComment(); } }} />
           )}
           <div className="mt-2 flex justify-end">
-            <Button className="min-h-[44px]" aria-label="发送评论" onClick={() => handleComment()} disabled={!newComment.trim()}>
-              <Send className="mr-1 h-4 w-4" />发送
+            <Button size="xs" aria-label="发送评论" onClick={() => handleComment()} disabled={!newComment.trim()}>
+              <Send className="h-3 w-3" />发送
             </Button>
           </div>
         </div>

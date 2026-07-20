@@ -370,7 +370,7 @@ export function ProjectDetailPage() {
 
         {/* Assignee filter */}
         <Select value={assigneeFilter} onValueChange={setAssigneeFilter}>
-          <SelectTrigger className="h-9 w-36">
+          <SelectTrigger className="h-8 w-36">
             <SelectValue placeholder="指派对象" />
           </SelectTrigger>
           <SelectContent>

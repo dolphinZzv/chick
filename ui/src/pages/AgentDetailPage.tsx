@@ -159,7 +159,7 @@ export function AgentDetailPage() {
 
   return (
     <div className="space-y-5">
-      <button onClick={() => navigate(-1)} className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
+      <button onClick={() => navigate(-1)} className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
         ← 返回
       </button>
 
@@ -169,7 +169,7 @@ export function AgentDetailPage() {
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <h1 className="text-base font-medium truncate">#{agent.number} {agent.name}</h1>
+            <h1 className="text-2xl font-semibold truncate">#{agent.number} {agent.name}</h1>
             <div className={`size-2 shrink-0 rounded-full ${status.dot}`} />
           </div>
           <p className="text-xs text-muted-foreground mt-0.5">{kindLabels[agent.kind] || agent.kind} · {status.label}</p>
@@ -284,9 +284,9 @@ export function AgentDetailPage() {
                       disabled={!!updating}
                       onChange={() => handleToggleNotif(nt.type, !enabled)}
                     />
-                    <div className={`w-9 h-4.5 rounded-full after:content-[''] after:absolute after:top-[1px] after:left-[1px] after:bg-card after:rounded-full after:h-3.5 after:w-3.5 after:transition-all ${
+                    <div className={`w-10 h-5 rounded-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-card after:rounded-full after:h-4 after:w-4 after:transition-all ${
                       updating ? "bg-muted cursor-wait" : "bg-muted peer-checked:bg-primary cursor-pointer"
-                    } peer-checked:after:translate-x-4.5`} />
+                    } peer-checked:after:translate-x-5`} />
                   </label>
                 </div>
               );

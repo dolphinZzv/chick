@@ -132,7 +132,7 @@ export function CreateProposalDialog({ projectId, onCreated }: Props) {
               id="title"
               autoFocus
               placeholder="提案标题"
-              className="w-full text-xl font-semibold placeholder:text-muted-foreground/40 bg-transparent border-none outline-none focus:ring-0"
+              className="w-full rounded-md text-xl font-semibold placeholder:text-muted-foreground/40 bg-transparent border-none outline-none focus:ring-0"
               {...register("title")}
             />
             {errors.title && (
@@ -224,7 +224,7 @@ export function CreateProposalDialog({ projectId, onCreated }: Props) {
 
           {/* Footer */}
           <div className="flex items-center justify-end gap-2 border-t px-6 py-3">
-            <Button type="button" variant="ghost" size="sm" onClick={() => setOpen(false)}>
+            <Button type="button" variant="outline" size="sm" onClick={() => setOpen(false)}>
               取消
             </Button>
             <Button type="submit" size="sm" disabled={submitting}>

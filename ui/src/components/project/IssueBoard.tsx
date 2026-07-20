@@ -286,14 +286,14 @@ export function SimpleIssueCard({
                   value={newLabelName}
                   onChange={(e) => setNewLabelName(e.target.value)}
                   placeholder="标签名"
-                  className="h-6 w-20 rounded border bg-transparent px-1 text-[10px]"
+                  className="h-6 w-20 rounded-md border bg-transparent px-1 text-[10px]"
                   onKeyDown={(e) => { if (e.key === "Enter") handleCreateLabelWrap(e as any); }}
                 />
                 <input
                   type="color"
                   value={newLabelColor}
                   onChange={(e) => setNewLabelColor(e.target.value)}
-                  className="h-6 w-8 rounded border cursor-pointer"
+                  className="h-6 w-8 rounded-md border cursor-pointer"
                 />
                 <button className="text-[10px] text-primary font-medium hover:underline" onClick={handleCreateLabelWrap} disabled={!newLabelName.trim()}>创建</button>
                 <button className="text-[10px] text-muted-foreground hover:underline" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCreatingLabel(false); }}>取消</button>
@@ -344,7 +344,7 @@ export function SimpleIssueCard({
                   value={newMilestoneTitle}
                   onChange={(e) => setNewMilestoneTitle(e.target.value)}
                   placeholder="里程碑名称"
-                  className="h-6 w-28 rounded border bg-transparent px-1 text-[10px]"
+                  className="h-6 w-28 rounded-md border bg-transparent px-1 text-[10px]"
                   onKeyDown={(e) => { if (e.key === "Enter") handleCreateMilestoneWrap(e as any); }}
                 />
                 <button className="text-[10px] text-primary font-medium hover:underline" onClick={handleCreateMilestoneWrap} disabled={!newMilestoneTitle.trim()}>创建</button>

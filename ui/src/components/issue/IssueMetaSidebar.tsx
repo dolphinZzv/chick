@@ -291,7 +291,7 @@ export function IssueMetaSidebar({
           <div className="space-y-2 mb-2">
             <Input value={newLabelName} onChange={(e) => setNewLabelName(e.target.value)} placeholder="标签名称" className="h-8 text-sm" autoFocus onKeyDown={(e) => { if (e.key === "Enter") handleCreateLabel(); }} />
             <div className="flex items-center gap-2">
-              <input type="color" value={newLabelColor} onChange={(e) => setNewLabelColor(e.target.value)} className="h-7 w-10 rounded border cursor-pointer" />
+              <input type="color" value={newLabelColor} onChange={(e) => setNewLabelColor(e.target.value)} className="h-7 w-10 rounded-md border cursor-pointer" />
               <Button size="sm" className="h-7 text-xs" onClick={handleCreateLabel} disabled={!newLabelName.trim()}><Check className="h-3 w-3 mr-1" />创建</Button>
               <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => { setShowNewLabel(false); setNewLabelName(""); }}>取消</Button>
               <Badge className="text-xs ml-auto" style={{ backgroundColor: `${newLabelColor}20`, color: newLabelColor }}>{newLabelName || "预览"}</Badge>

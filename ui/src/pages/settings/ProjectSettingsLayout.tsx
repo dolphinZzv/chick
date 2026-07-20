@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useParams, Link } from "react-router-dom";
-import { Settings, Workflow, Bot, Tag, Milestone, Bell } from "lucide-react";
+import { Settings, Workflow, Bot, Tag, Milestone } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -8,7 +8,6 @@ const navItems = [
   { to: "agents", label: "Agent", icon: Bot },
   { to: "labels", label: "标签", icon: Tag },
   { to: "milestones", label: "里程碑", icon: Milestone },
-  { to: "notifications", label: "通知", icon: Bell },
 ];
 
 export function ProjectSettingsLayout() {

@@ -158,7 +158,7 @@ export function TaskDetailPage() {
 
   return (
     <div className="space-y-5 max-w-3xl">
-      <Link to={`/proposals/${task.proposal.id}`} className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
+      <Link to={`/proposals/${task.proposal.id}`} className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
         ← 返回提案
       </Link>
 
@@ -168,7 +168,7 @@ export function TaskDetailPage() {
           <Badge variant="outline" className="text-xs">{priorityLabels[task.priority] || task.priority}</Badge>
           <span className="text-xs text-muted-foreground">#{task.number}</span>
         </div>
-        <h1 className="text-base font-medium mt-1.5">{task.title}</h1>
+        <h1 className="text-2xl font-semibold mt-1.5">{task.title}</h1>
         <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
           <span>提案: <Link to={`/proposals/${task.proposal.id}`} className="hover:underline">{task.proposal.title}</Link></span>
           <span>创建于 {relativeTime(task.createdAt)}</span>
@@ -216,7 +216,7 @@ export function TaskDetailPage() {
           <MessageSquare className="size-3.5" />评论 ({comments.length})
         </h2>
         {comments.map((c) => (
-          <div key={c.id} className="rounded-lg border bg-card p-3">
+          <div key={c.id} className="rounded-lg border bg-card p-4">
             <div className="flex items-center gap-2">
               <Avatar className="size-5"><AvatarFallback className="text-[10px]">{c.author.name.charAt(0)}</AvatarFallback></Avatar>
               <span className="text-xs font-medium">{c.author.name}</span>
@@ -226,7 +226,7 @@ export function TaskDetailPage() {
           </div>
         ))}
         {agent && (
-          <div className="rounded-lg border bg-card p-3">
+          <div className="rounded-lg border bg-card p-4">
             <Textarea value={newComment} onChange={(e) => setNewComment(e.target.value)} placeholder="输入评论... (⌘+Enter 发送)" rows={2} className="text-sm"
               onKeyDown={(e) => { if ((e.metaKey || e.ctrlKey) && e.key === "Enter" && newComment.trim()) { e.preventDefault(); handleComment(); } }} />
             <div className="mt-2 flex justify-end">
@@ -266,7 +266,7 @@ export function TaskDetailPage() {
             value={linkIssueInput.value}
             onChange={(e) => setLinkIssueInput((prev) => ({ ...prev, value: e.target.value }))}
             placeholder="Issue ID"
-            className="w-full rounded border bg-transparent px-3 py-2 text-sm"
+            className="w-full rounded-md border bg-transparent px-3 py-2 text-sm"
             autoFocus
             onKeyDown={(e) => { if (e.key === "Enter") confirmLinkIssue(); }}
           />

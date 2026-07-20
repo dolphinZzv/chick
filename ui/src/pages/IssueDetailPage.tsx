@@ -207,7 +207,7 @@ export function IssueDetailPage() {
       <div className="flex flex-wrap gap-2 justify-between items-center">
         <div className="flex flex-wrap gap-2">
           {transitions.length > 0 && agent && transitions.map((state) => (
-            <Button key={state} variant="outline" size="sm" onClick={() => handleTransition(state)}>转为 {stateLabels[state]}</Button>
+            <Button key={state} variant="outline" size="xs" onClick={() => handleTransition(state)}>转为 {stateLabels[state]}</Button>
           ))}
         </div>
         {agent && (

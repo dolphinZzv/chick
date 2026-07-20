@@ -63,7 +63,7 @@ export function BasicSettings() {
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="项目名称"
-          className="w-full text-xl font-semibold placeholder:text-muted-foreground/40 bg-transparent border-none outline-none focus:ring-0"
+          className="w-full rounded-md text-xl font-semibold placeholder:text-muted-foreground/40 bg-transparent border-none outline-none focus:ring-0"
         />
       </div>
       <div className="space-y-2">
