@@ -15,6 +15,7 @@ func (h *Handlers) registerTransitionIssue(r *ToolRegistry) {
 		InputSchema: ObjectSchema(map[string]interface{}{
 			"issueId": StringRequiredParam("Issue ID"),
 			"toState": StringRequiredParam("Target state: open / in_progress / blocked / review / later / reopen / pending_confirmation / closed_completed / closed_not_planned / closed_rejected"),
+			"reason":  StringParam("Reason for the transition"),
 		}, []string{"issueId", "toState"}),
 		Handler: h.handleTransitionIssue,
 	})
@@ -24,6 +25,7 @@ func (h *Handlers) handleTransitionIssue(id json.RawMessage, params json.RawMess
 	var p struct {
 		IssueID string `json:"issueId"`
 		ToState string `json:"toState"`
+		Reason  string `json:"reason"`
 	}
 	if err := json.Unmarshal(params, &p); err != nil {
 		return NewError(id, -32602, "Invalid params: "+err.Error())
@@ -44,7 +46,11 @@ func (h *Handlers) handleTransitionIssue(id json.RawMessage, params json.RawMess
 		return NewError(id, -32602, "Access denied: not a member of this project")
 	}
 
-	updated, err := h.workflowSvc.Transition(uint(issueID), models.IssueState(p.ToState), actorID, nil)
+	var note *string
+	if p.Reason != "" {
+		note = &p.Reason
+	}
+	updated, err := h.workflowSvc.Transition(uint(issueID), models.IssueState(p.ToState), actorID, note)
 	if err != nil {
 		return NewInternalError(id, err.Error())
 	}

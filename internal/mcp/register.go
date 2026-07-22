@@ -8,6 +8,7 @@ func (h *Handlers) RegisterAll(registry *ToolRegistry) {
 	h.registerAddComment(registry)
 	h.registerAssignIssue(registry)
 	h.registerTransitionIssue(registry)
+	h.registerTransitionIssuesBatch(registry)
 	h.registerSearchIssues(registry)
 
 	h.registerSubmitRequirement(registry)

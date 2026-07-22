@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { useParams, Link, useSearchParams } from "react-router-dom";
 import { gql } from "@/lib/graphql";
 import { useAuth } from "@/hooks/useAuth";
@@ -22,7 +22,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { ErrorFallback } from "@/components/shared/ErrorFallback";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
@@ -275,9 +275,7 @@ export function ProjectDetailPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           <h1 className="text-xl sm:text-2xl font-semibold">{project.name}</h1>
-          {project.description && (
-            <p className="mt-1 text-sm text-muted-foreground">{project.description}</p>
-          )}
+          {project.description && <DescriptionBlock text={project.description} />}
         </div>
         <div className="flex items-center gap-2 shrink-0">
           <Link to={`/projects/${id}/settings`}>
@@ -421,6 +419,26 @@ export function ProjectDetailPage() {
         variant="destructive"
         onConfirm={confirmRemoveLabel}
       />
+    </div>
+  );
+}
+
+function DescriptionBlock({ text }: { text: string }) {
+  const [expanded, setExpanded] = useState(false);
+  const long = text.length > 150;
+  return (
+    <div>
+      <p className="mt-1 text-sm text-muted-foreground">
+        {long && !expanded ? text.slice(0, 150) + "…" : text}
+      </p>
+      {long && (
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="mt-0.5 inline-flex items-center gap-0.5 text-xs text-muted-foreground/60 hover:text-muted-foreground"
+        >
+          {expanded ? <>收起 <ChevronUp className="h-3 w-3" /></> : <>更多 <ChevronDown className="h-3 w-3" /></>}
+        </button>
+      )}
     </div>
   );
 }

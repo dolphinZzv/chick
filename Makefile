@@ -1,5 +1,5 @@
 .PHONY: all build build-prod test test-all test-integration generate coverage coverage-html clean \
-        check ui-build start stop prod dev prod-service dev-service deploy
+        check ui-build start stop prod dev prod-service dev-service deploy push
 
 # ─── 门禁检查（启动前）────────────────────────────────────
 
@@ -217,6 +217,17 @@ deploy: build-prod ui-build
 
 dev:
 	./dev start
+
+# ─── 推送（门禁 + 提交 + 推送）────────────────────────────
+
+MSG ?= "update"
+
+push: check
+	@echo "=== 提交并推送 ==="
+	git add -A
+	git commit -m "$(MSG)"
+	git push origin $$(git rev-parse --abbrev-ref HEAD)
+	@echo "=== 推送完成: $$(git rev-parse --abbrev-ref HEAD) ==="
 
 # ─── 清理 ──────────────────────────────────────────────────
 
