@@ -88,24 +88,6 @@ Chick 提供 26 个 MCP Tool，涵盖 Issue/Proposal/Task/Notification 的完整
 }
 ```
 
-### STDIO 模式（本地进程）
-
-适用于 Claude Code / OpenCode / Cline 通过本地进程调用：
-
-```json
-{
-  "mcpServers": {
-    "chick": {
-      "command": "/path/to/chick",
-      "args": ["--stdio"],
-      "env": {
-        "CHICK_AGENT_TOKEN": "<your-token>"
-      }
-    }
-  }
-}
-```
-
 ## 了解更多
 
 - [.env.example](.env.example) — 配置项完整说明
