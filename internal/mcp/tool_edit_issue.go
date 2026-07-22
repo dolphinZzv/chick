@@ -13,7 +13,7 @@ import (
 func (h *Handlers) registerEditIssue(r *ToolRegistry) {
 	r.Register(&ToolDefinition{
 		Name:        "edit_issue",
-		Description: "Edit an existing issue's title, description, or priority",
+		Description: "Edit an existing issue's fields (title, description, priority, solution, rootCause, etc.). The description, solution, and rootCause fields all support Markdown formatting.",
 		InputSchema: ObjectSchema(map[string]interface{}{
 			"issueId":     StringRequiredParam("Issue ID"),
 			"title":       StringParam("New issue title"),

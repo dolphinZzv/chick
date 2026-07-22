@@ -13,7 +13,7 @@ import (
 func (h *Handlers) registerCreateIssue(r *ToolRegistry) {
 	r.Register(&ToolDefinition{
 		Name:        "create_issue",
-		Description: "Create a new issue in a project. The issue is the core work unit — use this to track bugs, features, tasks, or any actionable item. Required: title. The projectId is auto-detected if the agent belongs to only one project, otherwise it must be specified.",
+		Description: "Create a new issue in a project. The issue is the core work unit — use this to track bugs, features, tasks, or any actionable item. Required: title. The projectId is auto-detected if the agent belongs to only one project, otherwise it must be specified. The description, solution, and rootCause fields all support Markdown formatting.",
 		InputSchema: ObjectSchema(map[string]interface{}{
 			"title":       StringRequiredParam("Issue title (required)"),
 			"description": StringParam("Issue description in Markdown"),
