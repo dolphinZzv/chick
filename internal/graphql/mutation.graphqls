@@ -60,6 +60,6 @@ type Mutation {
   markNotificationRead(id: ID!): NotificationEvent!
   markAllNotificationsRead(agentID: ID!): Boolean!
 
-  createWebhook(projectID: ID!, agentID: ID!, name: String!): WebhookPayload!
+  createWebhook(projectID: ID!, name: String!): WebhookPayload!
   deleteWebhook(id: ID!): Boolean!
 }

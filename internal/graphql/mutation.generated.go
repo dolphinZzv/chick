@@ -67,7 +67,7 @@ type MutationResolver interface {
 	UpdateNotificationSetting(ctx context.Context, agentID string, notificationType string, enabled bool, channel *string) (*NotificationSetting, error)
 	MarkNotificationRead(ctx context.Context, id string) (*NotificationEvent, error)
 	MarkAllNotificationsRead(ctx context.Context, agentID string) (bool, error)
-	CreateWebhook(ctx context.Context, projectID string, agentID string, name string) (*WebhookPayload, error)
+	CreateWebhook(ctx context.Context, projectID string, name string) (*WebhookPayload, error)
 	DeleteWebhook(ctx context.Context, id string) (bool, error)
 }
 
@@ -508,16 +508,11 @@ func (ec *executionContext) field_Mutation_createWebhook_args(ctx context.Contex
 		return nil, err
 	}
 	args["projectID"] = arg0
-	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "agentID", ec.unmarshalNID2string)
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "name", ec.unmarshalNString2string)
 	if err != nil {
 		return nil, err
 	}
-	args["agentID"] = arg1
-	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "name", ec.unmarshalNString2string)
-	if err != nil {
-		return nil, err
-	}
-	args["name"] = arg2
+	args["name"] = arg1
 	return args, nil
 }
 
@@ -4480,7 +4475,7 @@ func (ec *executionContext) _Mutation_createWebhook(ctx context.Context, field g
 		ec.fieldContext_Mutation_createWebhook,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.Resolvers.Mutation().CreateWebhook(ctx, fc.Args["projectID"].(string), fc.Args["agentID"].(string), fc.Args["name"].(string))
+			return ec.Resolvers.Mutation().CreateWebhook(ctx, fc.Args["projectID"].(string), fc.Args["name"].(string))
 		},
 		nil,
 		ec.marshalNWebhookPayload2ᚖchickᚋinternalᚋgraphqlᚐWebhookPayload,

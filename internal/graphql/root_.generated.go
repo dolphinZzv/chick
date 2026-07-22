@@ -177,7 +177,7 @@ type ComplexityRoot struct {
 		CreateProjectAgent        func(childComplexity int, projectID string, name string, kind AgentKind, role *ProjectRole, externalID *string, secret *string, capabilities []string, deviceInfo *string, modelInfo *string) int
 		CreateProposal            func(childComplexity int, projectID string, title string, description *string, priority Priority, labelIDs []string) int
 		CreateTask                func(childComplexity int, proposalID string, title string, description *string, priority *Priority, assigneeID *string) int
-		CreateWebhook             func(childComplexity int, projectID string, agentID string, name string) int
+		CreateWebhook             func(childComplexity int, projectID string, name string) int
 		DeleteAgent               func(childComplexity int, id string) int
 		DeleteComment             func(childComplexity int, id string) int
 		DeleteIssue               func(childComplexity int, id string) int
@@ -1287,7 +1287,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.ComplexityRoot.Mutation.CreateWebhook(childComplexity, args["projectID"].(string), args["agentID"].(string), args["name"].(string)), true
+		return e.ComplexityRoot.Mutation.CreateWebhook(childComplexity, args["projectID"].(string), args["name"].(string)), true
 
 	case "Mutation.deleteAgent":
 		if e.ComplexityRoot.Mutation.DeleteAgent == nil {

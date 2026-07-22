@@ -1001,19 +1001,18 @@ func (r *mutationResolver) MarkAllNotificationsRead(ctx context.Context, agentID
 }
 
 // CreateWebhook is the resolver for the createWebhook field.
-func (r *mutationResolver) CreateWebhook(ctx context.Context, projectID string, agentID string, name string) (*WebhookPayload, error) {
+func (r *mutationResolver) CreateWebhook(ctx context.Context, projectID string, name string) (*WebhookPayload, error) {
+	agentID, err := requireAuth(ctx)
+	if err != nil {
+		return nil, err
+	}
 	pid := parseID(projectID)
 	if _, err := r.requireProjectOwner(ctx, pid); err != nil {
 		return nil, err
 	}
-	// Verify agent is a member of the project
-	if _, err := r.requireProjectMember(ctx, pid); err != nil {
-		return nil, fmt.Errorf("agent is not a project member")
-	}
-	aid := parseID(agentID)
 	output, err := r.WebhookSvc.Create(service.WebhookCreateInput{
 		ProjectID: pid,
-		AgentID:   aid,
+		AgentID:   agentID,
 		Name:      name,
 	})
 	if err != nil {
