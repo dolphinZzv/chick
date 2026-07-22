@@ -4,7 +4,7 @@ import "time"
 
 type Webhook struct {
 	ID        uint      `gorm:"primaryKey;autoIncrement"`
-	ProjectID uint      `gorm:"not null;index:idx_webhook_project_agent;index"`
+	ProjectID uint      `gorm:"not null;index:idx_webhook_project_agent"`
 	AgentID   uint      `gorm:"not null;index:idx_webhook_project_agent"`
 	Name      string    `gorm:"type:varchar(100);not null"`
 	Secret    string    `gorm:"type:varchar(64);not null;uniqueIndex"`

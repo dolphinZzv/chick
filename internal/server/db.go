@@ -64,6 +64,9 @@ func AutoMigrate(db *gorm.DB) error {
 	// Drop old single-column unique index on tasks.number (must include proposal_id)
 	db.Exec("DROP INDEX IF EXISTS idx_tasks_proposal_number")
 
+	// Drop old unique index on webhooks (project_id, agent_id) — should be non-unique for multi-channel support
+	db.Exec("DROP INDEX IF EXISTS idx_webhook_project_agent")
+
 	err := db.AutoMigrate(
 		&models.Project{},
 		&models.ProjectMember{},
