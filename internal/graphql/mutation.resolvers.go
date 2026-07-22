@@ -363,8 +363,14 @@ func (r *mutationResolver) UpdateIssue(ctx context.Context, id string, title *st
 		d := int(*difficulty)
 		diff = &d
 	}
-	if links == nil {
-		links = []string{}
+	var linkInput *string
+	if links != nil {
+		if len(links) == 0 {
+			s := ""
+			linkInput = &s
+		} else {
+			linkInput = linksToJson(links)
+		}
 	}
 	issue, err := r.IssueSvc.Update(iid, service.IssueUpdateInput{
 		Title:       &t,
@@ -374,7 +380,7 @@ func (r *mutationResolver) UpdateIssue(ctx context.Context, id string, title *st
 		MilestoneID: mid,
 		Environment: environment,
 		Branch:      branch,
-		Link:        linksToJson(links),
+		Link:        linkInput,
 		StartedAt:   startedAt,
 		CompletedAt: completedAt,
 		Difficulty:  diff,

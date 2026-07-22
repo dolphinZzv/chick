@@ -12,7 +12,7 @@ import (
 func requireAuth(ctx context.Context) (uint, error) {
 	id, ok := auth.AgentIDFromContext(ctx)
 	if !ok {
-		return 0, errors.New("请先登录")
+		return 0, errors.New("UNAUTHENTICATED")
 	}
 	return id, nil
 }

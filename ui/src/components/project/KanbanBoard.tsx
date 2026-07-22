@@ -211,7 +211,7 @@ function KanbanColumn({
         <div className="space-y-2 rounded-lg p-2">{columnHeader}</div>
         <div
           ref={scrollRef}
-          className="flex-1 overflow-auto max-h-[calc(100vh-300px)] rounded-lg"
+          className="flex-1 overflow-auto max-h-[calc(100vh-300px)] rounded-lg scrollbar-none"
         >
           {data.loading ? (
             <div className="space-y-2 p-2">
@@ -440,7 +440,7 @@ export function KanbanBoard({
             ref={boardScrollRef}
             className={
               isDesktop
-                ? "flex gap-3 overflow-x-auto pb-2 scrollbar-none"
+                ? "flex gap-3 overflow-x-auto pb-2"
                 : "flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-none"
             }
           >

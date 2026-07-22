@@ -188,7 +188,7 @@ export function IssueMetaSidebar({
 
   const handleSaveEnv = () => { onIssueUpdate({ environment: editEnv || null }); setEditingEnv(false); };
   const handleSaveBranch = () => { onIssueUpdate({ branch: editBranch || null }); setEditingBranch(false); };
-  const handleSaveLinks = () => { onIssueUpdate({ links: editLinks }); setEditingLinks(false); };
+  const handleSaveLinks = () => { const allLinks = newLink.trim() ? [...editLinks, newLink.trim()] : editLinks; onIssueUpdate({ links: allLinks }); setEditingLinks(false); };
   const handleSaveTimeFields = () => { onIssueUpdate({ startedAt: editStartedAt || null, completedAt: editCompletedAt || null }); setShowTimeFields(false); };
 
   return (

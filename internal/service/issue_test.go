@@ -1,6 +1,7 @@
 package service_test
 
 import (
+	"encoding/json"
 	"testing"
 	"time"
 
@@ -512,6 +513,128 @@ func TestTransitionIssue_RequireCreatorCloseApproval(t *testing.T) {
 	if issue.State != models.IssueStateClosedCompleted {
 		t.Errorf("expected closed_completed, got %s", issue.State)
 	}
+}
+
+func TestCreateIssue_MultipleLinks(t *testing.T) {
+	issueSvc, _, projectSvc, _ := setupIssueTest(t)
+	p, _ := projectSvc.Create("Test", "")
+
+	tests := []struct {
+		name  string
+		links []string
+	}{
+		{"two links", []string{"http://example.com/1", "http://example.com/2"}},
+		{"three links", []string{"http://example.com/a", "http://example.com/b", "http://example.com/c"}},
+		{"single link", []string{"http://example.com"}},
+		{"empty links", nil},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Simulate what GraphQL/MCP resolvers do: convert []string to *string
+			linkJSON := linksToTest(tt.links)
+			issue, err := issueSvc.Create(service.IssueCreateInput{
+				ProjectID: p.ID,
+				CreatorID: 1,
+				Title:     "Links test " + tt.name,
+				Priority:  models.PriorityMedium,
+				Link:      linkJSON,
+			})
+			if err != nil {
+				t.Fatalf("create: %v", err)
+			}
+
+			// Read back
+			got, err := issueSvc.GetByID(issue.ID)
+			if err != nil {
+				t.Fatalf("get: %v", err)
+			}
+
+			// Check stored raw value
+			if len(tt.links) == 0 {
+				if got.Link != nil {
+					t.Errorf("expected nil link, got %v", *got.Link)
+				}
+			} else {
+				if got.Link == nil {
+					t.Fatal("expected non-nil link")
+				}
+				// Parse and verify
+				parsed := parseLinksTest(got.Link)
+				if len(parsed) != len(tt.links) {
+					t.Errorf("expected %d links, got %d: %v", len(tt.links), len(parsed), parsed)
+				}
+				for i, l := range tt.links {
+					if parsed[i] != l {
+						t.Errorf("link[%d]: expected %q, got %q", i, l, parsed[i])
+					}
+				}
+			}
+		})
+	}
+}
+
+func TestUpdateIssue_Links(t *testing.T) {
+	issueSvc, _, projectSvc, _ := setupIssueTest(t)
+	p, _ := projectSvc.Create("Test", "")
+
+	// Create issue with no links
+	issue, err := issueSvc.Create(service.IssueCreateInput{
+		ProjectID: p.ID,
+		CreatorID: 1,
+		Title:     "Update links test",
+		Priority:  models.PriorityMedium,
+	})
+	if err != nil {
+		t.Fatalf("create: %v", err)
+	}
+
+	// Update with 2 links
+	updated, err := issueSvc.Update(issue.ID, service.IssueUpdateInput{
+		Link: linksToTest([]string{"http://example.com/1", "http://example.com/2"}),
+	})
+	if err != nil {
+		t.Fatalf("update with 2 links: %v", err)
+	}
+
+	parsed := parseLinksTest(updated.Link)
+	if len(parsed) != 2 {
+		t.Fatalf("expected 2 links after update, got %d: %v", len(parsed), parsed)
+	}
+
+	// Update with 3 links (overwrite)
+	updated, err = issueSvc.Update(issue.ID, service.IssueUpdateInput{
+		Link: linksToTest([]string{"http://example.com/a", "http://example.com/b", "http://example.com/c"}),
+	})
+	if err != nil {
+		t.Fatalf("update with 3 links: %v", err)
+	}
+
+	parsed = parseLinksTest(updated.Link)
+	if len(parsed) != 3 {
+		t.Fatalf("expected 3 links after re-update, got %d: %v", len(parsed), parsed)
+	}
+}
+
+// helpers that match the resolver conversion logic
+func linksToTest(links []string) *string {
+	if len(links) == 0 {
+		return nil
+	}
+	b, _ := json.Marshal(links)
+	s := string(b)
+	return &s
+}
+
+func parseLinksTest(link *string) []string {
+	if link == nil || *link == "" {
+		return []string{}
+	}
+	var links []string
+	if err := json.Unmarshal([]byte(*link), &links); err == nil {
+		return links
+	}
+	return []string{*link}
 }
 
 func TestHeartbeat(t *testing.T) {

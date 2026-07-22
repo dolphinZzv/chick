@@ -3,6 +3,7 @@ package mcp
 import (
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"strconv"
 	"strings"
 	"time"
@@ -838,7 +839,7 @@ func (h *Handlers) handleEditIssue(id json.RawMessage, params json.RawMessage, a
 	}
 
 	// At least one field must be provided for update
-	if p.Title == "" && p.Description == "" && p.Priority == "" && p.Difficulty == 0 && p.StartedAt == "" && p.CompletedAt == "" {
+	if p.Title == "" && p.Description == "" && p.Priority == "" && p.Difficulty == 0 && p.StartedAt == "" && p.CompletedAt == "" && len(p.Links) == 0 {
 		return NewError(id, -32602, "At least one field must be provided for update")
 	}
 
@@ -877,13 +878,22 @@ func (h *Handlers) handleEditIssue(id json.RawMessage, params json.RawMessage, a
 		completedAt = &t
 	}
 
+	var linkInput *string
+	if p.Links != nil {
+		if len(p.Links) == 0 {
+			s := ""
+			linkInput = &s
+		} else {
+			linkInput = mcpLinksToJson(p.Links)
+		}
+	}
 	issue, err := h.issueSvc.Update(uint(issueID), service.IssueUpdateInput{
 		Title:       strPtr(p.Title),
 		Description: strPtr(p.Description),
 		Priority:    &priority,
 		Environment: strPtr(p.Environment),
 		Branch:      strPtr(p.Branch),
-		Link:        mcpLinksToJson(p.Links),
+		Link:        linkInput,
 		StartedAt:   startedAt,
 		CompletedAt: completedAt,
 		Difficulty:  diff,
@@ -1452,6 +1462,7 @@ func mcpLinksToJson(links []string) *string {
 	}
 	b, err := json.Marshal(filtered)
 	if err != nil {
+		slog.Warn("mcpLinksToJson: failed to marshal links", "error", err, "links", filtered)
 		return nil
 	}
 	s := string(b)

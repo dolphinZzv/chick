@@ -7,6 +7,7 @@ export async function gql<T = any>(
   const opName = query.match(/^\s*(?:query|mutation)\s+(\w+)/)?.[1]
   const reqBody: Record<string, unknown> = { query, variables }
   if (opName) reqBody.operationName = opName
+  console.log(`[gql] ${opName}`, new Error().stack?.split('\n').slice(1, 4).join(' → '))
   const res = await fetch("/graphql", {
     method: "POST",
     headers: authHeaders(),

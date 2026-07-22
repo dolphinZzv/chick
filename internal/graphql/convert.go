@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"encoding/json"
+	"log/slog"
 	"strconv"
 	"strings"
 	"time"
@@ -48,6 +49,7 @@ func linksToJson(links []string) *string {
 	}
 	b, err := json.Marshal(links)
 	if err != nil {
+		slog.Warn("linksToJson: failed to marshal links", "error", err, "links", links)
 		return nil
 	}
 	s := string(b)
