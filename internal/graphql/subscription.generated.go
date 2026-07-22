@@ -64,7 +64,7 @@ func (ec *executionContext) _Subscription_issueUpdated(ctx context.Context, fiel
 			return ec.Resolvers.Subscription().IssueUpdated(ctx, fc.Args["issueID"].(string))
 		},
 		nil,
-		ec.marshalNIssue2ᚖchickᚋinternalᚋgraphqlᚐIssue,
+		ec.marshalNIssue2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐIssue,
 		true,
 		true,
 	)
@@ -157,7 +157,7 @@ func (ec *executionContext) _Subscription_agentNotifications(ctx context.Context
 			return ec.Resolvers.Subscription().AgentNotifications(ctx, fc.Args["agentID"].(string))
 		},
 		nil,
-		ec.marshalNNotificationEvent2ᚖchickᚋinternalᚋgraphqlᚐNotificationEvent,
+		ec.marshalNNotificationEvent2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐNotificationEvent,
 		true,
 		true,
 	)
@@ -221,7 +221,7 @@ func (ec *executionContext) _Subscription_agentStatusChanged(ctx context.Context
 			return ec.Resolvers.Subscription().AgentStatusChanged(ctx)
 		},
 		nil,
-		ec.marshalNAgentStatusEvent2ᚖchickᚋinternalᚋgraphqlᚐAgentStatusEvent,
+		ec.marshalNAgentStatusEvent2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐAgentStatusEvent,
 		true,
 		true,
 	)

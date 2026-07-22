@@ -3,8 +3,8 @@ package gorm
 import (
 	"time"
 
-	"chick/internal/models"
-	"chick/internal/repository"
+	"morning-glory/internal/models"
+	"morning-glory/internal/repository"
 
 	"gorm.io/gorm"
 )

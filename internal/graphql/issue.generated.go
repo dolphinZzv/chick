@@ -182,7 +182,7 @@ func (ec *executionContext) _Issue_state(ctx context.Context, field graphql.Coll
 			return obj.State, nil
 		},
 		nil,
-		ec.marshalNIssueState2chickᚋinternalᚋgraphqlᚐIssueState,
+		ec.marshalNIssueState2morningᚑgloryᚋinternalᚋgraphqlᚐIssueState,
 		true,
 		true,
 	)
@@ -211,7 +211,7 @@ func (ec *executionContext) _Issue_priority(ctx context.Context, field graphql.C
 			return obj.Priority, nil
 		},
 		nil,
-		ec.marshalNPriority2chickᚋinternalᚋgraphqlᚐPriority,
+		ec.marshalNPriority2morningᚑgloryᚋinternalᚋgraphqlᚐPriority,
 		true,
 		true,
 	)
@@ -588,7 +588,7 @@ func (ec *executionContext) _Issue_creator(ctx context.Context, field graphql.Co
 			return obj.Creator, nil
 		},
 		nil,
-		ec.marshalNAgent2ᚖchickᚋinternalᚋgraphqlᚐAgent,
+		ec.marshalNAgent2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐAgent,
 		true,
 		true,
 	)
@@ -659,7 +659,7 @@ func (ec *executionContext) _Issue_assignees(ctx context.Context, field graphql.
 			return obj.Assignees, nil
 		},
 		nil,
-		ec.marshalOIssueAssignee2ᚕᚖchickᚋinternalᚋgraphqlᚐIssueAssigneeᚄ,
+		ec.marshalOIssueAssignee2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐIssueAssigneeᚄ,
 		true,
 		false,
 	)
@@ -704,7 +704,7 @@ func (ec *executionContext) _Issue_labels(ctx context.Context, field graphql.Col
 			return obj.Labels, nil
 		},
 		nil,
-		ec.marshalOLabel2ᚕᚖchickᚋinternalᚋgraphqlᚐLabelᚄ,
+		ec.marshalOLabel2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐLabelᚄ,
 		true,
 		false,
 	)
@@ -751,7 +751,7 @@ func (ec *executionContext) _Issue_children(ctx context.Context, field graphql.C
 			return obj.Children, nil
 		},
 		nil,
-		ec.marshalOIssue2ᚕᚖchickᚋinternalᚋgraphqlᚐIssueᚄ,
+		ec.marshalOIssue2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐIssueᚄ,
 		true,
 		false,
 	)
@@ -832,7 +832,7 @@ func (ec *executionContext) _Issue_milestone(ctx context.Context, field graphql.
 			return obj.Milestone, nil
 		},
 		nil,
-		ec.marshalOMilestone2ᚖchickᚋinternalᚋgraphqlᚐMilestone,
+		ec.marshalOMilestone2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐMilestone,
 		true,
 		false,
 	)
@@ -1026,7 +1026,7 @@ func (ec *executionContext) _IssueAssignee_state(ctx context.Context, field grap
 			return obj.State, nil
 		},
 		nil,
-		ec.marshalNAssigneeState2chickᚋinternalᚋgraphqlᚐAssigneeState,
+		ec.marshalNAssigneeState2morningᚑgloryᚋinternalᚋgraphqlᚐAssigneeState,
 		true,
 		true,
 	)
@@ -1084,7 +1084,7 @@ func (ec *executionContext) _IssueAssignee_agent(ctx context.Context, field grap
 			return obj.Agent, nil
 		},
 		nil,
-		ec.marshalNAgent2ᚖchickᚋinternalᚋgraphqlᚐAgent,
+		ec.marshalNAgent2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐAgent,
 		true,
 		true,
 	)
@@ -1155,7 +1155,7 @@ func (ec *executionContext) _IssueConnection_edges(ctx context.Context, field gr
 			return obj.Edges, nil
 		},
 		nil,
-		ec.marshalNIssue2ᚕᚖchickᚋinternalᚋgraphqlᚐIssueᚄ,
+		ec.marshalNIssue2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐIssueᚄ,
 		true,
 		true,
 	)
@@ -1498,25 +1498,25 @@ func (ec *executionContext) _IssueConnection(ctx context.Context, sel ast.Select
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) unmarshalNAssigneeState2chickᚋinternalᚋgraphqlᚐAssigneeState(ctx context.Context, v any) (AssigneeState, error) {
+func (ec *executionContext) unmarshalNAssigneeState2morningᚑgloryᚋinternalᚋgraphqlᚐAssigneeState(ctx context.Context, v any) (AssigneeState, error) {
 	var res AssigneeState
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNAssigneeState2chickᚋinternalᚋgraphqlᚐAssigneeState(ctx context.Context, sel ast.SelectionSet, v AssigneeState) graphql.Marshaler {
+func (ec *executionContext) marshalNAssigneeState2morningᚑgloryᚋinternalᚋgraphqlᚐAssigneeState(ctx context.Context, sel ast.SelectionSet, v AssigneeState) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) marshalNIssue2chickᚋinternalᚋgraphqlᚐIssue(ctx context.Context, sel ast.SelectionSet, v Issue) graphql.Marshaler {
+func (ec *executionContext) marshalNIssue2morningᚑgloryᚋinternalᚋgraphqlᚐIssue(ctx context.Context, sel ast.SelectionSet, v Issue) graphql.Marshaler {
 	return ec._Issue(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNIssue2ᚕᚖchickᚋinternalᚋgraphqlᚐIssueᚄ(ctx context.Context, sel ast.SelectionSet, v []*Issue) graphql.Marshaler {
+func (ec *executionContext) marshalNIssue2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐIssueᚄ(ctx context.Context, sel ast.SelectionSet, v []*Issue) graphql.Marshaler {
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNIssue2ᚖchickᚋinternalᚋgraphqlᚐIssue(ctx, sel, v[i])
+		return ec.marshalNIssue2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐIssue(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -1528,7 +1528,7 @@ func (ec *executionContext) marshalNIssue2ᚕᚖchickᚋinternalᚋgraphqlᚐIss
 	return ret
 }
 
-func (ec *executionContext) marshalNIssue2ᚖchickᚋinternalᚋgraphqlᚐIssue(ctx context.Context, sel ast.SelectionSet, v *Issue) graphql.Marshaler {
+func (ec *executionContext) marshalNIssue2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐIssue(ctx context.Context, sel ast.SelectionSet, v *Issue) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -1538,11 +1538,11 @@ func (ec *executionContext) marshalNIssue2ᚖchickᚋinternalᚋgraphqlᚐIssue(
 	return ec._Issue(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNIssueAssignee2chickᚋinternalᚋgraphqlᚐIssueAssignee(ctx context.Context, sel ast.SelectionSet, v IssueAssignee) graphql.Marshaler {
+func (ec *executionContext) marshalNIssueAssignee2morningᚑgloryᚋinternalᚋgraphqlᚐIssueAssignee(ctx context.Context, sel ast.SelectionSet, v IssueAssignee) graphql.Marshaler {
 	return ec._IssueAssignee(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNIssueAssignee2ᚖchickᚋinternalᚋgraphqlᚐIssueAssignee(ctx context.Context, sel ast.SelectionSet, v *IssueAssignee) graphql.Marshaler {
+func (ec *executionContext) marshalNIssueAssignee2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐIssueAssignee(ctx context.Context, sel ast.SelectionSet, v *IssueAssignee) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -1552,11 +1552,11 @@ func (ec *executionContext) marshalNIssueAssignee2ᚖchickᚋinternalᚋgraphql�
 	return ec._IssueAssignee(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNIssueConnection2chickᚋinternalᚋgraphqlᚐIssueConnection(ctx context.Context, sel ast.SelectionSet, v IssueConnection) graphql.Marshaler {
+func (ec *executionContext) marshalNIssueConnection2morningᚑgloryᚋinternalᚋgraphqlᚐIssueConnection(ctx context.Context, sel ast.SelectionSet, v IssueConnection) graphql.Marshaler {
 	return ec._IssueConnection(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNIssueConnection2ᚖchickᚋinternalᚋgraphqlᚐIssueConnection(ctx context.Context, sel ast.SelectionSet, v *IssueConnection) graphql.Marshaler {
+func (ec *executionContext) marshalNIssueConnection2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐIssueConnection(ctx context.Context, sel ast.SelectionSet, v *IssueConnection) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -1566,24 +1566,24 @@ func (ec *executionContext) marshalNIssueConnection2ᚖchickᚋinternalᚋgraphq
 	return ec._IssueConnection(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNIssueState2chickᚋinternalᚋgraphqlᚐIssueState(ctx context.Context, v any) (IssueState, error) {
+func (ec *executionContext) unmarshalNIssueState2morningᚑgloryᚋinternalᚋgraphqlᚐIssueState(ctx context.Context, v any) (IssueState, error) {
 	var res IssueState
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNIssueState2chickᚋinternalᚋgraphqlᚐIssueState(ctx context.Context, sel ast.SelectionSet, v IssueState) graphql.Marshaler {
+func (ec *executionContext) marshalNIssueState2morningᚑgloryᚋinternalᚋgraphqlᚐIssueState(ctx context.Context, sel ast.SelectionSet, v IssueState) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) unmarshalNIssueState2ᚕchickᚋinternalᚋgraphqlᚐIssueStateᚄ(ctx context.Context, v any) ([]IssueState, error) {
+func (ec *executionContext) unmarshalNIssueState2ᚕmorningᚑgloryᚋinternalᚋgraphqlᚐIssueStateᚄ(ctx context.Context, v any) ([]IssueState, error) {
 	var vSlice []any
 	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]IssueState, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNIssueState2chickᚋinternalᚋgraphqlᚐIssueState(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNIssueState2morningᚑgloryᚋinternalᚋgraphqlᚐIssueState(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -1591,11 +1591,11 @@ func (ec *executionContext) unmarshalNIssueState2ᚕchickᚋinternalᚋgraphql�
 	return res, nil
 }
 
-func (ec *executionContext) marshalNIssueState2ᚕchickᚋinternalᚋgraphqlᚐIssueStateᚄ(ctx context.Context, sel ast.SelectionSet, v []IssueState) graphql.Marshaler {
+func (ec *executionContext) marshalNIssueState2ᚕmorningᚑgloryᚋinternalᚋgraphqlᚐIssueStateᚄ(ctx context.Context, sel ast.SelectionSet, v []IssueState) graphql.Marshaler {
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNIssueState2chickᚋinternalᚋgraphqlᚐIssueState(ctx, sel, v[i])
+		return ec.marshalNIssueState2morningᚑgloryᚋinternalᚋgraphqlᚐIssueState(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -1607,24 +1607,24 @@ func (ec *executionContext) marshalNIssueState2ᚕchickᚋinternalᚋgraphqlᚐI
 	return ret
 }
 
-func (ec *executionContext) unmarshalNPriority2chickᚋinternalᚋgraphqlᚐPriority(ctx context.Context, v any) (Priority, error) {
+func (ec *executionContext) unmarshalNPriority2morningᚑgloryᚋinternalᚋgraphqlᚐPriority(ctx context.Context, v any) (Priority, error) {
 	var res Priority
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNPriority2chickᚋinternalᚋgraphqlᚐPriority(ctx context.Context, sel ast.SelectionSet, v Priority) graphql.Marshaler {
+func (ec *executionContext) marshalNPriority2morningᚑgloryᚋinternalᚋgraphqlᚐPriority(ctx context.Context, sel ast.SelectionSet, v Priority) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) marshalOIssue2ᚕᚖchickᚋinternalᚋgraphqlᚐIssueᚄ(ctx context.Context, sel ast.SelectionSet, v []*Issue) graphql.Marshaler {
+func (ec *executionContext) marshalOIssue2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐIssueᚄ(ctx context.Context, sel ast.SelectionSet, v []*Issue) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNIssue2ᚖchickᚋinternalᚋgraphqlᚐIssue(ctx, sel, v[i])
+		return ec.marshalNIssue2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐIssue(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -1636,21 +1636,21 @@ func (ec *executionContext) marshalOIssue2ᚕᚖchickᚋinternalᚋgraphqlᚐIss
 	return ret
 }
 
-func (ec *executionContext) marshalOIssue2ᚖchickᚋinternalᚋgraphqlᚐIssue(ctx context.Context, sel ast.SelectionSet, v *Issue) graphql.Marshaler {
+func (ec *executionContext) marshalOIssue2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐIssue(ctx context.Context, sel ast.SelectionSet, v *Issue) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Issue(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOIssueAssignee2ᚕᚖchickᚋinternalᚋgraphqlᚐIssueAssigneeᚄ(ctx context.Context, sel ast.SelectionSet, v []*IssueAssignee) graphql.Marshaler {
+func (ec *executionContext) marshalOIssueAssignee2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐIssueAssigneeᚄ(ctx context.Context, sel ast.SelectionSet, v []*IssueAssignee) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNIssueAssignee2ᚖchickᚋinternalᚋgraphqlᚐIssueAssignee(ctx, sel, v[i])
+		return ec.marshalNIssueAssignee2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐIssueAssignee(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -1662,7 +1662,7 @@ func (ec *executionContext) marshalOIssueAssignee2ᚕᚖchickᚋinternalᚋgraph
 	return ret
 }
 
-func (ec *executionContext) unmarshalOIssueState2ᚕchickᚋinternalᚋgraphqlᚐIssueStateᚄ(ctx context.Context, v any) ([]IssueState, error) {
+func (ec *executionContext) unmarshalOIssueState2ᚕmorningᚑgloryᚋinternalᚋgraphqlᚐIssueStateᚄ(ctx context.Context, v any) ([]IssueState, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -1672,7 +1672,7 @@ func (ec *executionContext) unmarshalOIssueState2ᚕchickᚋinternalᚋgraphql�
 	res := make([]IssueState, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNIssueState2chickᚋinternalᚋgraphqlᚐIssueState(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNIssueState2morningᚑgloryᚋinternalᚋgraphqlᚐIssueState(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -1680,14 +1680,14 @@ func (ec *executionContext) unmarshalOIssueState2ᚕchickᚋinternalᚋgraphql�
 	return res, nil
 }
 
-func (ec *executionContext) marshalOIssueState2ᚕchickᚋinternalᚋgraphqlᚐIssueStateᚄ(ctx context.Context, sel ast.SelectionSet, v []IssueState) graphql.Marshaler {
+func (ec *executionContext) marshalOIssueState2ᚕmorningᚑgloryᚋinternalᚋgraphqlᚐIssueStateᚄ(ctx context.Context, sel ast.SelectionSet, v []IssueState) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNIssueState2chickᚋinternalᚋgraphqlᚐIssueState(ctx, sel, v[i])
+		return ec.marshalNIssueState2morningᚑgloryᚋinternalᚋgraphqlᚐIssueState(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -1699,7 +1699,7 @@ func (ec *executionContext) marshalOIssueState2ᚕchickᚋinternalᚋgraphqlᚐI
 	return ret
 }
 
-func (ec *executionContext) unmarshalOIssueState2ᚖchickᚋinternalᚋgraphqlᚐIssueState(ctx context.Context, v any) (*IssueState, error) {
+func (ec *executionContext) unmarshalOIssueState2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐIssueState(ctx context.Context, v any) (*IssueState, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -1708,14 +1708,14 @@ func (ec *executionContext) unmarshalOIssueState2ᚖchickᚋinternalᚋgraphql�
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOIssueState2ᚖchickᚋinternalᚋgraphqlᚐIssueState(ctx context.Context, sel ast.SelectionSet, v *IssueState) graphql.Marshaler {
+func (ec *executionContext) marshalOIssueState2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐIssueState(ctx context.Context, sel ast.SelectionSet, v *IssueState) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return v
 }
 
-func (ec *executionContext) unmarshalOPriority2ᚖchickᚋinternalᚋgraphqlᚐPriority(ctx context.Context, v any) (*Priority, error) {
+func (ec *executionContext) unmarshalOPriority2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐPriority(ctx context.Context, v any) (*Priority, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -1724,7 +1724,7 @@ func (ec *executionContext) unmarshalOPriority2ᚖchickᚋinternalᚋgraphqlᚐP
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOPriority2ᚖchickᚋinternalᚋgraphqlᚐPriority(ctx context.Context, sel ast.SelectionSet, v *Priority) graphql.Marshaler {
+func (ec *executionContext) marshalOPriority2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐPriority(ctx context.Context, sel ast.SelectionSet, v *Priority) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}

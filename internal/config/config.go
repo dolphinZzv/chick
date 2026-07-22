@@ -26,24 +26,24 @@ type Config struct {
 }
 
 func Load() *Config {
-	origins := getEnv("CHICK_ALLOWED_ORIGINS", "")
+	origins := getEnv("MORNING_GLORY_ALLOWED_ORIGINS", "")
 	return &Config{
-		DBDriver:                    getEnv("CHICK_DB_DRIVER", "sqlite3"),
-		DBDSN:                       getEnv("CHICK_DB_DSN", "file:dev.db?_pragma=journal_mode(WAL)"),
-		Port:                        getEnv("CHICK_PORT", "8080"),
-		JWTSecret:                   getEnv("CHICK_JWT_SECRET", ""),
-		AdminToken:                  getEnv("CHICK_ADMIN_TOKEN", ""),
+		DBDriver:                    getEnv("MORNING_GLORY_DB_DRIVER", "sqlite3"),
+		DBDSN:                       getEnv("MORNING_GLORY_DB_DSN", "file:dev.db?_pragma=journal_mode(WAL)"),
+		Port:                        getEnv("MORNING_GLORY_PORT", "8080"),
+		JWTSecret:                   getEnv("MORNING_GLORY_JWT_SECRET", ""),
+		AdminToken:                  getEnv("MORNING_GLORY_ADMIN_TOKEN", ""),
 		AllowedOrigins:              splitOrigins(origins),
-		DevMode:                     getEnv("CHICK_DEV_MODE", "") == "true",
-		AllowHumanRegistration:      getEnv("CHICK_ALLOW_HUMAN_REGISTRATION", "false") == "true",
-		MCPAllowedCIDRs:             splitCIDRs(getEnv("CHICK_MCP_ALLOWED_CIDRS", "")),
-		DefaultRequirementProjectID: uint(getEnvInt("CHICK_REQUIREMENT_PROJECT_ID", 0)),
-		PprofEnabled:                getEnv("CHICK_PPROF_ENABLED", "false") == "true",
-		MatchingCheckInterval:       getEnv("CHICK_MATCHING_CHECK_INTERVAL", "60s"),
-		MatchingOfflineTimeout:      getEnv("CHICK_MATCHING_OFFLINE_TIMEOUT", "5m"),
-		RedisAddr:                   getEnv("CHICK_REDIS_ADDR", "localhost:6379"),
-		RedisPassword:               getEnv("CHICK_REDIS_PASSWORD", ""),
-		RedisDB:                     getEnvInt("CHICK_REDIS_DB", 1),
+		DevMode:                     getEnv("MORNING_GLORY_DEV_MODE", "") == "true",
+		AllowHumanRegistration:      getEnv("MORNING_GLORY_ALLOW_HUMAN_REGISTRATION", "false") == "true",
+		MCPAllowedCIDRs:             splitCIDRs(getEnv("MORNING_GLORY_MCP_ALLOWED_CIDRS", "")),
+		DefaultRequirementProjectID: uint(getEnvInt("MORNING_GLORY_REQUIREMENT_PROJECT_ID", 0)),
+		PprofEnabled:                getEnv("MORNING_GLORY_PPROF_ENABLED", "false") == "true",
+		MatchingCheckInterval:       getEnv("MORNING_GLORY_MATCHING_CHECK_INTERVAL", "60s"),
+		MatchingOfflineTimeout:      getEnv("MORNING_GLORY_MATCHING_OFFLINE_TIMEOUT", "5m"),
+		RedisAddr:                   getEnv("MORNING_GLORY_REDIS_ADDR", "localhost:6379"),
+		RedisPassword:               getEnv("MORNING_GLORY_REDIS_PASSWORD", ""),
+		RedisDB:                     getEnvInt("MORNING_GLORY_REDIS_DB", 1),
 	}
 }
 

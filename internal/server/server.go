@@ -3,14 +3,14 @@ package server
 import (
 	"log"
 
-	"chick/internal/auth"
-	"chick/internal/config"
-	"chick/internal/events"
-	"chick/internal/matching"
-	"chick/internal/notifications"
-	"chick/internal/repository"
-	gormrepo "chick/internal/repository/gorm"
-	"chick/internal/service"
+	"morning-glory/internal/auth"
+	"morning-glory/internal/config"
+	"morning-glory/internal/events"
+	"morning-glory/internal/matching"
+	"morning-glory/internal/notifications"
+	"morning-glory/internal/repository"
+	gormrepo "morning-glory/internal/repository/gorm"
+	"morning-glory/internal/service"
 
 	"gorm.io/gorm"
 )

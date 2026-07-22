@@ -3,8 +3,8 @@ package gorm
 import (
 	"crypto/rand"
 	"encoding/hex"
-	"chick/internal/models"
-	"chick/internal/repository"
+	"morning-glory/internal/models"
+	"morning-glory/internal/repository"
 	"time"
 
 	"gorm.io/gorm"

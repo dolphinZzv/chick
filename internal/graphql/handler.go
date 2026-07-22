@@ -3,9 +3,9 @@ package graph
 import (
 	"net/http"
 
-	"chick/internal/events"
-	"chick/internal/notifications"
-	"chick/internal/service"
+	"morning-glory/internal/events"
+	"morning-glory/internal/notifications"
+	"morning-glory/internal/service"
 
 	gqlhandler "github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/extension"

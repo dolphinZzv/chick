@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"chick/internal/notifications"
-	"chick/internal/service"
+	"morning-glory/internal/notifications"
+	"morning-glory/internal/service"
 )
 
 type Handlers struct {
@@ -76,7 +76,7 @@ func (h *Handlers) resolveProject(projectIDStr string, agentID uint) (uint, erro
 // resolveRequirementProject returns the project ID for submitting requirements.
 func (h *Handlers) resolveRequirementProject(agentID uint) (uint, error) {
 	if h.defaultRequirementProjectID == 0 {
-		return 0, fmt.Errorf("requirement submission is not supported (no CHICK_REQUIREMENT_PROJECT_ID configured)")
+		return 0, fmt.Errorf("requirement submission is not supported (no MORNING_GLORY_REQUIREMENT_PROJECT_ID configured)")
 	}
 	proj, err := h.projectSvc.GetByID(h.defaultRequirementProjectID)
 	if err != nil {

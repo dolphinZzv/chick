@@ -3,7 +3,7 @@ package gorm
 import (
 	"testing"
 
-	"chick/internal/models"
+	"morning-glory/internal/models"
 )
 
 func TestProjectRepo_CreateAndGet(t *testing.T) {

@@ -13,7 +13,7 @@ import (
 type contextKey string
 
 const (
-	ContextKeyAgentID contextKey = "agent_id"
+	ContextKeyAgentID  contextKey = "agent_id"
 	ContextKeyClientIP contextKey = "client_ip"
 )
 
@@ -51,7 +51,7 @@ func (a *Authenticator) GenerateToken(agentID uint) (string, error) {
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
-			Issuer:    "chick",
+			Issuer:    "morning-glory",
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

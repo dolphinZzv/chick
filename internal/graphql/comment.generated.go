@@ -269,7 +269,7 @@ func (ec *executionContext) _Comment_contentType(ctx context.Context, field grap
 			return obj.ContentType, nil
 		},
 		nil,
-		ec.marshalNCommentContentType2chickᚋinternalᚋgraphqlᚐCommentContentType,
+		ec.marshalNCommentContentType2morningᚑgloryᚋinternalᚋgraphqlᚐCommentContentType,
 		true,
 		true,
 	)
@@ -356,7 +356,7 @@ func (ec *executionContext) _Comment_author(ctx context.Context, field graphql.C
 			return obj.Author, nil
 		},
 		nil,
-		ec.marshalNAgent2ᚖchickᚋinternalᚋgraphqlᚐAgent,
+		ec.marshalNAgent2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐAgent,
 		true,
 		true,
 	)
@@ -427,7 +427,7 @@ func (ec *executionContext) _Comment_parent(ctx context.Context, field graphql.C
 			return obj.Parent, nil
 		},
 		nil,
-		ec.marshalOComment2ᚖchickᚋinternalᚋgraphqlᚐComment,
+		ec.marshalOComment2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐComment,
 		true,
 		false,
 	)
@@ -486,7 +486,7 @@ func (ec *executionContext) _Comment_replies(ctx context.Context, field graphql.
 			return obj.Replies, nil
 		},
 		nil,
-		ec.marshalOComment2ᚕᚖchickᚋinternalᚋgraphqlᚐCommentᚄ,
+		ec.marshalOComment2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐCommentᚄ,
 		true,
 		false,
 	)
@@ -637,15 +637,15 @@ func (ec *executionContext) _Comment(ctx context.Context, sel ast.SelectionSet, 
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) marshalNComment2chickᚋinternalᚋgraphqlᚐComment(ctx context.Context, sel ast.SelectionSet, v Comment) graphql.Marshaler {
+func (ec *executionContext) marshalNComment2morningᚑgloryᚋinternalᚋgraphqlᚐComment(ctx context.Context, sel ast.SelectionSet, v Comment) graphql.Marshaler {
 	return ec._Comment(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNComment2ᚕᚖchickᚋinternalᚋgraphqlᚐCommentᚄ(ctx context.Context, sel ast.SelectionSet, v []*Comment) graphql.Marshaler {
+func (ec *executionContext) marshalNComment2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐCommentᚄ(ctx context.Context, sel ast.SelectionSet, v []*Comment) graphql.Marshaler {
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNComment2ᚖchickᚋinternalᚋgraphqlᚐComment(ctx, sel, v[i])
+		return ec.marshalNComment2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐComment(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -657,7 +657,7 @@ func (ec *executionContext) marshalNComment2ᚕᚖchickᚋinternalᚋgraphqlᚐC
 	return ret
 }
 
-func (ec *executionContext) marshalNComment2ᚖchickᚋinternalᚋgraphqlᚐComment(ctx context.Context, sel ast.SelectionSet, v *Comment) graphql.Marshaler {
+func (ec *executionContext) marshalNComment2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐComment(ctx context.Context, sel ast.SelectionSet, v *Comment) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -667,24 +667,24 @@ func (ec *executionContext) marshalNComment2ᚖchickᚋinternalᚋgraphqlᚐComm
 	return ec._Comment(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNCommentContentType2chickᚋinternalᚋgraphqlᚐCommentContentType(ctx context.Context, v any) (CommentContentType, error) {
+func (ec *executionContext) unmarshalNCommentContentType2morningᚑgloryᚋinternalᚋgraphqlᚐCommentContentType(ctx context.Context, v any) (CommentContentType, error) {
 	var res CommentContentType
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNCommentContentType2chickᚋinternalᚋgraphqlᚐCommentContentType(ctx context.Context, sel ast.SelectionSet, v CommentContentType) graphql.Marshaler {
+func (ec *executionContext) marshalNCommentContentType2morningᚑgloryᚋinternalᚋgraphqlᚐCommentContentType(ctx context.Context, sel ast.SelectionSet, v CommentContentType) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) marshalOComment2ᚕᚖchickᚋinternalᚋgraphqlᚐCommentᚄ(ctx context.Context, sel ast.SelectionSet, v []*Comment) graphql.Marshaler {
+func (ec *executionContext) marshalOComment2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐCommentᚄ(ctx context.Context, sel ast.SelectionSet, v []*Comment) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNComment2ᚖchickᚋinternalᚋgraphqlᚐComment(ctx, sel, v[i])
+		return ec.marshalNComment2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐComment(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -696,7 +696,7 @@ func (ec *executionContext) marshalOComment2ᚕᚖchickᚋinternalᚋgraphqlᚐC
 	return ret
 }
 
-func (ec *executionContext) marshalOComment2ᚖchickᚋinternalᚋgraphqlᚐComment(ctx context.Context, sel ast.SelectionSet, v *Comment) graphql.Marshaler {
+func (ec *executionContext) marshalOComment2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐComment(ctx context.Context, sel ast.SelectionSet, v *Comment) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}

@@ -7,8 +7,8 @@ import (
 
 	"strings"
 
-	"chick/internal/config"
-	"chick/internal/models"
+	"morning-glory/internal/config"
+	"morning-glory/internal/models"
 
 	"github.com/redis/go-redis/v9"
 	"gorm.io/driver/postgres"

@@ -128,7 +128,7 @@ type: feat / fix / refactor / test / docs
 
 ## 与 GitHub Issues 对照
 
-| 特性 | GitHub | Gitea | Chick |
+| 特性 | GitHub | Gitea | Morning Glory |
 |------|--------|-------|-------|
 | Issue 基础 | ✅ | ✅ | ✅ + 结构化输出 |
 | Comment | ✅ | ✅ | ✅ + 多内容类型 |

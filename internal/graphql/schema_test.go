@@ -7,13 +7,13 @@ import (
 	"testing"
 	"time"
 
-	"chick/internal/auth"
-	"chick/internal/config"
-	"chick/internal/events"
-	"chick/internal/repository"
-	gormrepo "chick/internal/repository/gorm"
-	"chick/internal/server"
-	"chick/internal/service"
+	"morning-glory/internal/auth"
+	"morning-glory/internal/config"
+	"morning-glory/internal/events"
+	"morning-glory/internal/repository"
+	gormrepo "morning-glory/internal/repository/gorm"
+	"morning-glory/internal/server"
+	"morning-glory/internal/service"
 )
 
 // authedCtx returns a context with the given agent ID for testing resolvers that require auth.

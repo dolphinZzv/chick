@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"chick/internal/models"
+	"morning-glory/internal/models"
 )
 
 func (h *Handlers) registerTransitionIssue(r *ToolRegistry) {

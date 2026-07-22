@@ -182,7 +182,7 @@ func (ec *executionContext) _Task_state(ctx context.Context, field graphql.Colle
 			return obj.State, nil
 		},
 		nil,
-		ec.marshalNTaskState2chickᚋinternalᚋgraphqlᚐTaskState,
+		ec.marshalNTaskState2morningᚑgloryᚋinternalᚋgraphqlᚐTaskState,
 		true,
 		true,
 	)
@@ -211,7 +211,7 @@ func (ec *executionContext) _Task_priority(ctx context.Context, field graphql.Co
 			return obj.Priority, nil
 		},
 		nil,
-		ec.marshalNPriority2chickᚋinternalᚋgraphqlᚐPriority,
+		ec.marshalNPriority2morningᚑgloryᚋinternalᚋgraphqlᚐPriority,
 		true,
 		true,
 	)
@@ -385,7 +385,7 @@ func (ec *executionContext) _Task_proposal(ctx context.Context, field graphql.Co
 			return obj.Proposal, nil
 		},
 		nil,
-		ec.marshalNProposal2ᚖchickᚋinternalᚋgraphqlᚐProposal,
+		ec.marshalNProposal2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐProposal,
 		true,
 		true,
 	)
@@ -462,7 +462,7 @@ func (ec *executionContext) _Task_assignee(ctx context.Context, field graphql.Co
 			return obj.Assignee, nil
 		},
 		nil,
-		ec.marshalOAgent2ᚖchickᚋinternalᚋgraphqlᚐAgent,
+		ec.marshalOAgent2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐAgent,
 		true,
 		false,
 	)
@@ -533,7 +533,7 @@ func (ec *executionContext) _Task_issues(ctx context.Context, field graphql.Coll
 			return obj.Issues, nil
 		},
 		nil,
-		ec.marshalOIssue2ᚕᚖchickᚋinternalᚋgraphqlᚐIssueᚄ,
+		ec.marshalOIssue2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐIssueᚄ,
 		true,
 		false,
 	)
@@ -614,7 +614,7 @@ func (ec *executionContext) _Task_comments(ctx context.Context, field graphql.Co
 			return obj.Comments, nil
 		},
 		nil,
-		ec.marshalOComment2ᚕᚖchickᚋinternalᚋgraphqlᚐCommentᚄ,
+		ec.marshalOComment2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐCommentᚄ,
 		true,
 		false,
 	)
@@ -673,7 +673,7 @@ func (ec *executionContext) _TaskConnection_edges(ctx context.Context, field gra
 			return obj.Edges, nil
 		},
 		nil,
-		ec.marshalNTask2ᚕᚖchickᚋinternalᚋgraphqlᚐTaskᚄ,
+		ec.marshalNTask2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐTaskᚄ,
 		true,
 		true,
 	)
@@ -908,15 +908,15 @@ func (ec *executionContext) _TaskConnection(ctx context.Context, sel ast.Selecti
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) marshalNTask2chickᚋinternalᚋgraphqlᚐTask(ctx context.Context, sel ast.SelectionSet, v Task) graphql.Marshaler {
+func (ec *executionContext) marshalNTask2morningᚑgloryᚋinternalᚋgraphqlᚐTask(ctx context.Context, sel ast.SelectionSet, v Task) graphql.Marshaler {
 	return ec._Task(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNTask2ᚕᚖchickᚋinternalᚋgraphqlᚐTaskᚄ(ctx context.Context, sel ast.SelectionSet, v []*Task) graphql.Marshaler {
+func (ec *executionContext) marshalNTask2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐTaskᚄ(ctx context.Context, sel ast.SelectionSet, v []*Task) graphql.Marshaler {
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNTask2ᚖchickᚋinternalᚋgraphqlᚐTask(ctx, sel, v[i])
+		return ec.marshalNTask2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐTask(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -928,7 +928,7 @@ func (ec *executionContext) marshalNTask2ᚕᚖchickᚋinternalᚋgraphqlᚐTask
 	return ret
 }
 
-func (ec *executionContext) marshalNTask2ᚖchickᚋinternalᚋgraphqlᚐTask(ctx context.Context, sel ast.SelectionSet, v *Task) graphql.Marshaler {
+func (ec *executionContext) marshalNTask2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐTask(ctx context.Context, sel ast.SelectionSet, v *Task) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -938,11 +938,11 @@ func (ec *executionContext) marshalNTask2ᚖchickᚋinternalᚋgraphqlᚐTask(ct
 	return ec._Task(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNTaskConnection2chickᚋinternalᚋgraphqlᚐTaskConnection(ctx context.Context, sel ast.SelectionSet, v TaskConnection) graphql.Marshaler {
+func (ec *executionContext) marshalNTaskConnection2morningᚑgloryᚋinternalᚋgraphqlᚐTaskConnection(ctx context.Context, sel ast.SelectionSet, v TaskConnection) graphql.Marshaler {
 	return ec._TaskConnection(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNTaskConnection2ᚖchickᚋinternalᚋgraphqlᚐTaskConnection(ctx context.Context, sel ast.SelectionSet, v *TaskConnection) graphql.Marshaler {
+func (ec *executionContext) marshalNTaskConnection2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐTaskConnection(ctx context.Context, sel ast.SelectionSet, v *TaskConnection) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -952,24 +952,24 @@ func (ec *executionContext) marshalNTaskConnection2ᚖchickᚋinternalᚋgraphql
 	return ec._TaskConnection(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNTaskState2chickᚋinternalᚋgraphqlᚐTaskState(ctx context.Context, v any) (TaskState, error) {
+func (ec *executionContext) unmarshalNTaskState2morningᚑgloryᚋinternalᚋgraphqlᚐTaskState(ctx context.Context, v any) (TaskState, error) {
 	var res TaskState
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNTaskState2chickᚋinternalᚋgraphqlᚐTaskState(ctx context.Context, sel ast.SelectionSet, v TaskState) graphql.Marshaler {
+func (ec *executionContext) marshalNTaskState2morningᚑgloryᚋinternalᚋgraphqlᚐTaskState(ctx context.Context, sel ast.SelectionSet, v TaskState) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) unmarshalNTaskState2ᚕchickᚋinternalᚋgraphqlᚐTaskStateᚄ(ctx context.Context, v any) ([]TaskState, error) {
+func (ec *executionContext) unmarshalNTaskState2ᚕmorningᚑgloryᚋinternalᚋgraphqlᚐTaskStateᚄ(ctx context.Context, v any) ([]TaskState, error) {
 	var vSlice []any
 	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]TaskState, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNTaskState2chickᚋinternalᚋgraphqlᚐTaskState(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNTaskState2morningᚑgloryᚋinternalᚋgraphqlᚐTaskState(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -977,11 +977,11 @@ func (ec *executionContext) unmarshalNTaskState2ᚕchickᚋinternalᚋgraphqlᚐ
 	return res, nil
 }
 
-func (ec *executionContext) marshalNTaskState2ᚕchickᚋinternalᚋgraphqlᚐTaskStateᚄ(ctx context.Context, sel ast.SelectionSet, v []TaskState) graphql.Marshaler {
+func (ec *executionContext) marshalNTaskState2ᚕmorningᚑgloryᚋinternalᚋgraphqlᚐTaskStateᚄ(ctx context.Context, sel ast.SelectionSet, v []TaskState) graphql.Marshaler {
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNTaskState2chickᚋinternalᚋgraphqlᚐTaskState(ctx, sel, v[i])
+		return ec.marshalNTaskState2morningᚑgloryᚋinternalᚋgraphqlᚐTaskState(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -993,14 +993,14 @@ func (ec *executionContext) marshalNTaskState2ᚕchickᚋinternalᚋgraphqlᚐTa
 	return ret
 }
 
-func (ec *executionContext) marshalOTask2ᚕᚖchickᚋinternalᚋgraphqlᚐTaskᚄ(ctx context.Context, sel ast.SelectionSet, v []*Task) graphql.Marshaler {
+func (ec *executionContext) marshalOTask2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐTaskᚄ(ctx context.Context, sel ast.SelectionSet, v []*Task) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNTask2ᚖchickᚋinternalᚋgraphqlᚐTask(ctx, sel, v[i])
+		return ec.marshalNTask2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐTask(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -1012,14 +1012,14 @@ func (ec *executionContext) marshalOTask2ᚕᚖchickᚋinternalᚋgraphqlᚐTask
 	return ret
 }
 
-func (ec *executionContext) marshalOTask2ᚖchickᚋinternalᚋgraphqlᚐTask(ctx context.Context, sel ast.SelectionSet, v *Task) graphql.Marshaler {
+func (ec *executionContext) marshalOTask2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐTask(ctx context.Context, sel ast.SelectionSet, v *Task) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Task(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOTaskState2ᚖchickᚋinternalᚋgraphqlᚐTaskState(ctx context.Context, v any) (*TaskState, error) {
+func (ec *executionContext) unmarshalOTaskState2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐTaskState(ctx context.Context, v any) (*TaskState, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -1028,7 +1028,7 @@ func (ec *executionContext) unmarshalOTaskState2ᚖchickᚋinternalᚋgraphqlᚐ
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOTaskState2ᚖchickᚋinternalᚋgraphqlᚐTaskState(ctx context.Context, sel ast.SelectionSet, v *TaskState) graphql.Marshaler {
+func (ec *executionContext) marshalOTaskState2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐTaskState(ctx context.Context, sel ast.SelectionSet, v *TaskState) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}

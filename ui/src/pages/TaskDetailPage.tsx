@@ -85,7 +85,7 @@ export function TaskDetailPage() {
   useEffect(() => { fetchData(); }, [fetchData]);
 
   useEffect(() => {
-    document.title = task ? `${task.title} - Chick` : "Chick";
+    document.title = task ? `${task.title} - Morning Glory` : "Morning Glory";
   }, [task]);
 
   const handleTransition = async (toState: string) => {

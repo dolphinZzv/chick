@@ -298,7 +298,7 @@ func (ec *executionContext) _TimelineEvent_actor(ctx context.Context, field grap
 			return obj.Actor, nil
 		},
 		nil,
-		ec.marshalNAgent2ᚖchickᚋinternalᚋgraphqlᚐAgent,
+		ec.marshalNAgent2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐAgent,
 		true,
 		true,
 	)
@@ -447,11 +447,11 @@ func (ec *executionContext) _TimelineEvent(ctx context.Context, sel ast.Selectio
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) marshalNTimelineEvent2ᚕᚖchickᚋinternalᚋgraphqlᚐTimelineEventᚄ(ctx context.Context, sel ast.SelectionSet, v []*TimelineEvent) graphql.Marshaler {
+func (ec *executionContext) marshalNTimelineEvent2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐTimelineEventᚄ(ctx context.Context, sel ast.SelectionSet, v []*TimelineEvent) graphql.Marshaler {
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNTimelineEvent2ᚖchickᚋinternalᚋgraphqlᚐTimelineEvent(ctx, sel, v[i])
+		return ec.marshalNTimelineEvent2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐTimelineEvent(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -463,7 +463,7 @@ func (ec *executionContext) marshalNTimelineEvent2ᚕᚖchickᚋinternalᚋgraph
 	return ret
 }
 
-func (ec *executionContext) marshalNTimelineEvent2ᚖchickᚋinternalᚋgraphqlᚐTimelineEvent(ctx context.Context, sel ast.SelectionSet, v *TimelineEvent) graphql.Marshaler {
+func (ec *executionContext) marshalNTimelineEvent2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐTimelineEvent(ctx context.Context, sel ast.SelectionSet, v *TimelineEvent) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")

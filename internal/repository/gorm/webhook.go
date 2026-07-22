@@ -1,7 +1,7 @@
 package gorm
 
 import (
-	"chick/internal/models"
+	"morning-glory/internal/models"
 
 	"gorm.io/gorm"
 )

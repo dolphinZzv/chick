@@ -3,7 +3,7 @@ package notifications
 import (
 	"fmt"
 
-	"chick/internal/models"
+	"morning-glory/internal/models"
 )
 
 // AllNotificationTypes returns all supported notification types with descriptions.

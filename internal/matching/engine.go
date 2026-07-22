@@ -4,9 +4,9 @@ import (
 	"log"
 	"time"
 
-	"chick/internal/events"
-	"chick/internal/models"
-	"chick/internal/repository"
+	"morning-glory/internal/events"
+	"morning-glory/internal/models"
+	"morning-glory/internal/repository"
 )
 
 // Engine matches issues to agents based on label→capability mapping.

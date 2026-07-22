@@ -3,7 +3,7 @@ package service
 import (
 	"errors"
 
-	"chick/internal/models"
+	"morning-glory/internal/models"
 )
 
 type WorkflowService struct {

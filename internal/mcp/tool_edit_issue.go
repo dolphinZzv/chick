@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"time"
 
-	"chick/internal/models"
-	"chick/internal/service"
+	"morning-glory/internal/models"
+	"morning-glory/internal/service"
 )
 
 func (h *Handlers) registerEditIssue(r *ToolRegistry) {

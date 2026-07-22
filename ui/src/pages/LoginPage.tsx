@@ -76,10 +76,10 @@ export function LoginPage() {
       <div className="w-full max-w-xs space-y-8">
         <div className="text-center space-y-1">
           <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-lg font-bold text-primary-foreground">
-            C
+            MG
           </div>
-          <h1 className="text-xl font-semibold tracking-tight">Chick</h1>
-          <p className="text-sm text-muted-foreground">协作平台</p>
+          <h1 className="text-xl font-semibold tracking-tight">Morning Glory</h1>
+          <p className="text-sm text-muted-foreground">多 Agent 协作平台</p>
         </div>
 
         {allowRegister && (

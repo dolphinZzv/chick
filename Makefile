@@ -28,11 +28,11 @@ run: build
 		sleep 1; \
 	fi
 	@echo "=== 启动应用 ==="
-	CHICK_PORT=8082 \
-	CHICK_ALLOW_HUMAN_REGISTRATION=true \
-		CHICK_ALLOWED_ORIGINS="*" \
-	CHICK_JWT_SECRET=$${CHICK_JWT_SECRET:-chick-dev-secret-key-2024} \
-	nohup ./bin/chick &>/tmp/chick-server.log &
+	MORNING_GLORY_PORT=8082 \
+	MORNING_GLORY_ALLOW_HUMAN_REGISTRATION=true \
+		MORNING_GLORY_ALLOWED_ORIGINS="*" \
+	MORNING_GLORY_JWT_SECRET=$${MORNING_GLORY_JWT_SECRET:-morning-glory-dev-secret-key-2024} \
+	nohup ./bin/morning-glory &>/tmp/morning-glory-server.log &
 	@sleep 1
 	@echo "  PID: $$!"
 	@sleep 3
@@ -63,7 +63,7 @@ ui-build:
 # ─── 后端构建 ──────────────────────────────────────────────
 
 build:
-	go build -o bin/chick ./cmd/server/
+	go build -o bin/morning-glory ./cmd/server/
 
 # ─── 启动 / 停止 ────────────────────────────────────────────
 
@@ -77,11 +77,11 @@ start: check ui-build build
 		sleep 1; \
 	fi
 	@echo "=== 启动应用 ==="
-	CHICK_PORT=8082 \
-	CHICK_ALLOW_HUMAN_REGISTRATION=true \
-		CHICK_ALLOWED_ORIGINS="*" \
-	CHICK_JWT_SECRET=$${CHICK_JWT_SECRET:-chick-dev-secret-key-2024} \
-	nohup ./bin/chick &>/tmp/chick-server.log &
+	MORNING_GLORY_PORT=8082 \
+	MORNING_GLORY_ALLOW_HUMAN_REGISTRATION=true \
+		MORNING_GLORY_ALLOWED_ORIGINS="*" \
+	MORNING_GLORY_JWT_SECRET=$${MORNING_GLORY_JWT_SECRET:-morning-glory-dev-secret-key-2024} \
+	nohup ./bin/morning-glory &>/tmp/morning-glory-server.log &
 	@sleep 1
 	@echo "  PID: $$!"
 	@sleep 3
@@ -105,9 +105,9 @@ start: check ui-build build
 
 stop:
 	@echo "=== 停止开发进程 ==="
-	@pkill -f "bin/chick" 2>/dev/null || true
+	@pkill -f "bin/morning-glory" 2>/dev/null || true
 	@echo "=== 停止生产服务 ==="
-	-sudo systemctl stop chick-prod 2>/dev/null || true
+	-sudo systemctl stop morning-glory-prod 2>/dev/null || true
 	@echo "  ✅ 已停止"
 
 # ─── 测试 ──────────────────────────────────────────────────
@@ -143,51 +143,51 @@ coverage-html:
 .PHONY: prod-service
 
 prod-service:
-	cp deploy/chick-prod.service /etc/systemd/system/chick-prod.service
-	@test -f /etc/default/chick-prod || echo "CHICK_JWT_SECRET=chick-dev-secret-key-2024" > /etc/default/chick-prod
+	cp deploy/morning-glory-prod.service /etc/systemd/system/morning-glory-prod.service
+	@test -f /etc/default/morning-glory-prod || echo "MORNING_GLORY_JWT_SECRET=morning-glory-dev-secret-key-2024" > /etc/default/morning-glory-prod
 	systemctl daemon-reload
-	systemctl enable chick-prod
+	systemctl enable morning-glory-prod
 
 # 开发服务 (端口 8082)
 .PHONY: dev-service
 
 dev-service:
-	cp deploy/chick-dev.service /etc/systemd/system/chick-dev.service
+	cp deploy/morning-glory-dev.service /etc/systemd/system/morning-glory-dev.service
 	systemctl daemon-reload
-	systemctl enable chick-dev
-	systemctl restart chick-dev 2>/dev/null || true
+	systemctl enable morning-glory-dev
+	systemctl restart morning-glory-dev 2>/dev/null || true
 
 # 生产部署：构建 → 复制 → 重启 → 健康检查
 .PHONY: prod
 
-# 默认 PostgreSQL DSN，可通过 CHICK_DB_DSN 覆盖
+# 默认 PostgreSQL DSN，可通过 MORNING_GLORY_DB_DSN 覆盖
 prod: build-prod ui-build prod-service
 	@echo "=== 更新前端资源 ==="
-	sudo install -d /opt/chick/ui/dist
-	sudo install -m 755 bin/chick-prod /opt/chick/chick-server
-	sudo cp -r ui/dist/* /opt/chick/ui/dist/
+	sudo install -d /opt/morning-glory/ui/dist
+	sudo install -m 755 bin/morning-glory-prod /opt/morning-glory/morning-glory-server
+	sudo cp -r ui/dist/* /opt/morning-glory/ui/dist/
 	@echo "=== 重启服务 ==="
-	sudo systemctl restart chick-prod
+	sudo systemctl restart morning-glory-prod
 	@sleep 2
 	@echo "=== 健康检查 ==="
 	@status=$$(curl -s -o /dev/null -w "%{http_code}" http://localhost:18082/health 2>/dev/null); \
 	if [ "$$status" = "200" ]; then \
 		echo "  ✅ 生产服务运行正常 (HTTP $$status)"; \
 	else \
-		echo "  ❌ 健康检查失败 (HTTP $$status)，查看日志: journalctl -u chick-prod -n 50"; \
+		echo "  ❌ 健康检查失败 (HTTP $$status)，查看日志: journalctl -u morning-glory-prod -n 50"; \
 	fi
 	@echo "=== 部署完成: http://0.0.0.0:18082 ==="
 
 build-prod:
-	go build -ldflags="-s -w" -o bin/chick-prod ./cmd/server/
+	go build -ldflags="-s -w" -o bin/morning-glory-prod ./cmd/server/
 
 # ─── 远程部署（101 生产机）─────────────────────────────────
 
 DEPLOY_HOST ?= 47.95.200.101
 DEPLOY_SSH_PORT ?= 10022
 DEPLOY_USER ?= root
-DEPLOY_PATH ?= /opt/chick
-DEPLOY_SERVICE ?= chick-prod
+DEPLOY_PATH ?= /opt/morning-glory
+DEPLOY_SERVICE ?= morning-glory-prod
 DEPLOY_HEALTH_PORT ?= 18080
 
 .PHONY: deploy
@@ -196,7 +196,7 @@ deploy: build-prod ui-build
 	@echo "=== 部署到 $(DEPLOY_HOST):$(DEPLOY_SSH_PORT) ==="
 	ssh -p $(DEPLOY_SSH_PORT) $(DEPLOY_USER)@$(DEPLOY_HOST) "install -d $(DEPLOY_PATH)/ui/dist"
 	ssh -p $(DEPLOY_SSH_PORT) $(DEPLOY_USER)@$(DEPLOY_HOST) "systemctl stop $(DEPLOY_SERVICE)"
-	cat bin/chick-prod | ssh -p $(DEPLOY_SSH_PORT) $(DEPLOY_USER)@$(DEPLOY_HOST) "cat > $(DEPLOY_PATH)/chick-server && chmod +x $(DEPLOY_PATH)/chick-server"
+	cat bin/morning-glory-prod | ssh -p $(DEPLOY_SSH_PORT) $(DEPLOY_USER)@$(DEPLOY_HOST) "cat > $(DEPLOY_PATH)/morning-glory-server && chmod +x $(DEPLOY_PATH)/morning-glory-server"
 	tar c -C ui/dist . | ssh -p $(DEPLOY_SSH_PORT) $(DEPLOY_USER)@$(DEPLOY_HOST) "tar x -C $(DEPLOY_PATH)/ui/dist"
 	@echo "=== 启动服务 ==="
 	ssh -p $(DEPLOY_SSH_PORT) $(DEPLOY_USER)@$(DEPLOY_HOST) "systemctl start $(DEPLOY_SERVICE)"

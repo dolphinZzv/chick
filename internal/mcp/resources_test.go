@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"chick/internal/mcp"
-	"chick/internal/models"
+	"morning-glory/internal/mcp"
+	"morning-glory/internal/models"
 )
 
 func TestResourcesList(t *testing.T) {

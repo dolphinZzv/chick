@@ -72,12 +72,12 @@ func (ec *executionContext) field_Query_agent_args(ctx context.Context, rawArgs 
 func (ec *executionContext) field_Query_agents_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "kind", ec.unmarshalOAgentKind2ᚖchickᚋinternalᚋgraphqlᚐAgentKind)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "kind", ec.unmarshalOAgentKind2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐAgentKind)
 	if err != nil {
 		return nil, err
 	}
 	args["kind"] = arg0
-	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "status", ec.unmarshalOAgentStatus2ᚖchickᚋinternalᚋgraphqlᚐAgentStatus)
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "status", ec.unmarshalOAgentStatus2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐAgentStatus)
 	if err != nil {
 		return nil, err
 	}
@@ -119,7 +119,7 @@ func (ec *executionContext) field_Query_comments_args(ctx context.Context, rawAr
 func (ec *executionContext) field_Query_feedback_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "targetType", ec.unmarshalNFeedbackTargetType2chickᚋinternalᚋgraphqlᚐFeedbackTargetType)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "targetType", ec.unmarshalNFeedbackTargetType2morningᚑgloryᚋinternalᚋgraphqlᚐFeedbackTargetType)
 	if err != nil {
 		return nil, err
 	}
@@ -151,17 +151,17 @@ func (ec *executionContext) field_Query_issues_args(ctx context.Context, rawArgs
 		return nil, err
 	}
 	args["projectID"] = arg0
-	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "state", ec.unmarshalOIssueState2ᚖchickᚋinternalᚋgraphqlᚐIssueState)
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "state", ec.unmarshalOIssueState2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐIssueState)
 	if err != nil {
 		return nil, err
 	}
 	args["state"] = arg1
-	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "states", ec.unmarshalOIssueState2ᚕchickᚋinternalᚋgraphqlᚐIssueStateᚄ)
+	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "states", ec.unmarshalOIssueState2ᚕmorningᚑgloryᚋinternalᚋgraphqlᚐIssueStateᚄ)
 	if err != nil {
 		return nil, err
 	}
 	args["states"] = arg2
-	arg3, err := graphql.ProcessArgField(ctx, rawArgs, "priority", ec.unmarshalOPriority2ᚖchickᚋinternalᚋgraphqlᚐPriority)
+	arg3, err := graphql.ProcessArgField(ctx, rawArgs, "priority", ec.unmarshalOPriority2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐPriority)
 	if err != nil {
 		return nil, err
 	}
@@ -218,7 +218,7 @@ func (ec *executionContext) field_Query_milestones_args(ctx context.Context, raw
 		return nil, err
 	}
 	args["projectID"] = arg0
-	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "state", ec.unmarshalOMilestoneState2ᚖchickᚋinternalᚋgraphqlᚐMilestoneState)
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "state", ec.unmarshalOMilestoneState2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐMilestoneState)
 	if err != nil {
 		return nil, err
 	}
@@ -278,12 +278,12 @@ func (ec *executionContext) field_Query_proposals_args(ctx context.Context, rawA
 		return nil, err
 	}
 	args["projectID"] = arg0
-	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "state", ec.unmarshalOProposalState2ᚖchickᚋinternalᚋgraphqlᚐProposalState)
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "state", ec.unmarshalOProposalState2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐProposalState)
 	if err != nil {
 		return nil, err
 	}
 	args["state"] = arg1
-	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "priority", ec.unmarshalOPriority2ᚖchickᚋinternalᚋgraphqlᚐPriority)
+	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "priority", ec.unmarshalOPriority2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐPriority)
 	if err != nil {
 		return nil, err
 	}
@@ -325,7 +325,7 @@ func (ec *executionContext) field_Query_tasks_args(ctx context.Context, rawArgs 
 		return nil, err
 	}
 	args["proposalID"] = arg0
-	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "state", ec.unmarshalOTaskState2ᚖchickᚋinternalᚋgraphqlᚐTaskState)
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "state", ec.unmarshalOTaskState2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐTaskState)
 	if err != nil {
 		return nil, err
 	}
@@ -377,7 +377,7 @@ func (ec *executionContext) field_Query_timeline_args(ctx context.Context, rawAr
 func (ec *executionContext) field_Query_validProposalTransitions_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "state", ec.unmarshalNProposalState2chickᚋinternalᚋgraphqlᚐProposalState)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "state", ec.unmarshalNProposalState2morningᚑgloryᚋinternalᚋgraphqlᚐProposalState)
 	if err != nil {
 		return nil, err
 	}
@@ -388,7 +388,7 @@ func (ec *executionContext) field_Query_validProposalTransitions_args(ctx contex
 func (ec *executionContext) field_Query_validTaskTransitions_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "state", ec.unmarshalNTaskState2chickᚋinternalᚋgraphqlᚐTaskState)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "state", ec.unmarshalNTaskState2morningᚑgloryᚋinternalᚋgraphqlᚐTaskState)
 	if err != nil {
 		return nil, err
 	}
@@ -399,7 +399,7 @@ func (ec *executionContext) field_Query_validTaskTransitions_args(ctx context.Co
 func (ec *executionContext) field_Query_validTransitions_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "state", ec.unmarshalNIssueState2chickᚋinternalᚋgraphqlᚐIssueState)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "state", ec.unmarshalNIssueState2morningᚑgloryᚋinternalᚋgraphqlᚐIssueState)
 	if err != nil {
 		return nil, err
 	}
@@ -524,7 +524,7 @@ func (ec *executionContext) _Query_agents(ctx context.Context, field graphql.Col
 			return ec.Resolvers.Query().Agents(ctx, fc.Args["kind"].(*AgentKind), fc.Args["status"].(*AgentStatus), fc.Args["capabilities"].([]string), fc.Args["projectID"].(*string))
 		},
 		nil,
-		ec.marshalNAgent2ᚕᚖchickᚋinternalᚋgraphqlᚐAgentᚄ,
+		ec.marshalNAgent2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐAgentᚄ,
 		true,
 		true,
 	)
@@ -607,7 +607,7 @@ func (ec *executionContext) _Query_agent(ctx context.Context, field graphql.Coll
 			return ec.Resolvers.Query().Agent(ctx, fc.Args["id"].(string))
 		},
 		nil,
-		ec.marshalOAgent2ᚖchickᚋinternalᚋgraphqlᚐAgent,
+		ec.marshalOAgent2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐAgent,
 		true,
 		false,
 	)
@@ -689,7 +689,7 @@ func (ec *executionContext) _Query_projects(ctx context.Context, field graphql.C
 			return ec.Resolvers.Query().Projects(ctx)
 		},
 		nil,
-		ec.marshalNProject2ᚕᚖchickᚋinternalᚋgraphqlᚐProjectᚄ,
+		ec.marshalNProject2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐProjectᚄ,
 		true,
 		true,
 	)
@@ -743,7 +743,7 @@ func (ec *executionContext) _Query_project(ctx context.Context, field graphql.Co
 			return ec.Resolvers.Query().Project(ctx, fc.Args["id"].(string))
 		},
 		nil,
-		ec.marshalOProject2ᚖchickᚋinternalᚋgraphqlᚐProject,
+		ec.marshalOProject2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐProject,
 		true,
 		false,
 	)
@@ -808,7 +808,7 @@ func (ec *executionContext) _Query_labels(ctx context.Context, field graphql.Col
 			return ec.Resolvers.Query().Labels(ctx, fc.Args["projectID"].(string), fc.Args["group"].(*string))
 		},
 		nil,
-		ec.marshalNLabel2ᚕᚖchickᚋinternalᚋgraphqlᚐLabelᚄ,
+		ec.marshalNLabel2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐLabelᚄ,
 		true,
 		true,
 	)
@@ -867,7 +867,7 @@ func (ec *executionContext) _Query_milestones(ctx context.Context, field graphql
 			return ec.Resolvers.Query().Milestones(ctx, fc.Args["projectID"].(string), fc.Args["state"].(*MilestoneState))
 		},
 		nil,
-		ec.marshalNMilestone2ᚕᚖchickᚋinternalᚋgraphqlᚐMilestoneᚄ,
+		ec.marshalNMilestone2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐMilestoneᚄ,
 		true,
 		true,
 	)
@@ -928,7 +928,7 @@ func (ec *executionContext) _Query_issue(ctx context.Context, field graphql.Coll
 			return ec.Resolvers.Query().Issue(ctx, fc.Args["id"].(string))
 		},
 		nil,
-		ec.marshalOIssue2ᚖchickᚋinternalᚋgraphqlᚐIssue,
+		ec.marshalOIssue2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐIssue,
 		true,
 		false,
 	)
@@ -1021,7 +1021,7 @@ func (ec *executionContext) _Query_issues(ctx context.Context, field graphql.Col
 			return ec.Resolvers.Query().Issues(ctx, fc.Args["projectID"].(string), fc.Args["state"].(*IssueState), fc.Args["states"].([]IssueState), fc.Args["priority"].(*Priority), fc.Args["assigneeID"].(*string), fc.Args["labelIDs"].([]string), fc.Args["search"].(*string), fc.Args["limit"].(*int32), fc.Args["offset"].(*int32))
 		},
 		nil,
-		ec.marshalNIssueConnection2ᚖchickᚋinternalᚋgraphqlᚐIssueConnection,
+		ec.marshalNIssueConnection2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐIssueConnection,
 		true,
 		true,
 	)
@@ -1068,7 +1068,7 @@ func (ec *executionContext) _Query_proposal(ctx context.Context, field graphql.C
 			return ec.Resolvers.Query().Proposal(ctx, fc.Args["id"].(string))
 		},
 		nil,
-		ec.marshalOProposal2ᚖchickᚋinternalᚋgraphqlᚐProposal,
+		ec.marshalOProposal2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐProposal,
 		true,
 		false,
 	)
@@ -1157,7 +1157,7 @@ func (ec *executionContext) _Query_proposals(ctx context.Context, field graphql.
 			return ec.Resolvers.Query().Proposals(ctx, fc.Args["projectID"].(string), fc.Args["state"].(*ProposalState), fc.Args["priority"].(*Priority), fc.Args["search"].(*string), fc.Args["limit"].(*int32), fc.Args["offset"].(*int32))
 		},
 		nil,
-		ec.marshalNProposalConnection2ᚖchickᚋinternalᚋgraphqlᚐProposalConnection,
+		ec.marshalNProposalConnection2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐProposalConnection,
 		true,
 		true,
 	)
@@ -1204,7 +1204,7 @@ func (ec *executionContext) _Query_validProposalTransitions(ctx context.Context,
 			return ec.Resolvers.Query().ValidProposalTransitions(ctx, fc.Args["state"].(ProposalState))
 		},
 		nil,
-		ec.marshalNProposalState2ᚕchickᚋinternalᚋgraphqlᚐProposalStateᚄ,
+		ec.marshalNProposalState2ᚕmorningᚑgloryᚋinternalᚋgraphqlᚐProposalStateᚄ,
 		true,
 		true,
 	)
@@ -1245,7 +1245,7 @@ func (ec *executionContext) _Query_task(ctx context.Context, field graphql.Colle
 			return ec.Resolvers.Query().Task(ctx, fc.Args["id"].(string))
 		},
 		nil,
-		ec.marshalOTask2ᚖchickᚋinternalᚋgraphqlᚐTask,
+		ec.marshalOTask2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐTask,
 		true,
 		false,
 	)
@@ -1320,7 +1320,7 @@ func (ec *executionContext) _Query_tasks(ctx context.Context, field graphql.Coll
 			return ec.Resolvers.Query().Tasks(ctx, fc.Args["proposalID"].(string), fc.Args["state"].(*TaskState), fc.Args["assigneeID"].(*string), fc.Args["search"].(*string), fc.Args["limit"].(*int32), fc.Args["offset"].(*int32))
 		},
 		nil,
-		ec.marshalNTaskConnection2ᚖchickᚋinternalᚋgraphqlᚐTaskConnection,
+		ec.marshalNTaskConnection2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐTaskConnection,
 		true,
 		true,
 	)
@@ -1367,7 +1367,7 @@ func (ec *executionContext) _Query_validTaskTransitions(ctx context.Context, fie
 			return ec.Resolvers.Query().ValidTaskTransitions(ctx, fc.Args["state"].(TaskState))
 		},
 		nil,
-		ec.marshalNTaskState2ᚕchickᚋinternalᚋgraphqlᚐTaskStateᚄ,
+		ec.marshalNTaskState2ᚕmorningᚑgloryᚋinternalᚋgraphqlᚐTaskStateᚄ,
 		true,
 		true,
 	)
@@ -1408,7 +1408,7 @@ func (ec *executionContext) _Query_comments(ctx context.Context, field graphql.C
 			return ec.Resolvers.Query().Comments(ctx, fc.Args["issueID"].(*string), fc.Args["proposalID"].(*string), fc.Args["taskID"].(*string))
 		},
 		nil,
-		ec.marshalNComment2ᚕᚖchickᚋinternalᚋgraphqlᚐCommentᚄ,
+		ec.marshalNComment2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐCommentᚄ,
 		true,
 		true,
 	)
@@ -1479,7 +1479,7 @@ func (ec *executionContext) _Query_timeline(ctx context.Context, field graphql.C
 			return ec.Resolvers.Query().Timeline(ctx, fc.Args["issueID"].(*string), fc.Args["proposalID"].(*string), fc.Args["taskID"].(*string))
 		},
 		nil,
-		ec.marshalNTimelineEvent2ᚕᚖchickᚋinternalᚋgraphqlᚐTimelineEventᚄ,
+		ec.marshalNTimelineEvent2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐTimelineEventᚄ,
 		true,
 		true,
 	)
@@ -1542,7 +1542,7 @@ func (ec *executionContext) _Query_validTransitions(ctx context.Context, field g
 			return ec.Resolvers.Query().ValidTransitions(ctx, fc.Args["state"].(IssueState))
 		},
 		nil,
-		ec.marshalNIssueState2ᚕchickᚋinternalᚋgraphqlᚐIssueStateᚄ,
+		ec.marshalNIssueState2ᚕmorningᚑgloryᚋinternalᚋgraphqlᚐIssueStateᚄ,
 		true,
 		true,
 	)
@@ -1583,7 +1583,7 @@ func (ec *executionContext) _Query_feedback(ctx context.Context, field graphql.C
 			return ec.Resolvers.Query().Feedback(ctx, fc.Args["targetType"].(FeedbackTargetType), fc.Args["targetID"].(string))
 		},
 		nil,
-		ec.marshalNFeedback2ᚕᚖchickᚋinternalᚋgraphqlᚐFeedbackᚄ,
+		ec.marshalNFeedback2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐFeedbackᚄ,
 		true,
 		true,
 	)
@@ -1644,7 +1644,7 @@ func (ec *executionContext) _Query_notificationSettings(ctx context.Context, fie
 			return ec.Resolvers.Query().NotificationSettings(ctx, fc.Args["agentID"].(string))
 		},
 		nil,
-		ec.marshalNNotificationSetting2ᚕᚖchickᚋinternalᚋgraphqlᚐNotificationSettingᚄ,
+		ec.marshalNNotificationSetting2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐNotificationSettingᚄ,
 		true,
 		true,
 	)
@@ -1696,7 +1696,7 @@ func (ec *executionContext) _Query_notificationTypes(ctx context.Context, field 
 			return ec.Resolvers.Query().NotificationTypes(ctx)
 		},
 		nil,
-		ec.marshalNNotificationTypeInfo2ᚕᚖchickᚋinternalᚋgraphqlᚐNotificationTypeInfoᚄ,
+		ec.marshalNNotificationTypeInfo2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐNotificationTypeInfoᚄ,
 		true,
 		true,
 	)
@@ -1732,7 +1732,7 @@ func (ec *executionContext) _Query_notifications(ctx context.Context, field grap
 			return ec.Resolvers.Query().Notifications(ctx, fc.Args["agentID"].(string))
 		},
 		nil,
-		ec.marshalNNotificationEvent2ᚕᚖchickᚋinternalᚋgraphqlᚐNotificationEventᚄ,
+		ec.marshalNNotificationEvent2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐNotificationEventᚄ,
 		true,
 		true,
 	)
@@ -1797,7 +1797,7 @@ func (ec *executionContext) _Query_webhooks(ctx context.Context, field graphql.C
 			return ec.Resolvers.Query().Webhooks(ctx, fc.Args["projectID"].(string))
 		},
 		nil,
-		ec.marshalNWebhook2ᚕᚖchickᚋinternalᚋgraphqlᚐWebhookᚄ,
+		ec.marshalNWebhook2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐWebhookᚄ,
 		true,
 		true,
 	)

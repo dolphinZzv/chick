@@ -6,23 +6,23 @@ import (
 	"os"
 	"testing"
 
-	"chick/internal/config"
-	"chick/internal/events"
-	"chick/internal/mcp"
-	"chick/internal/models"
-	"chick/internal/notifications"
-	gormrepo "chick/internal/repository/gorm"
-	"chick/internal/server"
-	"chick/internal/service"
+	"morning-glory/internal/config"
+	"morning-glory/internal/events"
+	"morning-glory/internal/mcp"
+	"morning-glory/internal/models"
+	"morning-glory/internal/notifications"
+	gormrepo "morning-glory/internal/repository/gorm"
+	"morning-glory/internal/server"
+	"morning-glory/internal/service"
 
 	_ "github.com/mattn/go-sqlite3"
 )
 
 func pgDSN() string {
-	if dsn := os.Getenv("CHICK_TEST_DSN"); dsn != "" {
+	if dsn := os.Getenv("MORNING_GLORY_TEST_DSN"); dsn != "" {
 		return dsn
 	}
-	return "host=localhost user=postgres password=postgres dbname=chick_test sslmode=disable"
+	return "host=localhost user=postgres password=postgres dbname=morning_glory_test sslmode=disable"
 }
 
 // setupMCPIntegration creates a full MCP test environment with PostgreSQL.

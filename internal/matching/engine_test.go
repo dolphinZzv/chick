@@ -3,12 +3,12 @@ package matching_test
 import (
 	"testing"
 
-	"chick/internal/config"
-	"chick/internal/events"
-	"chick/internal/matching"
-	"chick/internal/models"
-	gormrepo "chick/internal/repository/gorm"
-	"chick/internal/server"
+	"morning-glory/internal/config"
+	"morning-glory/internal/events"
+	"morning-glory/internal/matching"
+	"morning-glory/internal/models"
+	gormrepo "morning-glory/internal/repository/gorm"
+	"morning-glory/internal/server"
 
 	"gorm.io/gorm"
 )

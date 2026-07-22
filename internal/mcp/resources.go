@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"strings"
 
-	"chick/internal/models"
-	"chick/internal/service"
+	"morning-glory/internal/models"
+	"morning-glory/internal/service"
 )
 
 type Resources struct {

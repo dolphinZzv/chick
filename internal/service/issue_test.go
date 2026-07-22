@@ -5,13 +5,13 @@ import (
 	"testing"
 	"time"
 
-	"chick/internal/config"
-	"chick/internal/events"
-	"chick/internal/models"
-	"chick/internal/repository"
-	gormrepo "chick/internal/repository/gorm"
-	"chick/internal/server"
-	"chick/internal/service"
+	"morning-glory/internal/config"
+	"morning-glory/internal/events"
+	"morning-glory/internal/models"
+	"morning-glory/internal/repository"
+	gormrepo "morning-glory/internal/repository/gorm"
+	"morning-glory/internal/server"
+	"morning-glory/internal/service"
 )
 
 func setupIssueTest(t *testing.T) (*service.IssueService, *service.AgentService, *service.ProjectService, *service.WorkflowService) {

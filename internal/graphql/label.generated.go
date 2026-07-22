@@ -336,15 +336,15 @@ func (ec *executionContext) _Label(ctx context.Context, sel ast.SelectionSet, ob
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) marshalNLabel2chickᚋinternalᚋgraphqlᚐLabel(ctx context.Context, sel ast.SelectionSet, v Label) graphql.Marshaler {
+func (ec *executionContext) marshalNLabel2morningᚑgloryᚋinternalᚋgraphqlᚐLabel(ctx context.Context, sel ast.SelectionSet, v Label) graphql.Marshaler {
 	return ec._Label(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNLabel2ᚕᚖchickᚋinternalᚋgraphqlᚐLabelᚄ(ctx context.Context, sel ast.SelectionSet, v []*Label) graphql.Marshaler {
+func (ec *executionContext) marshalNLabel2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐLabelᚄ(ctx context.Context, sel ast.SelectionSet, v []*Label) graphql.Marshaler {
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNLabel2ᚖchickᚋinternalᚋgraphqlᚐLabel(ctx, sel, v[i])
+		return ec.marshalNLabel2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐLabel(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -356,7 +356,7 @@ func (ec *executionContext) marshalNLabel2ᚕᚖchickᚋinternalᚋgraphqlᚐLab
 	return ret
 }
 
-func (ec *executionContext) marshalNLabel2ᚖchickᚋinternalᚋgraphqlᚐLabel(ctx context.Context, sel ast.SelectionSet, v *Label) graphql.Marshaler {
+func (ec *executionContext) marshalNLabel2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐLabel(ctx context.Context, sel ast.SelectionSet, v *Label) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -366,14 +366,14 @@ func (ec *executionContext) marshalNLabel2ᚖchickᚋinternalᚋgraphqlᚐLabel(
 	return ec._Label(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOLabel2ᚕᚖchickᚋinternalᚋgraphqlᚐLabelᚄ(ctx context.Context, sel ast.SelectionSet, v []*Label) graphql.Marshaler {
+func (ec *executionContext) marshalOLabel2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐLabelᚄ(ctx context.Context, sel ast.SelectionSet, v []*Label) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNLabel2ᚖchickᚋinternalᚋgraphqlᚐLabel(ctx, sel, v[i])
+		return ec.marshalNLabel2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐLabel(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {

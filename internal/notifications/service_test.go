@@ -3,8 +3,8 @@ package notifications_test
 import (
 	"testing"
 
-	"chick/internal/events"
-	"chick/internal/notifications"
+	"morning-glory/internal/events"
+	"morning-glory/internal/notifications"
 )
 
 func TestSubscribeAndNotify(t *testing.T) {

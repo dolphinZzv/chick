@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"chick/internal/models"
+	"morning-glory/internal/models"
 )
 
 func TestAgentWorkflowE2E(t *testing.T) {

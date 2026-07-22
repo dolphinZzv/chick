@@ -3,7 +3,7 @@ package repository
 import (
 	"time"
 
-	"chick/internal/models"
+	"morning-glory/internal/models"
 
 	"gorm.io/gorm"
 )

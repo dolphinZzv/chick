@@ -100,7 +100,7 @@ export function ProposalDetailPage() {
   useEffect(() => { fetchData(); }, [fetchData]);
 
   useEffect(() => {
-    document.title = proposal ? `#${proposal.number} ${proposal.title} - Chick` : "Chick";
+    document.title = proposal ? `#${proposal.number} ${proposal.title} - Morning Glory` : "Morning Glory";
   }, [proposal]);
 
   const handleTransition = async (toState: string) => {

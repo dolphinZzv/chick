@@ -1,9 +1,9 @@
 package graph
 
 import (
-	"chick/internal/events"
-	"chick/internal/notifications"
-	"chick/internal/service"
+	"morning-glory/internal/events"
+	"morning-glory/internal/notifications"
+	"morning-glory/internal/service"
 	"time"
 )
 

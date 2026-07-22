@@ -269,7 +269,7 @@ func (ec *executionContext) _Project_members(ctx context.Context, field graphql.
 			return obj.Members, nil
 		},
 		nil,
-		ec.marshalOProjectMember2ᚕᚖchickᚋinternalᚋgraphqlᚐProjectMemberᚄ,
+		ec.marshalOProjectMember2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐProjectMemberᚄ,
 		true,
 		false,
 	)
@@ -312,7 +312,7 @@ func (ec *executionContext) _Project_labels(ctx context.Context, field graphql.C
 			return obj.Labels, nil
 		},
 		nil,
-		ec.marshalOLabel2ᚕᚖchickᚋinternalᚋgraphqlᚐLabelᚄ,
+		ec.marshalOLabel2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐLabelᚄ,
 		true,
 		false,
 	)
@@ -359,7 +359,7 @@ func (ec *executionContext) _Project_milestones(ctx context.Context, field graph
 			return obj.Milestones, nil
 		},
 		nil,
-		ec.marshalOMilestone2ᚕᚖchickᚋinternalᚋgraphqlᚐMilestoneᚄ,
+		ec.marshalOMilestone2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐMilestoneᚄ,
 		true,
 		false,
 	)
@@ -524,7 +524,7 @@ func (ec *executionContext) _ProjectMember_role(ctx context.Context, field graph
 			return obj.Role, nil
 		},
 		nil,
-		ec.marshalNProjectRole2chickᚋinternalᚋgraphqlᚐProjectRole,
+		ec.marshalNProjectRole2morningᚑgloryᚋinternalᚋgraphqlᚐProjectRole,
 		true,
 		true,
 	)
@@ -553,7 +553,7 @@ func (ec *executionContext) _ProjectMember_agent(ctx context.Context, field grap
 			return obj.Agent, nil
 		},
 		nil,
-		ec.marshalNAgent2ᚖchickᚋinternalᚋgraphqlᚐAgent,
+		ec.marshalNAgent2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐAgent,
 		true,
 		true,
 	)
@@ -771,15 +771,15 @@ func (ec *executionContext) _ProjectMember(ctx context.Context, sel ast.Selectio
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) marshalNProject2chickᚋinternalᚋgraphqlᚐProject(ctx context.Context, sel ast.SelectionSet, v Project) graphql.Marshaler {
+func (ec *executionContext) marshalNProject2morningᚑgloryᚋinternalᚋgraphqlᚐProject(ctx context.Context, sel ast.SelectionSet, v Project) graphql.Marshaler {
 	return ec._Project(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNProject2ᚕᚖchickᚋinternalᚋgraphqlᚐProjectᚄ(ctx context.Context, sel ast.SelectionSet, v []*Project) graphql.Marshaler {
+func (ec *executionContext) marshalNProject2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐProjectᚄ(ctx context.Context, sel ast.SelectionSet, v []*Project) graphql.Marshaler {
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNProject2ᚖchickᚋinternalᚋgraphqlᚐProject(ctx, sel, v[i])
+		return ec.marshalNProject2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐProject(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -791,7 +791,7 @@ func (ec *executionContext) marshalNProject2ᚕᚖchickᚋinternalᚋgraphqlᚐP
 	return ret
 }
 
-func (ec *executionContext) marshalNProject2ᚖchickᚋinternalᚋgraphqlᚐProject(ctx context.Context, sel ast.SelectionSet, v *Project) graphql.Marshaler {
+func (ec *executionContext) marshalNProject2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐProject(ctx context.Context, sel ast.SelectionSet, v *Project) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -801,11 +801,11 @@ func (ec *executionContext) marshalNProject2ᚖchickᚋinternalᚋgraphqlᚐProj
 	return ec._Project(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNProjectMember2chickᚋinternalᚋgraphqlᚐProjectMember(ctx context.Context, sel ast.SelectionSet, v ProjectMember) graphql.Marshaler {
+func (ec *executionContext) marshalNProjectMember2morningᚑgloryᚋinternalᚋgraphqlᚐProjectMember(ctx context.Context, sel ast.SelectionSet, v ProjectMember) graphql.Marshaler {
 	return ec._ProjectMember(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNProjectMember2ᚖchickᚋinternalᚋgraphqlᚐProjectMember(ctx context.Context, sel ast.SelectionSet, v *ProjectMember) graphql.Marshaler {
+func (ec *executionContext) marshalNProjectMember2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐProjectMember(ctx context.Context, sel ast.SelectionSet, v *ProjectMember) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -815,31 +815,31 @@ func (ec *executionContext) marshalNProjectMember2ᚖchickᚋinternalᚋgraphql�
 	return ec._ProjectMember(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNProjectRole2chickᚋinternalᚋgraphqlᚐProjectRole(ctx context.Context, v any) (ProjectRole, error) {
+func (ec *executionContext) unmarshalNProjectRole2morningᚑgloryᚋinternalᚋgraphqlᚐProjectRole(ctx context.Context, v any) (ProjectRole, error) {
 	var res ProjectRole
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNProjectRole2chickᚋinternalᚋgraphqlᚐProjectRole(ctx context.Context, sel ast.SelectionSet, v ProjectRole) graphql.Marshaler {
+func (ec *executionContext) marshalNProjectRole2morningᚑgloryᚋinternalᚋgraphqlᚐProjectRole(ctx context.Context, sel ast.SelectionSet, v ProjectRole) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) marshalOProject2ᚖchickᚋinternalᚋgraphqlᚐProject(ctx context.Context, sel ast.SelectionSet, v *Project) graphql.Marshaler {
+func (ec *executionContext) marshalOProject2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐProject(ctx context.Context, sel ast.SelectionSet, v *Project) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Project(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOProjectMember2ᚕᚖchickᚋinternalᚋgraphqlᚐProjectMemberᚄ(ctx context.Context, sel ast.SelectionSet, v []*ProjectMember) graphql.Marshaler {
+func (ec *executionContext) marshalOProjectMember2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐProjectMemberᚄ(ctx context.Context, sel ast.SelectionSet, v []*ProjectMember) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNProjectMember2ᚖchickᚋinternalᚋgraphqlᚐProjectMember(ctx, sel, v[i])
+		return ec.marshalNProjectMember2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐProjectMember(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -851,7 +851,7 @@ func (ec *executionContext) marshalOProjectMember2ᚕᚖchickᚋinternalᚋgraph
 	return ret
 }
 
-func (ec *executionContext) unmarshalOProjectRole2ᚖchickᚋinternalᚋgraphqlᚐProjectRole(ctx context.Context, v any) (*ProjectRole, error) {
+func (ec *executionContext) unmarshalOProjectRole2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐProjectRole(ctx context.Context, v any) (*ProjectRole, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -860,7 +860,7 @@ func (ec *executionContext) unmarshalOProjectRole2ᚖchickᚋinternalᚋgraphql�
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOProjectRole2ᚖchickᚋinternalᚋgraphqlᚐProjectRole(ctx context.Context, sel ast.SelectionSet, v *ProjectRole) graphql.Marshaler {
+func (ec *executionContext) marshalOProjectRole2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐProjectRole(ctx context.Context, sel ast.SelectionSet, v *ProjectRole) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}

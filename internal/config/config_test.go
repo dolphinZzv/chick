@@ -16,15 +16,15 @@ func TestLoadDefaults(t *testing.T) {
 }
 
 func TestLoadFromEnv(t *testing.T) {
-	os.Setenv("CHICK_DB_DRIVER", "postgres")
-	os.Setenv("CHICK_DB_DSN", "host=localhost dbname=test")
-	os.Setenv("CHICK_PORT", "9090")
-	os.Setenv("CHICK_JWT_SECRET", "jwt-secret")
+	os.Setenv("MORNING_GLORY_DB_DRIVER", "postgres")
+	os.Setenv("MORNING_GLORY_DB_DSN", "host=localhost dbname=test")
+	os.Setenv("MORNING_GLORY_PORT", "9090")
+	os.Setenv("MORNING_GLORY_JWT_SECRET", "jwt-secret")
 	defer func() {
-		os.Unsetenv("CHICK_DB_DRIVER")
-		os.Unsetenv("CHICK_DB_DSN")
-		os.Unsetenv("CHICK_PORT")
-		os.Unsetenv("CHICK_JWT_SECRET")
+		os.Unsetenv("MORNING_GLORY_DB_DRIVER")
+		os.Unsetenv("MORNING_GLORY_DB_DSN")
+		os.Unsetenv("MORNING_GLORY_PORT")
+		os.Unsetenv("MORNING_GLORY_JWT_SECRET")
 	}()
 
 	cfg := Load()

@@ -1,4 +1,4 @@
-module chick
+module morning-glory
 
 go 1.25.0
 

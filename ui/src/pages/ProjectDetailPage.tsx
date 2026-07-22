@@ -132,7 +132,7 @@ export function ProjectDetailPage() {
   useEffect(() => { fetchData(); }, [fetchData]);
 
   useEffect(() => {
-    document.title = project ? `${project.name} - Chick` : "Chick";
+    document.title = project ? `${project.name} - Morning Glory` : "Morning Glory";
   }, [project]);
 
   // Auto-refresh when tab becomes visible (covers background updates)

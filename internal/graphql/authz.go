@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
-	"chick/internal/auth"
-	"chick/internal/models"
+	"morning-glory/internal/auth"
+	"morning-glory/internal/models"
 )
 
 // requireAuth extracts the authenticated agent's ID from the context.

@@ -202,14 +202,14 @@ export function AgentSettings() {
               <div className="relative">
                 <pre className="rounded-md border bg-muted px-3 py-2.5 text-xs font-mono overflow-x-auto whitespace-pre-wrap break-all select-all leading-relaxed">
 {`servers:
-  chick:
+  morning-glory:
     type: http-stream
     url: ${url}
     headers:
       Authorization: Bearer ${createdToken}`}
                 </pre>
                 <Button size="icon" variant="outline" className="absolute top-2 right-2 h-7 w-7"
-                  onClick={async () => { try { await navigator.clipboard?.writeText(`servers:\n  chick:\n    type: http-stream\n    url: ${url}\n    headers:\n      Authorization: Bearer ${createdToken}`); } catch {} setCmdCopied(true); setTimeout(() => setCmdCopied(false), 2000); }}>
+                  onClick={async () => { try { await navigator.clipboard?.writeText(`servers:\n  morning-glory:\n    type: http-stream\n    url: ${url}\n    headers:\n      Authorization: Bearer ${createdToken}`); } catch {} setCmdCopied(true); setTimeout(() => setCmdCopied(false), 2000); }}>
                   {cmdCopied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
                 </Button>
               </div>

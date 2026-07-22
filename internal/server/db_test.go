@@ -3,7 +3,7 @@ package server
 import (
 	"testing"
 
-	"chick/internal/config"
+	"morning-glory/internal/config"
 )
 
 func TestNewDB_SQLite(t *testing.T) {

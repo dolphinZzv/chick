@@ -17,12 +17,12 @@ import (
 	"syscall"
 	"time"
 
-	"chick/internal/config"
-	"chick/internal/events"
-	graphql "chick/internal/graphql"
-	"chick/internal/mcp"
-	"chick/internal/models"
-	"chick/internal/server"
+	"morning-glory/internal/config"
+	"morning-glory/internal/events"
+	graphql "morning-glory/internal/graphql"
+	"morning-glory/internal/mcp"
+	"morning-glory/internal/models"
+	"morning-glory/internal/server"
 )
 
 func main() {
@@ -42,7 +42,7 @@ func main() {
 			log.Fatalf("generate jwt secret: %v", err)
 		}
 		cfg.JWTSecret = hex.EncodeToString(b)
-		log.Printf("[server] CHICK_JWT_SECRET not set, generated random secret (set it to persist sessions across restarts)")
+		log.Printf("[server] MORNING_GLORY_JWT_SECRET not set, generated random secret (set it to persist sessions across restarts)")
 	}
 
 	srv, err := server.New(cfg)
@@ -129,7 +129,7 @@ func main() {
 	http.Handle("/", corsMW(server.SPAHandler()))
 
 	log.Printf("┌──────────────────────────────────────┐")
-	log.Printf("│  Chick Agent Platform                 │")
+	log.Printf("│  Morning Glory Agent Platform          │")
 	log.Printf("│  DB: %-32s │", cfg.DBDriver)
 	log.Printf("│  MCP:  http://0.0.0.0:%s/mcp       │", cfg.Port)
 	log.Printf("│  MCP Events SSE: http://0.0.0.0:%s/mcp/events │", cfg.Port)
@@ -188,12 +188,12 @@ func runStdio(cfg *config.Config) {
 	)
 	mcpServer := mcp.NewServer(mcpHandlers)
 
-	agentToken := os.Getenv("CHICK_AGENT_TOKEN")
+	agentToken := os.Getenv("MORNING_GLORY_AGENT_TOKEN")
 	if agentToken == "" {
 		agentToken = cfg.AdminToken
 	}
 	if agentToken == "" {
-		log.Fatalf("CHICK_AGENT_TOKEN or CHICK_ADMIN_TOKEN must be set in stdio mode")
+		log.Fatalf("MORNING_GLORY_AGENT_TOKEN or MORNING_GLORY_ADMIN_TOKEN must be set in stdio mode")
 	}
 
 	agent, err := srv.AgentService.Authenticate(agentToken)

@@ -70,7 +70,7 @@ func (s *Server) handleInitialize(id json.RawMessage, params json.RawMessage) Re
 			"prompts":           map[string]interface{}{},
 		},
 		"serverInfo": map[string]interface{}{
-			"name":    "chick",
+			"name":    "morning-glory",
 			"version": "0.1.0",
 		},
 	})

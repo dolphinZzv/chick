@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# ─── Chick Install Script ──────────────────────────────────────────
+# ─── Morning Glory Install Script ──────────────────────────────────
 # Detects platform, checks Go version, builds the binary, and prints
 # MCP integration config for Claude Code / OpenCode / Cline.
 # ───────────────────────────────────────────────────────────────────
@@ -21,8 +21,8 @@ error() { printf "${BOLD}${RED}==>${RESET}${BOLD} %s${RESET}\n" "$*"; exit 1; }
 # ─── Paths ────────────────────────────────────────────────────────
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BUILD_DIR="${SCRIPT_DIR}/bin"
-BINARY="${BUILD_DIR}/chick"
-CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/chick"
+BINARY="${BUILD_DIR}/morning-glory"
+CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/morning-glory"
 
 # ─── Detect OS ────────────────────────────────────────────────────
 OS="$(uname -s)"
@@ -72,12 +72,12 @@ info "Binary: ${BINARY}"
 if [ ! -f "${CONFIG_DIR}/env" ]; then
   mkdir -p "${CONFIG_DIR}"
   cat > "${CONFIG_DIR}/env" <<-ENVEOF
-# Chick configuration — sourced by the launch wrapper.
-# Override any value via environment variable (CHICK_PORT, CHICK_DB_DRIVER, etc.).
+# Morning Glory configuration — sourced by the launch wrapper.
+# Override any value via environment variable (MORNING_GLORY_PORT, MORNING_GLORY_DB_DRIVER, etc.).
 
-CHICK_DB_DRIVER=sqlite3
-CHICK_DB_DSN=file:${CONFIG_DIR}/chick.db
-CHICK_PORT=8080
+MORNING_GLORY_DB_DRIVER=sqlite3
+MORNING_GLORY_DB_DSN=file:${CONFIG_DIR}/morning-glory.db
+MORNING_GLORY_PORT=8080
 ENVEOF
   info "Config: ${CONFIG_DIR}/env"
 else
@@ -87,7 +87,7 @@ fi
 # ─── Print Summary ─────────────────────────────────────────────────
 printf "\n"
 printf "${BOLD}${CYAN}┌──────────────────────────────────────────────────────┐${RESET}\n"
-printf "${BOLD}${CYAN}│  Chick Agent Platform                                │${RESET}\n"
+printf "${BOLD}${CYAN}│  Morning Glory Agent Platform                        │${RESET}\n"
 printf "${BOLD}${CYAN}│  Binary:  ${BINARY}${RESET}\n"
 printf "${BOLD}${CYAN}│  Config:  ${CONFIG_DIR}/env${RESET}\n"
 printf "${BOLD}${CYAN}│  Run:     ${BINARY}${RESET}\n"
@@ -102,13 +102,13 @@ printf "${BOLD}Launch (STDIO mode for AI assistants):${RESET}\n"
 printf "  ${BINARY} --stdio\n"
 printf "\n"
 printf "${BOLD}Claude Code config (~/.claude/settings.json):${RESET}\n"
-printf "  ${DIM}{\"mcpServers\": {\"chick\": {\"command\": \"${BINARY}\", \"args\": [\"--stdio\"]}}}${RESET}\n"
+printf "  ${DIM}{\"mcpServers\": {\"morning-glory\": {\"command\": \"${BINARY}\", \"args\": [\"--stdio\"]}}}${RESET}\n"
 printf "\n"
 printf "${BOLD}OpenCode config (~/.config/opencode/opencode.json):${RESET}\n"
-printf "  ${DIM}{\"mcpServers\": {\"chick\": {\"command\": \"${BINARY}\", \"args\": [\"--stdio\"]}}}${RESET}\n"
+printf "  ${DIM}{\"mcpServers\": {\"morning-glory\": {\"command\": \"${BINARY}\", \"args\": [\"--stdio\"]}}}${RESET}\n"
 printf "\n"
 printf "${BOLD}Cline config (cline_desktop_config.json):${RESET}\n"
-printf "  ${DIM}{\"mcpServers\": {\"chick\": {\"command\": \"${BINARY}\", \"args\": [\"--stdio\"]}}}${RESET}\n"
+printf "  ${DIM}{\"mcpServers\": {\"morning-glory\": {\"command\": \"${BINARY}\", \"args\": [\"--stdio\"]}}}${RESET}\n"
 printf "\n"
 
 info "Done. Run '${BINARY}' to start."

@@ -9,8 +9,8 @@ import (
 	"strings"
 	"time"
 
-	"chick/internal/models"
-	"chick/internal/notifications"
+	"morning-glory/internal/models"
+	"morning-glory/internal/notifications"
 )
 
 func parseID(s string) uint {

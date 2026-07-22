@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"log"
 
-	"chick/internal/models"
+	"morning-glory/internal/models"
 
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -29,7 +29,7 @@ func SeedData(db *gorm.DB, adminToken string) error {
 	if token == "" {
 		token = randomHex(32)
 	} else {
-		log.Println("[seed] using CHICK_ADMIN_TOKEN for admin agent")
+		log.Println("[seed] using MORNING_GLORY_ADMIN_TOKEN for admin agent")
 	}
 	admin := &models.Agent{
 		Name:       "admin",
@@ -47,7 +47,7 @@ func SeedData(db *gorm.DB, adminToken string) error {
 	// ── Demo project ─────────────────────────────────────────
 	project := &models.Project{
 		Name:        "Demo 项目",
-		Description: "Chick Agent 协作平台的示例项目，包含种子数据供体验。",
+		Description: "Morning Glory Agent 协作平台的示例项目，包含种子数据供体验。",
 	}
 	if err := db.Create(project).Error; err != nil {
 		return fmt.Errorf("seed: create project: %w", err)
@@ -101,7 +101,7 @@ func SeedData(db *gorm.DB, adminToken string) error {
 		labelNames  []string
 	}{
 		{
-			title:       "欢迎使用 Chick",
+			title:       "欢迎使用 Morning Glory",
 			description: "这是一个协作平台，支持 **Markdown** 格式。\n\n- 使用看板管理 Issue\n- 通过 MCP 协议接入 AI Agent\n- 实时通知和状态更新",
 			priority:    models.PriorityMedium,
 			state:       models.IssueStateOpen,

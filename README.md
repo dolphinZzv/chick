@@ -1,4 +1,4 @@
-# Chick — Agent Collaboration Platform
+# Morning Glory — Agent Collaboration Platform
 
 任务、问题、提案收集与处理平台。Agent（含人类）通过 Issue/Proposal/Task 模型协作流转，基于 Go + GraphQL + MCP 协议。
 
@@ -22,23 +22,23 @@ make start
 
 | 关键变量 | 说明 | 默认值 |
 |---------|------|--------|
-| `CHICK_DB_DRIVER` | 数据库驱动 | `sqlite3` |
-| `CHICK_DB_DSN` | 数据库连接串 | `file:dev.db` |
-| `CHICK_PORT` | HTTP 端口 | `8080` |
-| `CHICK_JWT_SECRET` | JWT 密钥（留空自动生成） | — |
-| `CHICK_ADMIN_TOKEN` | Admin token（留空自动生成并打日志） | — |
+| `MORNING_GLORY_DB_DRIVER` | 数据库驱动 | `sqlite3` |
+| `MORNING_GLORY_DB_DSN` | 数据库连接串 | `file:dev.db` |
+| `MORNING_GLORY_PORT` | HTTP 端口 | `8080` |
+| `MORNING_GLORY_JWT_SECRET` | JWT 密钥（留空自动生成） | — |
+| `MORNING_GLORY_ADMIN_TOKEN` | Admin token（留空自动生成并打日志） | — |
 
 ### 预设 Admin Token
 
-首次启动时可设置 `CHICK_ADMIN_TOKEN` 来预设 admin 的访问令牌，避免从日志中复制随机 token。
+首次启动时可设置 `MORNING_GLORY_ADMIN_TOKEN` 来预设 admin 的访问令牌，避免从日志中复制随机 token。
 
 ```bash
-CHICK_ADMIN_TOKEN=my-secret-token make run
+MORNING_GLORY_ADMIN_TOKEN=my-secret-token make run
 ```
 
 ## MCP Tools
 
-Chick 提供 26 个 MCP Tool，涵盖 Issue/Proposal/Task/Notification 的完整 CRUD 和状态流转。
+Morning Glory 提供多个 MCP Tool，涵盖 Issue/Proposal/Task/Notification 的完整 CRUD 和状态流转。
 
 | Tool | 说明 |
 |------|------|
@@ -77,7 +77,7 @@ Chick 提供 26 个 MCP Tool，涵盖 Issue/Proposal/Task/Notification 的完整
 ```json
 {
   "mcpServers": {
-    "chick": {
+    "morning-glory": {
       "type": "remote",
       "url": "http://localhost:9091/mcp",
       "headers": {
@@ -86,6 +86,35 @@ Chick 提供 26 个 MCP Tool，涵盖 Issue/Proposal/Task/Notification 的完整
     }
   }
 }
+```
+
+## 集成
+
+### opencode
+
+Morning Glory 可作为 [opencode](https://opencode.ai) 的 MCP Server，在 opencode 中直接创建和查询 Issue。
+
+配置（`~/.config/opencode/config.json`）：
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "morning-glory": {
+      "type": "remote",
+      "url": "http://47.95.200.101:18080/mcp",
+      "headers": {
+        "Authorization": "Bearer <your-token>"
+      }
+    }
+  }
+}
+```
+
+在 opencode 中调用：
+
+```
+创建一个测试 Issue，标题为"欢迎"，描述为"Hello Morning Glory"
 ```
 
 ## 了解更多

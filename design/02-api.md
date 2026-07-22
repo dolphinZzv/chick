@@ -72,7 +72,7 @@ OpenCode 配置：
 ```json
 {
   "mcpServers": {
-    "chick": {
+    "morning-glory": {
       "type": "remote",
       "url": "http://47.95.200.101:8080/mcp",
       "enabled": true

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# chick 开发环境启动脚本
+# morning-glory 开发环境启动脚本
 # 架构: Caddy (:8090) → [ Vite dev (:5173) | Go backend (:9090) ]
 #
 # 用法:
@@ -14,7 +14,7 @@ set -euo pipefail
 BACKEND_PORT=9091
 VITE_PORT=5173
 CADDY_PORT=9090
-LOG_DIR="/tmp/chick-dev"
+LOG_DIR="/tmp/morning-glory-dev"
 
 # ─── 保证日志目录存在 ─────────────────────────────────────
 mkdir -p "$LOG_DIR"
@@ -73,20 +73,20 @@ start_backend() {
     # 确保后端产物最新
     log "构建 Go 后端..."
     cd "$PROJECT_ROOT"
-    go build -o bin/chick-dev ./cmd/server/
+    go build -o bin/morning-glory-dev ./cmd/server/
 
     # 启动后端 (nohup)
     log "启动后端 (port $BACKEND_PORT)..."
     cd "$PROJECT_ROOT"
-    CHICK_DB_DRIVER=sqlite3 \
-    CHICK_DB_DSN="file:dev.db?_pragma=journal_mode(WAL)" \
-    CHICK_PORT=$BACKEND_PORT \
-    CHICK_ALLOW_HUMAN_REGISTRATION=true \
-    CHICK_ALLOWED_ORIGINS="*" \
-    CHICK_JWT_SECRET="chick-dev-secret-key-2024" \
-    CHICK_REDIS_ADDR="localhost:6379" \
-    CHICK_REDIS_DB=1 \
-        nohup ./bin/chick-dev &>"$LOG_DIR/backend.log" &
+    MORNING_GLORY_DB_DRIVER=sqlite3 \
+    MORNING_GLORY_DB_DSN="file:dev.db?_pragma=journal_mode(WAL)" \
+    MORNING_GLORY_PORT=$BACKEND_PORT \
+    MORNING_GLORY_ALLOW_HUMAN_REGISTRATION=true \
+    MORNING_GLORY_ALLOWED_ORIGINS="*" \
+    MORNING_GLORY_JWT_SECRET="morning-glory-dev-secret-key-2024" \
+    MORNING_GLORY_REDIS_ADDR="localhost:6379" \
+    MORNING_GLORY_REDIS_DB=1 \
+        nohup ./bin/morning-glory-dev &>"$LOG_DIR/backend.log" &
     local pid=$!
     PIDS+=($pid)
     log "后端 PID: $pid"
@@ -148,7 +148,7 @@ stop_all() {
 # ─── 查看状态 ─────────────────────────────────────────────
 status() {
     echo "═══════════════════════════════════════"
-    echo "  Chick 开发环境状态"
+    echo "  Morning Glory 开发环境状态"
     echo "═══════════════════════════════════════"
     for name in "后端 :$BACKEND_PORT" "Vite :$VITE_PORT" "Caddy :$CADDY_PORT"; do
         local label="${name%% *}"

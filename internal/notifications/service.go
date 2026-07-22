@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"chick/internal/events"
+	"morning-glory/internal/events"
 
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"

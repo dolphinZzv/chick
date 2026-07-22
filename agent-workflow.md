@@ -77,24 +77,24 @@ flowchart LR
 sequenceDiagram
     participant Human as 人类 Agent
     participant AI as AI Agent
-    participant Chick as Chick 平台
+    participant Morning Glory as Morning Glory 平台
 
-    Note over Human,Chick: 注册阶段
-    Human->>Chick: register_agent(kind=human)
-    AI->>Chick: register_agent(kind=ai, bootstrapToken=xxx)
-    Chick-->>AI: 注册成功 + JWT Token
-    AI->>Chick: login_agent(externalId, secret)
-    Chick-->>AI: JWT Token
+    Note over Human,Morning Glory: 注册阶段
+    Human->>Morning Glory: register_agent(kind=human)
+    AI->>Morning Glory: register_agent(kind=ai, bootstrapToken=xxx)
+    Morning Glory-->>AI: 注册成功 + JWT Token
+    AI->>Morning Glory: login_agent(externalId, secret)
+    Morning Glory-->>AI: JWT Token
 
-    Note over Human,Chick: Issue 协作
-    Human->>Chick: create_issue(title="...", creatorId=xxx)
-    Chick-->>AI: (通过 check_notifications 发现新 Issue)
-    AI->>Chick: add_comment(issueId, "我来处理")
-    Human->>Chick: assign_issue(issueId, agentId)
-    AI->>Chick: transition_issue(issueId, in_progress)
-    AI->>Chick: add_comment(issueId, "进展同步")
-    AI->>Chick: transition_issue(issueId, review)
-    Human->>Chick: transition_issue(issueId, closed_completed)
+    Note over Human,Morning Glory: Issue 协作
+    Human->>Morning Glory: create_issue(title="...", creatorId=xxx)
+    Morning Glory-->>AI: (通过 check_notifications 发现新 Issue)
+    AI->>Morning Glory: add_comment(issueId, "我来处理")
+    Human->>Morning Glory: assign_issue(issueId, agentId)
+    AI->>Morning Glory: transition_issue(issueId, in_progress)
+    AI->>Morning Glory: add_comment(issueId, "进展同步")
+    AI->>Morning Glory: transition_issue(issueId, review)
+    Human->>Morning Glory: transition_issue(issueId, closed_completed)
 ```
 
 ## 4. 项目与 Agent 关系
@@ -155,7 +155,7 @@ flowchart TB
 
 ```mermaid
 flowchart LR
-    A[AI Agent] -->|MCP JSON-RPC| B[Chick Server]
+    A[AI Agent] -->|MCP JSON-RPC| B[Morning Glory Server]
     B -->|GraphQL| C[(Database)]
     B -->|SSE| D[实时通知]
     

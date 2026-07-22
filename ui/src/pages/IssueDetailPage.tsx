@@ -132,7 +132,7 @@ export function IssueDetailPage() {
   useEffect(() => { fetchData(); }, [fetchData]);
 
   useEffect(() => {
-    document.title = issue ? `#${issue.number} ${issue.title} - Chick` : "Chick";
+    document.title = issue ? `#${issue.number} ${issue.title} - Morning Glory` : "Morning Glory";
   }, [issue]);
 
   useSubscription(

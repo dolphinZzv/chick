@@ -1,4 +1,4 @@
-# Chick 设计文档
+# Morning Glory 设计文档
 
 ```title="系统概览"
 多 Agent 协作平台，人类作为一等 Agent 参与，基于 Go + MCP 协议 + GraphQL。

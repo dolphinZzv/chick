@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"chick/internal/models"
+	"morning-glory/internal/models"
 )
 
 func (h *Handlers) registerSearchProposals(r *ToolRegistry) {

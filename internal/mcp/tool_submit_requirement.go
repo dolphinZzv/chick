@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"chick/internal/models"
-	"chick/internal/service"
+	"morning-glory/internal/models"
+	"morning-glory/internal/service"
 )
 
 func (h *Handlers) registerSubmitRequirement(r *ToolRegistry) {

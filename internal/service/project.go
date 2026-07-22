@@ -3,8 +3,8 @@ package service
 import (
 	"fmt"
 
-	"chick/internal/models"
-	"chick/internal/repository"
+	"morning-glory/internal/models"
+	"morning-glory/internal/repository"
 )
 
 type ProjectService struct {

@@ -5,10 +5,10 @@ import (
 	"log"
 	"time"
 
-	"chick/internal/events"
-	"chick/internal/models"
-	"chick/internal/repository"
-	gormrepo "chick/internal/repository/gorm"
+	"morning-glory/internal/events"
+	"morning-glory/internal/models"
+	"morning-glory/internal/repository"
+	gormrepo "morning-glory/internal/repository/gorm"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"

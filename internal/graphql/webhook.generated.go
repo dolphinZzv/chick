@@ -124,7 +124,7 @@ func (ec *executionContext) _Webhook_agent(ctx context.Context, field graphql.Co
 			return obj.Agent, nil
 		},
 		nil,
-		ec.marshalNAgent2ᚖchickᚋinternalᚋgraphqlᚐAgent,
+		ec.marshalNAgent2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐAgent,
 		true,
 		true,
 	)
@@ -311,7 +311,7 @@ func (ec *executionContext) _WebhookPayload_webhook(ctx context.Context, field g
 			return obj.Webhook, nil
 		},
 		nil,
-		ec.marshalNWebhook2ᚖchickᚋinternalᚋgraphqlᚐWebhook,
+		ec.marshalNWebhook2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐWebhook,
 		true,
 		true,
 	)
@@ -511,11 +511,11 @@ func (ec *executionContext) _WebhookPayload(ctx context.Context, sel ast.Selecti
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) marshalNWebhook2ᚕᚖchickᚋinternalᚋgraphqlᚐWebhookᚄ(ctx context.Context, sel ast.SelectionSet, v []*Webhook) graphql.Marshaler {
+func (ec *executionContext) marshalNWebhook2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐWebhookᚄ(ctx context.Context, sel ast.SelectionSet, v []*Webhook) graphql.Marshaler {
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNWebhook2ᚖchickᚋinternalᚋgraphqlᚐWebhook(ctx, sel, v[i])
+		return ec.marshalNWebhook2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐWebhook(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -527,7 +527,7 @@ func (ec *executionContext) marshalNWebhook2ᚕᚖchickᚋinternalᚋgraphqlᚐW
 	return ret
 }
 
-func (ec *executionContext) marshalNWebhook2ᚖchickᚋinternalᚋgraphqlᚐWebhook(ctx context.Context, sel ast.SelectionSet, v *Webhook) graphql.Marshaler {
+func (ec *executionContext) marshalNWebhook2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐWebhook(ctx context.Context, sel ast.SelectionSet, v *Webhook) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -537,11 +537,11 @@ func (ec *executionContext) marshalNWebhook2ᚖchickᚋinternalᚋgraphqlᚐWebh
 	return ec._Webhook(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNWebhookPayload2chickᚋinternalᚋgraphqlᚐWebhookPayload(ctx context.Context, sel ast.SelectionSet, v WebhookPayload) graphql.Marshaler {
+func (ec *executionContext) marshalNWebhookPayload2morningᚑgloryᚋinternalᚋgraphqlᚐWebhookPayload(ctx context.Context, sel ast.SelectionSet, v WebhookPayload) graphql.Marshaler {
 	return ec._WebhookPayload(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNWebhookPayload2ᚖchickᚋinternalᚋgraphqlᚐWebhookPayload(ctx context.Context, sel ast.SelectionSet, v *WebhookPayload) graphql.Marshaler {
+func (ec *executionContext) marshalNWebhookPayload2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐWebhookPayload(ctx context.Context, sel ast.SelectionSet, v *WebhookPayload) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")

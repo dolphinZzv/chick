@@ -95,7 +95,7 @@ func (ec *executionContext) _Feedback_targetType(ctx context.Context, field grap
 			return obj.TargetType, nil
 		},
 		nil,
-		ec.marshalNFeedbackTargetType2chickᚋinternalᚋgraphqlᚐFeedbackTargetType,
+		ec.marshalNFeedbackTargetType2morningᚑgloryᚋinternalᚋgraphqlᚐFeedbackTargetType,
 		true,
 		true,
 	)
@@ -182,7 +182,7 @@ func (ec *executionContext) _Feedback_rating(ctx context.Context, field graphql.
 			return obj.Rating, nil
 		},
 		nil,
-		ec.marshalNFeedbackRating2chickᚋinternalᚋgraphqlᚐFeedbackRating,
+		ec.marshalNFeedbackRating2morningᚑgloryᚋinternalᚋgraphqlᚐFeedbackRating,
 		true,
 		true,
 	)
@@ -269,7 +269,7 @@ func (ec *executionContext) _Feedback_author(ctx context.Context, field graphql.
 			return obj.Author, nil
 		},
 		nil,
-		ec.marshalNAgent2ᚖchickᚋinternalᚋgraphqlᚐAgent,
+		ec.marshalNAgent2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐAgent,
 		true,
 		true,
 	)
@@ -422,15 +422,15 @@ func (ec *executionContext) _Feedback(ctx context.Context, sel ast.SelectionSet,
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) marshalNFeedback2chickᚋinternalᚋgraphqlᚐFeedback(ctx context.Context, sel ast.SelectionSet, v Feedback) graphql.Marshaler {
+func (ec *executionContext) marshalNFeedback2morningᚑgloryᚋinternalᚋgraphqlᚐFeedback(ctx context.Context, sel ast.SelectionSet, v Feedback) graphql.Marshaler {
 	return ec._Feedback(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNFeedback2ᚕᚖchickᚋinternalᚋgraphqlᚐFeedbackᚄ(ctx context.Context, sel ast.SelectionSet, v []*Feedback) graphql.Marshaler {
+func (ec *executionContext) marshalNFeedback2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐFeedbackᚄ(ctx context.Context, sel ast.SelectionSet, v []*Feedback) graphql.Marshaler {
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNFeedback2ᚖchickᚋinternalᚋgraphqlᚐFeedback(ctx, sel, v[i])
+		return ec.marshalNFeedback2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐFeedback(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -442,7 +442,7 @@ func (ec *executionContext) marshalNFeedback2ᚕᚖchickᚋinternalᚋgraphqlᚐ
 	return ret
 }
 
-func (ec *executionContext) marshalNFeedback2ᚖchickᚋinternalᚋgraphqlᚐFeedback(ctx context.Context, sel ast.SelectionSet, v *Feedback) graphql.Marshaler {
+func (ec *executionContext) marshalNFeedback2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐFeedback(ctx context.Context, sel ast.SelectionSet, v *Feedback) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -452,23 +452,23 @@ func (ec *executionContext) marshalNFeedback2ᚖchickᚋinternalᚋgraphqlᚐFee
 	return ec._Feedback(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNFeedbackRating2chickᚋinternalᚋgraphqlᚐFeedbackRating(ctx context.Context, v any) (FeedbackRating, error) {
+func (ec *executionContext) unmarshalNFeedbackRating2morningᚑgloryᚋinternalᚋgraphqlᚐFeedbackRating(ctx context.Context, v any) (FeedbackRating, error) {
 	var res FeedbackRating
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNFeedbackRating2chickᚋinternalᚋgraphqlᚐFeedbackRating(ctx context.Context, sel ast.SelectionSet, v FeedbackRating) graphql.Marshaler {
+func (ec *executionContext) marshalNFeedbackRating2morningᚑgloryᚋinternalᚋgraphqlᚐFeedbackRating(ctx context.Context, sel ast.SelectionSet, v FeedbackRating) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) unmarshalNFeedbackTargetType2chickᚋinternalᚋgraphqlᚐFeedbackTargetType(ctx context.Context, v any) (FeedbackTargetType, error) {
+func (ec *executionContext) unmarshalNFeedbackTargetType2morningᚑgloryᚋinternalᚋgraphqlᚐFeedbackTargetType(ctx context.Context, v any) (FeedbackTargetType, error) {
 	var res FeedbackTargetType
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNFeedbackTargetType2chickᚋinternalᚋgraphqlᚐFeedbackTargetType(ctx context.Context, sel ast.SelectionSet, v FeedbackTargetType) graphql.Marshaler {
+func (ec *executionContext) marshalNFeedbackTargetType2morningᚑgloryᚋinternalᚋgraphqlᚐFeedbackTargetType(ctx context.Context, sel ast.SelectionSet, v FeedbackTargetType) graphql.Marshaler {
 	return v
 }
 

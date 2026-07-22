@@ -109,7 +109,7 @@ func (ec *executionContext) field_Mutation_addComment_args(ctx context.Context, 
 		return nil, err
 	}
 	args["body"] = arg2
-	arg3, err := graphql.ProcessArgField(ctx, rawArgs, "contentType", ec.unmarshalNCommentContentType2chickᚋinternalᚋgraphqlᚐCommentContentType)
+	arg3, err := graphql.ProcessArgField(ctx, rawArgs, "contentType", ec.unmarshalNCommentContentType2morningᚑgloryᚋinternalᚋgraphqlᚐCommentContentType)
 	if err != nil {
 		return nil, err
 	}
@@ -151,7 +151,7 @@ func (ec *executionContext) field_Mutation_addProjectMember_args(ctx context.Con
 		return nil, err
 	}
 	args["agentID"] = arg1
-	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "role", ec.unmarshalNProjectRole2chickᚋinternalᚋgraphqlᚐProjectRole)
+	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "role", ec.unmarshalNProjectRole2morningᚑgloryᚋinternalᚋgraphqlᚐProjectRole)
 	if err != nil {
 		return nil, err
 	}
@@ -177,7 +177,7 @@ func (ec *executionContext) field_Mutation_addProposalComment_args(ctx context.C
 		return nil, err
 	}
 	args["body"] = arg2
-	arg3, err := graphql.ProcessArgField(ctx, rawArgs, "contentType", ec.unmarshalNCommentContentType2chickᚋinternalᚋgraphqlᚐCommentContentType)
+	arg3, err := graphql.ProcessArgField(ctx, rawArgs, "contentType", ec.unmarshalNCommentContentType2morningᚑgloryᚋinternalᚋgraphqlᚐCommentContentType)
 	if err != nil {
 		return nil, err
 	}
@@ -203,7 +203,7 @@ func (ec *executionContext) field_Mutation_addTaskComment_args(ctx context.Conte
 		return nil, err
 	}
 	args["body"] = arg2
-	arg3, err := graphql.ProcessArgField(ctx, rawArgs, "contentType", ec.unmarshalNCommentContentType2chickᚋinternalᚋgraphqlᚐCommentContentType)
+	arg3, err := graphql.ProcessArgField(ctx, rawArgs, "contentType", ec.unmarshalNCommentContentType2morningᚑgloryᚋinternalᚋgraphqlᚐCommentContentType)
 	if err != nil {
 		return nil, err
 	}
@@ -230,7 +230,7 @@ func (ec *executionContext) field_Mutation_assignTask_args(ctx context.Context, 
 func (ec *executionContext) field_Mutation_createFeedback_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "targetType", ec.unmarshalNFeedbackTargetType2chickᚋinternalᚋgraphqlᚐFeedbackTargetType)
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "targetType", ec.unmarshalNFeedbackTargetType2morningᚑgloryᚋinternalᚋgraphqlᚐFeedbackTargetType)
 	if err != nil {
 		return nil, err
 	}
@@ -245,7 +245,7 @@ func (ec *executionContext) field_Mutation_createFeedback_args(ctx context.Conte
 		return nil, err
 	}
 	args["authorID"] = arg2
-	arg3, err := graphql.ProcessArgField(ctx, rawArgs, "rating", ec.unmarshalNFeedbackRating2chickᚋinternalᚋgraphqlᚐFeedbackRating)
+	arg3, err := graphql.ProcessArgField(ctx, rawArgs, "rating", ec.unmarshalNFeedbackRating2morningᚑgloryᚋinternalᚋgraphqlᚐFeedbackRating)
 	if err != nil {
 		return nil, err
 	}
@@ -276,7 +276,7 @@ func (ec *executionContext) field_Mutation_createIssue_args(ctx context.Context,
 		return nil, err
 	}
 	args["description"] = arg2
-	arg3, err := graphql.ProcessArgField(ctx, rawArgs, "priority", ec.unmarshalNPriority2chickᚋinternalᚋgraphqlᚐPriority)
+	arg3, err := graphql.ProcessArgField(ctx, rawArgs, "priority", ec.unmarshalNPriority2morningᚑgloryᚋinternalᚋgraphqlᚐPriority)
 	if err != nil {
 		return nil, err
 	}
@@ -384,12 +384,12 @@ func (ec *executionContext) field_Mutation_createProjectAgent_args(ctx context.C
 		return nil, err
 	}
 	args["name"] = arg1
-	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "kind", ec.unmarshalNAgentKind2chickᚋinternalᚋgraphqlᚐAgentKind)
+	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "kind", ec.unmarshalNAgentKind2morningᚑgloryᚋinternalᚋgraphqlᚐAgentKind)
 	if err != nil {
 		return nil, err
 	}
 	args["kind"] = arg2
-	arg3, err := graphql.ProcessArgField(ctx, rawArgs, "role", ec.unmarshalOProjectRole2ᚖchickᚋinternalᚋgraphqlᚐProjectRole)
+	arg3, err := graphql.ProcessArgField(ctx, rawArgs, "role", ec.unmarshalOProjectRole2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐProjectRole)
 	if err != nil {
 		return nil, err
 	}
@@ -456,7 +456,7 @@ func (ec *executionContext) field_Mutation_createProposal_args(ctx context.Conte
 		return nil, err
 	}
 	args["description"] = arg2
-	arg3, err := graphql.ProcessArgField(ctx, rawArgs, "priority", ec.unmarshalNPriority2chickᚋinternalᚋgraphqlᚐPriority)
+	arg3, err := graphql.ProcessArgField(ctx, rawArgs, "priority", ec.unmarshalNPriority2morningᚑgloryᚋinternalᚋgraphqlᚐPriority)
 	if err != nil {
 		return nil, err
 	}
@@ -487,7 +487,7 @@ func (ec *executionContext) field_Mutation_createTask_args(ctx context.Context, 
 		return nil, err
 	}
 	args["description"] = arg2
-	arg3, err := graphql.ProcessArgField(ctx, rawArgs, "priority", ec.unmarshalOPriority2ᚖchickᚋinternalᚋgraphqlᚐPriority)
+	arg3, err := graphql.ProcessArgField(ctx, rawArgs, "priority", ec.unmarshalOPriority2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐPriority)
 	if err != nil {
 		return nil, err
 	}
@@ -677,7 +677,7 @@ func (ec *executionContext) field_Mutation_registerAgent_args(ctx context.Contex
 		return nil, err
 	}
 	args["name"] = arg0
-	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "kind", ec.unmarshalNAgentKind2chickᚋinternalᚋgraphqlᚐAgentKind)
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "kind", ec.unmarshalNAgentKind2morningᚑgloryᚋinternalᚋgraphqlᚐAgentKind)
 	if err != nil {
 		return nil, err
 	}
@@ -792,7 +792,7 @@ func (ec *executionContext) field_Mutation_transitionIssue_args(ctx context.Cont
 		return nil, err
 	}
 	args["id"] = arg0
-	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "newState", ec.unmarshalNIssueState2chickᚋinternalᚋgraphqlᚐIssueState)
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "newState", ec.unmarshalNIssueState2morningᚑgloryᚋinternalᚋgraphqlᚐIssueState)
 	if err != nil {
 		return nil, err
 	}
@@ -818,7 +818,7 @@ func (ec *executionContext) field_Mutation_transitionProposal_args(ctx context.C
 		return nil, err
 	}
 	args["id"] = arg0
-	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "newState", ec.unmarshalNProposalState2chickᚋinternalᚋgraphqlᚐProposalState)
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "newState", ec.unmarshalNProposalState2morningᚑgloryᚋinternalᚋgraphqlᚐProposalState)
 	if err != nil {
 		return nil, err
 	}
@@ -892,7 +892,7 @@ func (ec *executionContext) field_Mutation_updateAgentStatus_args(ctx context.Co
 		return nil, err
 	}
 	args["id"] = arg0
-	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "status", ec.unmarshalNAgentStatus2chickᚋinternalᚋgraphqlᚐAgentStatus)
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "status", ec.unmarshalNAgentStatus2morningᚑgloryᚋinternalᚋgraphqlᚐAgentStatus)
 	if err != nil {
 		return nil, err
 	}
@@ -929,7 +929,7 @@ func (ec *executionContext) field_Mutation_updateAssigneeState_args(ctx context.
 		return nil, err
 	}
 	args["agentID"] = arg1
-	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "state", ec.unmarshalNAssigneeState2chickᚋinternalᚋgraphqlᚐAssigneeState)
+	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "state", ec.unmarshalNAssigneeState2morningᚑgloryᚋinternalᚋgraphqlᚐAssigneeState)
 	if err != nil {
 		return nil, err
 	}
@@ -971,7 +971,7 @@ func (ec *executionContext) field_Mutation_updateIssue_args(ctx context.Context,
 		return nil, err
 	}
 	args["description"] = arg2
-	arg3, err := graphql.ProcessArgField(ctx, rawArgs, "priority", ec.unmarshalOPriority2ᚖchickᚋinternalᚋgraphqlᚐPriority)
+	arg3, err := graphql.ProcessArgField(ctx, rawArgs, "priority", ec.unmarshalOPriority2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐPriority)
 	if err != nil {
 		return nil, err
 	}
@@ -1063,7 +1063,7 @@ func (ec *executionContext) field_Mutation_updateMilestone_args(ctx context.Cont
 		return nil, err
 	}
 	args["dueDate"] = arg3
-	arg4, err := graphql.ProcessArgField(ctx, rawArgs, "state", ec.unmarshalOMilestoneState2ᚖchickᚋinternalᚋgraphqlᚐMilestoneState)
+	arg4, err := graphql.ProcessArgField(ctx, rawArgs, "state", ec.unmarshalOMilestoneState2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐMilestoneState)
 	if err != nil {
 		return nil, err
 	}
@@ -1131,7 +1131,7 @@ func (ec *executionContext) field_Mutation_updateProjectMember_args(ctx context.
 		return nil, err
 	}
 	args["agentID"] = arg1
-	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "role", ec.unmarshalNProjectRole2chickᚋinternalᚋgraphqlᚐProjectRole)
+	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "role", ec.unmarshalNProjectRole2morningᚑgloryᚋinternalᚋgraphqlᚐProjectRole)
 	if err != nil {
 		return nil, err
 	}
@@ -1178,7 +1178,7 @@ func (ec *executionContext) field_Mutation_updateProposal_args(ctx context.Conte
 		return nil, err
 	}
 	args["description"] = arg2
-	arg3, err := graphql.ProcessArgField(ctx, rawArgs, "priority", ec.unmarshalOPriority2ᚖchickᚋinternalᚋgraphqlᚐPriority)
+	arg3, err := graphql.ProcessArgField(ctx, rawArgs, "priority", ec.unmarshalOPriority2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐPriority)
 	if err != nil {
 		return nil, err
 	}
@@ -1204,12 +1204,12 @@ func (ec *executionContext) field_Mutation_updateTask_args(ctx context.Context, 
 		return nil, err
 	}
 	args["description"] = arg2
-	arg3, err := graphql.ProcessArgField(ctx, rawArgs, "priority", ec.unmarshalOPriority2ᚖchickᚋinternalᚋgraphqlᚐPriority)
+	arg3, err := graphql.ProcessArgField(ctx, rawArgs, "priority", ec.unmarshalOPriority2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐPriority)
 	if err != nil {
 		return nil, err
 	}
 	args["priority"] = arg3
-	arg4, err := graphql.ProcessArgField(ctx, rawArgs, "state", ec.unmarshalOTaskState2ᚖchickᚋinternalᚋgraphqlᚐTaskState)
+	arg4, err := graphql.ProcessArgField(ctx, rawArgs, "state", ec.unmarshalOTaskState2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐTaskState)
 	if err != nil {
 		return nil, err
 	}
@@ -1236,7 +1236,7 @@ func (ec *executionContext) _Mutation_registerAgent(ctx context.Context, field g
 			return ec.Resolvers.Mutation().RegisterAgent(ctx, fc.Args["name"].(string), fc.Args["kind"].(AgentKind), fc.Args["externalID"].(string), fc.Args["secret"].(string), fc.Args["capabilities"].([]string), fc.Args["deviceInfo"].(*string), fc.Args["modelInfo"].(*string))
 		},
 		nil,
-		ec.marshalNRegisterResult2ᚖchickᚋinternalᚋgraphqlᚐRegisterResult,
+		ec.marshalNRegisterResult2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐRegisterResult,
 		true,
 		true,
 	)
@@ -1283,7 +1283,7 @@ func (ec *executionContext) _Mutation_loginAgent(ctx context.Context, field grap
 			return ec.Resolvers.Mutation().LoginAgent(ctx, fc.Args["externalID"].(string), fc.Args["secret"].(string))
 		},
 		nil,
-		ec.marshalNLoginResult2ᚖchickᚋinternalᚋgraphqlᚐLoginResult,
+		ec.marshalNLoginResult2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐLoginResult,
 		true,
 		true,
 	)
@@ -1330,7 +1330,7 @@ func (ec *executionContext) _Mutation_updateAgentStatus(ctx context.Context, fie
 			return ec.Resolvers.Mutation().UpdateAgentStatus(ctx, fc.Args["id"].(string), fc.Args["status"].(AgentStatus))
 		},
 		nil,
-		ec.marshalNAgent2ᚖchickᚋinternalᚋgraphqlᚐAgent,
+		ec.marshalNAgent2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐAgent,
 		true,
 		true,
 	)
@@ -1413,7 +1413,7 @@ func (ec *executionContext) _Mutation_updateAgentDisabled(ctx context.Context, f
 			return ec.Resolvers.Mutation().UpdateAgentDisabled(ctx, fc.Args["id"].(string), fc.Args["disabled"].(bool))
 		},
 		nil,
-		ec.marshalNAgent2ᚖchickᚋinternalᚋgraphqlᚐAgent,
+		ec.marshalNAgent2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐAgent,
 		true,
 		true,
 	)
@@ -1496,7 +1496,7 @@ func (ec *executionContext) _Mutation_updateAgent(ctx context.Context, field gra
 			return ec.Resolvers.Mutation().UpdateAgent(ctx, fc.Args["id"].(string), fc.Args["systemPrompt"].(*string))
 		},
 		nil,
-		ec.marshalNAgent2ᚖchickᚋinternalᚋgraphqlᚐAgent,
+		ec.marshalNAgent2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐAgent,
 		true,
 		true,
 	)
@@ -1620,7 +1620,7 @@ func (ec *executionContext) _Mutation_updateAgentAllowedCIDRs(ctx context.Contex
 			return ec.Resolvers.Mutation().UpdateAgentAllowedCIDRs(ctx, fc.Args["id"].(string), fc.Args["allowedCIDRs"].([]string))
 		},
 		nil,
-		ec.marshalNAgent2ᚖchickᚋinternalᚋgraphqlᚐAgent,
+		ec.marshalNAgent2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐAgent,
 		true,
 		true,
 	)
@@ -1703,7 +1703,7 @@ func (ec *executionContext) _Mutation_createProjectAgent(ctx context.Context, fi
 			return ec.Resolvers.Mutation().CreateProjectAgent(ctx, fc.Args["projectID"].(string), fc.Args["name"].(string), fc.Args["kind"].(AgentKind), fc.Args["role"].(*ProjectRole), fc.Args["externalID"].(*string), fc.Args["secret"].(*string), fc.Args["capabilities"].([]string), fc.Args["deviceInfo"].(*string), fc.Args["modelInfo"].(*string))
 		},
 		nil,
-		ec.marshalNRegisterResult2ᚖchickᚋinternalᚋgraphqlᚐRegisterResult,
+		ec.marshalNRegisterResult2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐRegisterResult,
 		true,
 		true,
 	)
@@ -1750,7 +1750,7 @@ func (ec *executionContext) _Mutation_createProject(ctx context.Context, field g
 			return ec.Resolvers.Mutation().CreateProject(ctx, fc.Args["name"].(string), fc.Args["description"].(*string))
 		},
 		nil,
-		ec.marshalNProject2ᚖchickᚋinternalᚋgraphqlᚐProject,
+		ec.marshalNProject2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐProject,
 		true,
 		true,
 	)
@@ -1815,7 +1815,7 @@ func (ec *executionContext) _Mutation_updateProject(ctx context.Context, field g
 			return ec.Resolvers.Mutation().UpdateProject(ctx, fc.Args["id"].(string), fc.Args["name"].(*string), fc.Args["description"].(*string))
 		},
 		nil,
-		ec.marshalNProject2ᚖchickᚋinternalᚋgraphqlᚐProject,
+		ec.marshalNProject2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐProject,
 		true,
 		true,
 	)
@@ -1880,7 +1880,7 @@ func (ec *executionContext) _Mutation_updateProjectConfig(ctx context.Context, f
 			return ec.Resolvers.Mutation().UpdateProjectConfig(ctx, fc.Args["id"].(string), fc.Args["allowCreatorTransition"].(*bool), fc.Args["requireCreatorCloseApproval"].(*bool))
 		},
 		nil,
-		ec.marshalNProject2ᚖchickᚋinternalᚋgraphqlᚐProject,
+		ec.marshalNProject2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐProject,
 		true,
 		true,
 	)
@@ -1986,7 +1986,7 @@ func (ec *executionContext) _Mutation_addProjectMember(ctx context.Context, fiel
 			return ec.Resolvers.Mutation().AddProjectMember(ctx, fc.Args["projectID"].(string), fc.Args["agentID"].(string), fc.Args["role"].(ProjectRole))
 		},
 		nil,
-		ec.marshalNProjectMember2ᚖchickᚋinternalᚋgraphqlᚐProjectMember,
+		ec.marshalNProjectMember2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐProjectMember,
 		true,
 		true,
 	)
@@ -2041,7 +2041,7 @@ func (ec *executionContext) _Mutation_updateProjectMember(ctx context.Context, f
 			return ec.Resolvers.Mutation().UpdateProjectMember(ctx, fc.Args["projectID"].(string), fc.Args["agentID"].(string), fc.Args["role"].(ProjectRole))
 		},
 		nil,
-		ec.marshalNProjectMember2ᚖchickᚋinternalᚋgraphqlᚐProjectMember,
+		ec.marshalNProjectMember2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐProjectMember,
 		true,
 		true,
 	)
@@ -2137,7 +2137,7 @@ func (ec *executionContext) _Mutation_createIssue(ctx context.Context, field gra
 			return ec.Resolvers.Mutation().CreateIssue(ctx, fc.Args["projectID"].(string), fc.Args["title"].(string), fc.Args["description"].(*string), fc.Args["priority"].(Priority), fc.Args["assigneeIDs"].([]string), fc.Args["labelIDs"].([]string), fc.Args["milestoneId"].(*string), fc.Args["environment"].(*string), fc.Args["branch"].(*string), fc.Args["links"].([]string))
 		},
 		nil,
-		ec.marshalNIssue2ᚖchickᚋinternalᚋgraphqlᚐIssue,
+		ec.marshalNIssue2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐIssue,
 		true,
 		true,
 	)
@@ -2230,7 +2230,7 @@ func (ec *executionContext) _Mutation_updateIssue(ctx context.Context, field gra
 			return ec.Resolvers.Mutation().UpdateIssue(ctx, fc.Args["id"].(string), fc.Args["title"].(*string), fc.Args["description"].(*string), fc.Args["priority"].(*Priority), fc.Args["dueDate"].(*time.Time), fc.Args["milestoneId"].(*string), fc.Args["environment"].(*string), fc.Args["branch"].(*string), fc.Args["links"].([]string), fc.Args["startedAt"].(*time.Time), fc.Args["completedAt"].(*time.Time), fc.Args["difficulty"].(*int32))
 		},
 		nil,
-		ec.marshalNIssue2ᚖchickᚋinternalᚋgraphqlᚐIssue,
+		ec.marshalNIssue2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐIssue,
 		true,
 		true,
 	)
@@ -2364,7 +2364,7 @@ func (ec *executionContext) _Mutation_transitionIssue(ctx context.Context, field
 			return ec.Resolvers.Mutation().TransitionIssue(ctx, fc.Args["id"].(string), fc.Args["newState"].(IssueState), fc.Args["actorID"].(string), fc.Args["note"].(*string))
 		},
 		nil,
-		ec.marshalNIssue2ᚖchickᚋinternalᚋgraphqlᚐIssue,
+		ec.marshalNIssue2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐIssue,
 		true,
 		true,
 	)
@@ -2457,7 +2457,7 @@ func (ec *executionContext) _Mutation_addAssignee(ctx context.Context, field gra
 			return ec.Resolvers.Mutation().AddAssignee(ctx, fc.Args["issueID"].(string), fc.Args["agentID"].(string))
 		},
 		nil,
-		ec.marshalNIssueAssignee2ᚖchickᚋinternalᚋgraphqlᚐIssueAssignee,
+		ec.marshalNIssueAssignee2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐIssueAssignee,
 		true,
 		true,
 	)
@@ -2555,7 +2555,7 @@ func (ec *executionContext) _Mutation_updateAssigneeState(ctx context.Context, f
 			return ec.Resolvers.Mutation().UpdateAssigneeState(ctx, fc.Args["issueID"].(string), fc.Args["agentID"].(string), fc.Args["state"].(AssigneeState))
 		},
 		nil,
-		ec.marshalNIssueAssignee2ᚖchickᚋinternalᚋgraphqlᚐIssueAssignee,
+		ec.marshalNIssueAssignee2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐIssueAssignee,
 		true,
 		true,
 	)
@@ -2612,7 +2612,7 @@ func (ec *executionContext) _Mutation_addComment(ctx context.Context, field grap
 			return ec.Resolvers.Mutation().AddComment(ctx, fc.Args["issueID"].(string), fc.Args["authorID"].(string), fc.Args["body"].(string), fc.Args["contentType"].(CommentContentType), fc.Args["parentID"].(*string))
 		},
 		nil,
-		ec.marshalNComment2ᚖchickᚋinternalᚋgraphqlᚐComment,
+		ec.marshalNComment2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐComment,
 		true,
 		true,
 	)
@@ -2683,7 +2683,7 @@ func (ec *executionContext) _Mutation_addProposalComment(ctx context.Context, fi
 			return ec.Resolvers.Mutation().AddProposalComment(ctx, fc.Args["proposalID"].(string), fc.Args["authorID"].(string), fc.Args["body"].(string), fc.Args["contentType"].(CommentContentType))
 		},
 		nil,
-		ec.marshalNComment2ᚖchickᚋinternalᚋgraphqlᚐComment,
+		ec.marshalNComment2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐComment,
 		true,
 		true,
 	)
@@ -2754,7 +2754,7 @@ func (ec *executionContext) _Mutation_addTaskComment(ctx context.Context, field 
 			return ec.Resolvers.Mutation().AddTaskComment(ctx, fc.Args["taskID"].(string), fc.Args["authorID"].(string), fc.Args["body"].(string), fc.Args["contentType"].(CommentContentType))
 		},
 		nil,
-		ec.marshalNComment2ᚖchickᚋinternalᚋgraphqlᚐComment,
+		ec.marshalNComment2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐComment,
 		true,
 		true,
 	)
@@ -2825,7 +2825,7 @@ func (ec *executionContext) _Mutation_updateComment(ctx context.Context, field g
 			return ec.Resolvers.Mutation().UpdateComment(ctx, fc.Args["id"].(string), fc.Args["body"].(string))
 		},
 		nil,
-		ec.marshalNComment2ᚖchickᚋinternalᚋgraphqlᚐComment,
+		ec.marshalNComment2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐComment,
 		true,
 		true,
 	)
@@ -2937,7 +2937,7 @@ func (ec *executionContext) _Mutation_addLabels(ctx context.Context, field graph
 			return ec.Resolvers.Mutation().AddLabels(ctx, fc.Args["issueID"].(string), fc.Args["labelIDs"].([]string))
 		},
 		nil,
-		ec.marshalNIssue2ᚖchickᚋinternalᚋgraphqlᚐIssue,
+		ec.marshalNIssue2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐIssue,
 		true,
 		true,
 	)
@@ -3030,7 +3030,7 @@ func (ec *executionContext) _Mutation_removeLabels(ctx context.Context, field gr
 			return ec.Resolvers.Mutation().RemoveLabels(ctx, fc.Args["issueID"].(string), fc.Args["labelIDs"].([]string))
 		},
 		nil,
-		ec.marshalNIssue2ᚖchickᚋinternalᚋgraphqlᚐIssue,
+		ec.marshalNIssue2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐIssue,
 		true,
 		true,
 	)
@@ -3123,7 +3123,7 @@ func (ec *executionContext) _Mutation_createLabel(ctx context.Context, field gra
 			return ec.Resolvers.Mutation().CreateLabel(ctx, fc.Args["projectID"].(string), fc.Args["name"].(string), fc.Args["color"].(*string), fc.Args["capability"].(*string), fc.Args["group"].(*string))
 		},
 		nil,
-		ec.marshalNLabel2ᚖchickᚋinternalᚋgraphqlᚐLabel,
+		ec.marshalNLabel2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐLabel,
 		true,
 		true,
 	)
@@ -3182,7 +3182,7 @@ func (ec *executionContext) _Mutation_updateLabel(ctx context.Context, field gra
 			return ec.Resolvers.Mutation().UpdateLabel(ctx, fc.Args["id"].(string), fc.Args["name"].(*string), fc.Args["color"].(*string))
 		},
 		nil,
-		ec.marshalNLabel2ᚖchickᚋinternalᚋgraphqlᚐLabel,
+		ec.marshalNLabel2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐLabel,
 		true,
 		true,
 	)
@@ -3282,7 +3282,7 @@ func (ec *executionContext) _Mutation_createMilestone(ctx context.Context, field
 			return ec.Resolvers.Mutation().CreateMilestone(ctx, fc.Args["projectID"].(string), fc.Args["title"].(string), fc.Args["description"].(*string), fc.Args["dueDate"].(*time.Time))
 		},
 		nil,
-		ec.marshalNMilestone2ᚖchickᚋinternalᚋgraphqlᚐMilestone,
+		ec.marshalNMilestone2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐMilestone,
 		true,
 		true,
 	)
@@ -3343,7 +3343,7 @@ func (ec *executionContext) _Mutation_updateMilestone(ctx context.Context, field
 			return ec.Resolvers.Mutation().UpdateMilestone(ctx, fc.Args["id"].(string), fc.Args["title"].(*string), fc.Args["description"].(*string), fc.Args["dueDate"].(*time.Time), fc.Args["state"].(*MilestoneState))
 		},
 		nil,
-		ec.marshalNMilestone2ᚖchickᚋinternalᚋgraphqlᚐMilestone,
+		ec.marshalNMilestone2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐMilestone,
 		true,
 		true,
 	)
@@ -3445,7 +3445,7 @@ func (ec *executionContext) _Mutation_createFeedback(ctx context.Context, field 
 			return ec.Resolvers.Mutation().CreateFeedback(ctx, fc.Args["targetType"].(FeedbackTargetType), fc.Args["targetID"].(string), fc.Args["authorID"].(string), fc.Args["rating"].(FeedbackRating), fc.Args["body"].(*string))
 		},
 		nil,
-		ec.marshalNFeedback2ᚖchickᚋinternalᚋgraphqlᚐFeedback,
+		ec.marshalNFeedback2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐFeedback,
 		true,
 		true,
 	)
@@ -3506,7 +3506,7 @@ func (ec *executionContext) _Mutation_createProposal(ctx context.Context, field 
 			return ec.Resolvers.Mutation().CreateProposal(ctx, fc.Args["projectID"].(string), fc.Args["title"].(string), fc.Args["description"].(*string), fc.Args["priority"].(Priority), fc.Args["labelIDs"].([]string))
 		},
 		nil,
-		ec.marshalNProposal2ᚖchickᚋinternalᚋgraphqlᚐProposal,
+		ec.marshalNProposal2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐProposal,
 		true,
 		true,
 	)
@@ -3595,7 +3595,7 @@ func (ec *executionContext) _Mutation_updateProposal(ctx context.Context, field 
 			return ec.Resolvers.Mutation().UpdateProposal(ctx, fc.Args["id"].(string), fc.Args["title"].(*string), fc.Args["description"].(*string), fc.Args["priority"].(*Priority))
 		},
 		nil,
-		ec.marshalNProposal2ᚖchickᚋinternalᚋgraphqlᚐProposal,
+		ec.marshalNProposal2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐProposal,
 		true,
 		true,
 	)
@@ -3684,7 +3684,7 @@ func (ec *executionContext) _Mutation_transitionProposal(ctx context.Context, fi
 			return ec.Resolvers.Mutation().TransitionProposal(ctx, fc.Args["id"].(string), fc.Args["newState"].(ProposalState), fc.Args["actorID"].(string), fc.Args["note"].(*string))
 		},
 		nil,
-		ec.marshalNProposal2ᚖchickᚋinternalᚋgraphqlᚐProposal,
+		ec.marshalNProposal2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐProposal,
 		true,
 		true,
 	)
@@ -3773,7 +3773,7 @@ func (ec *executionContext) _Mutation_reviewProposal(ctx context.Context, field 
 			return ec.Resolvers.Mutation().ReviewProposal(ctx, fc.Args["id"].(string), fc.Args["reviewerID"].(string), fc.Args["approved"].(bool), fc.Args["note"].(*string))
 		},
 		nil,
-		ec.marshalNProposal2ᚖchickᚋinternalᚋgraphqlᚐProposal,
+		ec.marshalNProposal2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐProposal,
 		true,
 		true,
 	)
@@ -3903,7 +3903,7 @@ func (ec *executionContext) _Mutation_createTask(ctx context.Context, field grap
 			return ec.Resolvers.Mutation().CreateTask(ctx, fc.Args["proposalID"].(string), fc.Args["title"].(string), fc.Args["description"].(*string), fc.Args["priority"].(*Priority), fc.Args["assigneeID"].(*string))
 		},
 		nil,
-		ec.marshalNTask2ᚖchickᚋinternalᚋgraphqlᚐTask,
+		ec.marshalNTask2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐTask,
 		true,
 		true,
 	)
@@ -3978,7 +3978,7 @@ func (ec *executionContext) _Mutation_updateTask(ctx context.Context, field grap
 			return ec.Resolvers.Mutation().UpdateTask(ctx, fc.Args["id"].(string), fc.Args["title"].(*string), fc.Args["description"].(*string), fc.Args["priority"].(*Priority), fc.Args["state"].(*TaskState))
 		},
 		nil,
-		ec.marshalNTask2ᚖchickᚋinternalᚋgraphqlᚐTask,
+		ec.marshalNTask2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐTask,
 		true,
 		true,
 	)
@@ -4053,7 +4053,7 @@ func (ec *executionContext) _Mutation_assignTask(ctx context.Context, field grap
 			return ec.Resolvers.Mutation().AssignTask(ctx, fc.Args["id"].(string), fc.Args["assigneeID"].(string))
 		},
 		nil,
-		ec.marshalNTask2ᚖchickᚋinternalᚋgraphqlᚐTask,
+		ec.marshalNTask2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐTask,
 		true,
 		true,
 	)
@@ -4128,7 +4128,7 @@ func (ec *executionContext) _Mutation_linkIssuesToTask(ctx context.Context, fiel
 			return ec.Resolvers.Mutation().LinkIssuesToTask(ctx, fc.Args["taskID"].(string), fc.Args["issueIDs"].([]string))
 		},
 		nil,
-		ec.marshalNTask2ᚖchickᚋinternalᚋgraphqlᚐTask,
+		ec.marshalNTask2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐTask,
 		true,
 		true,
 	)
@@ -4203,7 +4203,7 @@ func (ec *executionContext) _Mutation_unlinkIssueFromTask(ctx context.Context, f
 			return ec.Resolvers.Mutation().UnlinkIssueFromTask(ctx, fc.Args["taskID"].(string), fc.Args["issueID"].(string))
 		},
 		nil,
-		ec.marshalNTask2ᚖchickᚋinternalᚋgraphqlᚐTask,
+		ec.marshalNTask2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐTask,
 		true,
 		true,
 	)
@@ -4319,7 +4319,7 @@ func (ec *executionContext) _Mutation_updateNotificationSetting(ctx context.Cont
 			return ec.Resolvers.Mutation().UpdateNotificationSetting(ctx, fc.Args["agentID"].(string), fc.Args["notificationType"].(string), fc.Args["enabled"].(bool), fc.Args["channel"].(*string))
 		},
 		nil,
-		ec.marshalNNotificationSetting2ᚖchickᚋinternalᚋgraphqlᚐNotificationSetting,
+		ec.marshalNNotificationSetting2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐNotificationSetting,
 		true,
 		true,
 	)
@@ -4372,7 +4372,7 @@ func (ec *executionContext) _Mutation_markNotificationRead(ctx context.Context, 
 			return ec.Resolvers.Mutation().MarkNotificationRead(ctx, fc.Args["id"].(string))
 		},
 		nil,
-		ec.marshalNNotificationEvent2ᚖchickᚋinternalᚋgraphqlᚐNotificationEvent,
+		ec.marshalNNotificationEvent2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐNotificationEvent,
 		true,
 		true,
 	)
@@ -4478,7 +4478,7 @@ func (ec *executionContext) _Mutation_createWebhook(ctx context.Context, field g
 			return ec.Resolvers.Mutation().CreateWebhook(ctx, fc.Args["projectID"].(string), fc.Args["name"].(string))
 		},
 		nil,
-		ec.marshalNWebhookPayload2ᚖchickᚋinternalᚋgraphqlᚐWebhookPayload,
+		ec.marshalNWebhookPayload2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐWebhookPayload,
 		true,
 		true,
 	)

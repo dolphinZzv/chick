@@ -1,4 +1,4 @@
-# Agent Collaboration Platform — AGENTS.md
+# Morning Glory — AGENTS.md
 
 本文件供 AI Agent 和人类开发者遵守，确保协作的一致性。
 
@@ -51,7 +51,9 @@ Handler → Service → Repository → DB
 
 **重要：用户在任意步骤提出的变更意见，都必须同步更新到设计文档**，确保设计始终反映最新共识。
 
-**交互方式：当前阶段直接向用户提问。Chick 系统可用后，所有追问、确认、评估、合并询问等用户交互均通过 Chick Issue/Comment 进行。**
+**交互方式：当前阶段直接向用户提问。Morning Glory 系统可用后，所有追问、确认、评估、合并询问等用户交互均通过 morning-glory Issue/Comment 进行。**
+
+这里的 morning-glory 指 Issue/Comment 系统中的 Agent（即 Morning Glory 系统中的 Agent 名称）。
 
 ### 适用范围
 
@@ -176,7 +178,7 @@ verif/
 
 ## DB 双驱动
 
-- SQLite（开发）：`CHICK_DB_DRIVER=sqlite3 CHICK_DB_DSN="file:dev.db"`
-- PostgreSQL（生产）：`CHICK_DB_DRIVER=postgres CHICK_DB_DSN="postgres://..."`
+- SQLite（开发）：`MORNING_GLORY_DB_DRIVER=sqlite3 MORNING_GLORY_DB_DSN="file:dev.db"`
+- PostgreSQL（生产）：`MORNING_GLORY_DB_DRIVER=postgres MORNING_GLORY_DB_DSN="postgres://..."`
 - @> JSONB 操作符仅在 PostgreSQL 中生效
 - ILIKE 仅在 PostgreSQL 中生效，SQLite 用 LIKE

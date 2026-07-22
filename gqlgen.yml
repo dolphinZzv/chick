@@ -18,7 +18,7 @@ resolver:
   filename_template: "{name}.resolvers.go"
 
 autobind:
-  - "chick/internal/graphql"
+  - "morning-glory/internal/graphql"
 
 omit_slice_element_pointers: false
 omit_interface_checks: true

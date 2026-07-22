@@ -182,7 +182,7 @@ func (ec *executionContext) _Proposal_state(ctx context.Context, field graphql.C
 			return obj.State, nil
 		},
 		nil,
-		ec.marshalNProposalState2chickᚋinternalᚋgraphqlᚐProposalState,
+		ec.marshalNProposalState2morningᚑgloryᚋinternalᚋgraphqlᚐProposalState,
 		true,
 		true,
 	)
@@ -211,7 +211,7 @@ func (ec *executionContext) _Proposal_priority(ctx context.Context, field graphq
 			return obj.Priority, nil
 		},
 		nil,
-		ec.marshalNPriority2chickᚋinternalᚋgraphqlᚐPriority,
+		ec.marshalNPriority2morningᚑgloryᚋinternalᚋgraphqlᚐPriority,
 		true,
 		true,
 	)
@@ -559,7 +559,7 @@ func (ec *executionContext) _Proposal_author(ctx context.Context, field graphql.
 			return obj.Author, nil
 		},
 		nil,
-		ec.marshalNAgent2ᚖchickᚋinternalᚋgraphqlᚐAgent,
+		ec.marshalNAgent2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐAgent,
 		true,
 		true,
 	)
@@ -630,7 +630,7 @@ func (ec *executionContext) _Proposal_reviewer(ctx context.Context, field graphq
 			return obj.Reviewer, nil
 		},
 		nil,
-		ec.marshalOAgent2ᚖchickᚋinternalᚋgraphqlᚐAgent,
+		ec.marshalOAgent2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐAgent,
 		true,
 		false,
 	)
@@ -701,7 +701,7 @@ func (ec *executionContext) _Proposal_labels(ctx context.Context, field graphql.
 			return obj.Labels, nil
 		},
 		nil,
-		ec.marshalOLabel2ᚕᚖchickᚋinternalᚋgraphqlᚐLabelᚄ,
+		ec.marshalOLabel2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐLabelᚄ,
 		true,
 		false,
 	)
@@ -748,7 +748,7 @@ func (ec *executionContext) _Proposal_tasks(ctx context.Context, field graphql.C
 			return obj.Tasks, nil
 		},
 		nil,
-		ec.marshalOTask2ᚕᚖchickᚋinternalᚋgraphqlᚐTaskᚄ,
+		ec.marshalOTask2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐTaskᚄ,
 		true,
 		false,
 	)
@@ -811,7 +811,7 @@ func (ec *executionContext) _Proposal_comments(ctx context.Context, field graphq
 			return obj.Comments, nil
 		},
 		nil,
-		ec.marshalOComment2ᚕᚖchickᚋinternalᚋgraphqlᚐCommentᚄ,
+		ec.marshalOComment2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐCommentᚄ,
 		true,
 		false,
 	)
@@ -870,7 +870,7 @@ func (ec *executionContext) _ProposalConnection_edges(ctx context.Context, field
 			return obj.Edges, nil
 		},
 		nil,
-		ec.marshalNProposal2ᚕᚖchickᚋinternalᚋgraphqlᚐProposalᚄ,
+		ec.marshalNProposal2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐProposalᚄ,
 		true,
 		true,
 	)
@@ -1136,15 +1136,15 @@ func (ec *executionContext) _ProposalConnection(ctx context.Context, sel ast.Sel
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) marshalNProposal2chickᚋinternalᚋgraphqlᚐProposal(ctx context.Context, sel ast.SelectionSet, v Proposal) graphql.Marshaler {
+func (ec *executionContext) marshalNProposal2morningᚑgloryᚋinternalᚋgraphqlᚐProposal(ctx context.Context, sel ast.SelectionSet, v Proposal) graphql.Marshaler {
 	return ec._Proposal(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNProposal2ᚕᚖchickᚋinternalᚋgraphqlᚐProposalᚄ(ctx context.Context, sel ast.SelectionSet, v []*Proposal) graphql.Marshaler {
+func (ec *executionContext) marshalNProposal2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐProposalᚄ(ctx context.Context, sel ast.SelectionSet, v []*Proposal) graphql.Marshaler {
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNProposal2ᚖchickᚋinternalᚋgraphqlᚐProposal(ctx, sel, v[i])
+		return ec.marshalNProposal2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐProposal(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -1156,7 +1156,7 @@ func (ec *executionContext) marshalNProposal2ᚕᚖchickᚋinternalᚋgraphqlᚐ
 	return ret
 }
 
-func (ec *executionContext) marshalNProposal2ᚖchickᚋinternalᚋgraphqlᚐProposal(ctx context.Context, sel ast.SelectionSet, v *Proposal) graphql.Marshaler {
+func (ec *executionContext) marshalNProposal2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐProposal(ctx context.Context, sel ast.SelectionSet, v *Proposal) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -1166,11 +1166,11 @@ func (ec *executionContext) marshalNProposal2ᚖchickᚋinternalᚋgraphqlᚐPro
 	return ec._Proposal(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNProposalConnection2chickᚋinternalᚋgraphqlᚐProposalConnection(ctx context.Context, sel ast.SelectionSet, v ProposalConnection) graphql.Marshaler {
+func (ec *executionContext) marshalNProposalConnection2morningᚑgloryᚋinternalᚋgraphqlᚐProposalConnection(ctx context.Context, sel ast.SelectionSet, v ProposalConnection) graphql.Marshaler {
 	return ec._ProposalConnection(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNProposalConnection2ᚖchickᚋinternalᚋgraphqlᚐProposalConnection(ctx context.Context, sel ast.SelectionSet, v *ProposalConnection) graphql.Marshaler {
+func (ec *executionContext) marshalNProposalConnection2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐProposalConnection(ctx context.Context, sel ast.SelectionSet, v *ProposalConnection) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -1180,24 +1180,24 @@ func (ec *executionContext) marshalNProposalConnection2ᚖchickᚋinternalᚋgra
 	return ec._ProposalConnection(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNProposalState2chickᚋinternalᚋgraphqlᚐProposalState(ctx context.Context, v any) (ProposalState, error) {
+func (ec *executionContext) unmarshalNProposalState2morningᚑgloryᚋinternalᚋgraphqlᚐProposalState(ctx context.Context, v any) (ProposalState, error) {
 	var res ProposalState
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNProposalState2chickᚋinternalᚋgraphqlᚐProposalState(ctx context.Context, sel ast.SelectionSet, v ProposalState) graphql.Marshaler {
+func (ec *executionContext) marshalNProposalState2morningᚑgloryᚋinternalᚋgraphqlᚐProposalState(ctx context.Context, sel ast.SelectionSet, v ProposalState) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) unmarshalNProposalState2ᚕchickᚋinternalᚋgraphqlᚐProposalStateᚄ(ctx context.Context, v any) ([]ProposalState, error) {
+func (ec *executionContext) unmarshalNProposalState2ᚕmorningᚑgloryᚋinternalᚋgraphqlᚐProposalStateᚄ(ctx context.Context, v any) ([]ProposalState, error) {
 	var vSlice []any
 	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]ProposalState, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNProposalState2chickᚋinternalᚋgraphqlᚐProposalState(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNProposalState2morningᚑgloryᚋinternalᚋgraphqlᚐProposalState(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -1205,11 +1205,11 @@ func (ec *executionContext) unmarshalNProposalState2ᚕchickᚋinternalᚋgraphq
 	return res, nil
 }
 
-func (ec *executionContext) marshalNProposalState2ᚕchickᚋinternalᚋgraphqlᚐProposalStateᚄ(ctx context.Context, sel ast.SelectionSet, v []ProposalState) graphql.Marshaler {
+func (ec *executionContext) marshalNProposalState2ᚕmorningᚑgloryᚋinternalᚋgraphqlᚐProposalStateᚄ(ctx context.Context, sel ast.SelectionSet, v []ProposalState) graphql.Marshaler {
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNProposalState2chickᚋinternalᚋgraphqlᚐProposalState(ctx, sel, v[i])
+		return ec.marshalNProposalState2morningᚑgloryᚋinternalᚋgraphqlᚐProposalState(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -1221,14 +1221,14 @@ func (ec *executionContext) marshalNProposalState2ᚕchickᚋinternalᚋgraphql�
 	return ret
 }
 
-func (ec *executionContext) marshalOProposal2ᚖchickᚋinternalᚋgraphqlᚐProposal(ctx context.Context, sel ast.SelectionSet, v *Proposal) graphql.Marshaler {
+func (ec *executionContext) marshalOProposal2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐProposal(ctx context.Context, sel ast.SelectionSet, v *Proposal) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Proposal(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOProposalState2ᚖchickᚋinternalᚋgraphqlᚐProposalState(ctx context.Context, v any) (*ProposalState, error) {
+func (ec *executionContext) unmarshalOProposalState2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐProposalState(ctx context.Context, v any) (*ProposalState, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -1237,7 +1237,7 @@ func (ec *executionContext) unmarshalOProposalState2ᚖchickᚋinternalᚋgraphq
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOProposalState2ᚖchickᚋinternalᚋgraphqlᚐProposalState(ctx context.Context, sel ast.SelectionSet, v *ProposalState) graphql.Marshaler {
+func (ec *executionContext) marshalOProposalState2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐProposalState(ctx context.Context, sel ast.SelectionSet, v *ProposalState) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}

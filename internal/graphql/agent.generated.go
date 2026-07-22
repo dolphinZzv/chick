@@ -124,7 +124,7 @@ func (ec *executionContext) _Agent_kind(ctx context.Context, field graphql.Colle
 			return obj.Kind, nil
 		},
 		nil,
-		ec.marshalNAgentKind2chickᚋinternalᚋgraphqlᚐAgentKind,
+		ec.marshalNAgentKind2morningᚑgloryᚋinternalᚋgraphqlᚐAgentKind,
 		true,
 		true,
 	)
@@ -153,7 +153,7 @@ func (ec *executionContext) _Agent_status(ctx context.Context, field graphql.Col
 			return obj.Status, nil
 		},
 		nil,
-		ec.marshalNAgentStatus2chickᚋinternalᚋgraphqlᚐAgentStatus,
+		ec.marshalNAgentStatus2morningᚑgloryᚋinternalᚋgraphqlᚐAgentStatus,
 		true,
 		true,
 	)
@@ -559,7 +559,7 @@ func (ec *executionContext) _Agent_assignedIssues(ctx context.Context, field gra
 			return obj.AssignedIssues, nil
 		},
 		nil,
-		ec.marshalOIssueAssignee2ᚕᚖchickᚋinternalᚋgraphqlᚐIssueAssigneeᚄ,
+		ec.marshalOIssueAssignee2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐIssueAssigneeᚄ,
 		true,
 		false,
 	)
@@ -604,7 +604,7 @@ func (ec *executionContext) _Agent_createdIssues(ctx context.Context, field grap
 			return obj.CreatedIssues, nil
 		},
 		nil,
-		ec.marshalOIssue2ᚕᚖchickᚋinternalᚋgraphqlᚐIssueᚄ,
+		ec.marshalOIssue2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐIssueᚄ,
 		true,
 		false,
 	)
@@ -714,7 +714,7 @@ func (ec *executionContext) _AgentStatusEvent_status(ctx context.Context, field 
 			return obj.Status, nil
 		},
 		nil,
-		ec.marshalNAgentStatus2chickᚋinternalᚋgraphqlᚐAgentStatus,
+		ec.marshalNAgentStatus2morningᚑgloryᚋinternalᚋgraphqlᚐAgentStatus,
 		true,
 		true,
 	)
@@ -772,7 +772,7 @@ func (ec *executionContext) _LoginResult_agent(ctx context.Context, field graphq
 			return obj.Agent, nil
 		},
 		nil,
-		ec.marshalNAgent2ᚖchickᚋinternalᚋgraphqlᚐAgent,
+		ec.marshalNAgent2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐAgent,
 		true,
 		true,
 	)
@@ -872,7 +872,7 @@ func (ec *executionContext) _RegisterResult_agent(ctx context.Context, field gra
 			return obj.Agent, nil
 		},
 		nil,
-		ec.marshalNAgent2ᚖchickᚋinternalᚋgraphqlᚐAgent,
+		ec.marshalNAgent2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐAgent,
 		true,
 		true,
 	)
@@ -1216,15 +1216,15 @@ func (ec *executionContext) _RegisterResult(ctx context.Context, sel ast.Selecti
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) marshalNAgent2chickᚋinternalᚋgraphqlᚐAgent(ctx context.Context, sel ast.SelectionSet, v Agent) graphql.Marshaler {
+func (ec *executionContext) marshalNAgent2morningᚑgloryᚋinternalᚋgraphqlᚐAgent(ctx context.Context, sel ast.SelectionSet, v Agent) graphql.Marshaler {
 	return ec._Agent(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNAgent2ᚕᚖchickᚋinternalᚋgraphqlᚐAgentᚄ(ctx context.Context, sel ast.SelectionSet, v []*Agent) graphql.Marshaler {
+func (ec *executionContext) marshalNAgent2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐAgentᚄ(ctx context.Context, sel ast.SelectionSet, v []*Agent) graphql.Marshaler {
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNAgent2ᚖchickᚋinternalᚋgraphqlᚐAgent(ctx, sel, v[i])
+		return ec.marshalNAgent2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐAgent(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -1236,7 +1236,7 @@ func (ec *executionContext) marshalNAgent2ᚕᚖchickᚋinternalᚋgraphqlᚐAge
 	return ret
 }
 
-func (ec *executionContext) marshalNAgent2ᚖchickᚋinternalᚋgraphqlᚐAgent(ctx context.Context, sel ast.SelectionSet, v *Agent) graphql.Marshaler {
+func (ec *executionContext) marshalNAgent2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐAgent(ctx context.Context, sel ast.SelectionSet, v *Agent) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -1246,31 +1246,31 @@ func (ec *executionContext) marshalNAgent2ᚖchickᚋinternalᚋgraphqlᚐAgent(
 	return ec._Agent(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNAgentKind2chickᚋinternalᚋgraphqlᚐAgentKind(ctx context.Context, v any) (AgentKind, error) {
+func (ec *executionContext) unmarshalNAgentKind2morningᚑgloryᚋinternalᚋgraphqlᚐAgentKind(ctx context.Context, v any) (AgentKind, error) {
 	var res AgentKind
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNAgentKind2chickᚋinternalᚋgraphqlᚐAgentKind(ctx context.Context, sel ast.SelectionSet, v AgentKind) graphql.Marshaler {
+func (ec *executionContext) marshalNAgentKind2morningᚑgloryᚋinternalᚋgraphqlᚐAgentKind(ctx context.Context, sel ast.SelectionSet, v AgentKind) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) unmarshalNAgentStatus2chickᚋinternalᚋgraphqlᚐAgentStatus(ctx context.Context, v any) (AgentStatus, error) {
+func (ec *executionContext) unmarshalNAgentStatus2morningᚑgloryᚋinternalᚋgraphqlᚐAgentStatus(ctx context.Context, v any) (AgentStatus, error) {
 	var res AgentStatus
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNAgentStatus2chickᚋinternalᚋgraphqlᚐAgentStatus(ctx context.Context, sel ast.SelectionSet, v AgentStatus) graphql.Marshaler {
+func (ec *executionContext) marshalNAgentStatus2morningᚑgloryᚋinternalᚋgraphqlᚐAgentStatus(ctx context.Context, sel ast.SelectionSet, v AgentStatus) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) marshalNAgentStatusEvent2chickᚋinternalᚋgraphqlᚐAgentStatusEvent(ctx context.Context, sel ast.SelectionSet, v AgentStatusEvent) graphql.Marshaler {
+func (ec *executionContext) marshalNAgentStatusEvent2morningᚑgloryᚋinternalᚋgraphqlᚐAgentStatusEvent(ctx context.Context, sel ast.SelectionSet, v AgentStatusEvent) graphql.Marshaler {
 	return ec._AgentStatusEvent(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNAgentStatusEvent2ᚖchickᚋinternalᚋgraphqlᚐAgentStatusEvent(ctx context.Context, sel ast.SelectionSet, v *AgentStatusEvent) graphql.Marshaler {
+func (ec *executionContext) marshalNAgentStatusEvent2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐAgentStatusEvent(ctx context.Context, sel ast.SelectionSet, v *AgentStatusEvent) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -1280,11 +1280,11 @@ func (ec *executionContext) marshalNAgentStatusEvent2ᚖchickᚋinternalᚋgraph
 	return ec._AgentStatusEvent(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNLoginResult2chickᚋinternalᚋgraphqlᚐLoginResult(ctx context.Context, sel ast.SelectionSet, v LoginResult) graphql.Marshaler {
+func (ec *executionContext) marshalNLoginResult2morningᚑgloryᚋinternalᚋgraphqlᚐLoginResult(ctx context.Context, sel ast.SelectionSet, v LoginResult) graphql.Marshaler {
 	return ec._LoginResult(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNLoginResult2ᚖchickᚋinternalᚋgraphqlᚐLoginResult(ctx context.Context, sel ast.SelectionSet, v *LoginResult) graphql.Marshaler {
+func (ec *executionContext) marshalNLoginResult2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐLoginResult(ctx context.Context, sel ast.SelectionSet, v *LoginResult) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -1294,11 +1294,11 @@ func (ec *executionContext) marshalNLoginResult2ᚖchickᚋinternalᚋgraphqlᚐ
 	return ec._LoginResult(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNRegisterResult2chickᚋinternalᚋgraphqlᚐRegisterResult(ctx context.Context, sel ast.SelectionSet, v RegisterResult) graphql.Marshaler {
+func (ec *executionContext) marshalNRegisterResult2morningᚑgloryᚋinternalᚋgraphqlᚐRegisterResult(ctx context.Context, sel ast.SelectionSet, v RegisterResult) graphql.Marshaler {
 	return ec._RegisterResult(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNRegisterResult2ᚖchickᚋinternalᚋgraphqlᚐRegisterResult(ctx context.Context, sel ast.SelectionSet, v *RegisterResult) graphql.Marshaler {
+func (ec *executionContext) marshalNRegisterResult2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐRegisterResult(ctx context.Context, sel ast.SelectionSet, v *RegisterResult) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -1308,14 +1308,14 @@ func (ec *executionContext) marshalNRegisterResult2ᚖchickᚋinternalᚋgraphql
 	return ec._RegisterResult(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOAgent2ᚖchickᚋinternalᚋgraphqlᚐAgent(ctx context.Context, sel ast.SelectionSet, v *Agent) graphql.Marshaler {
+func (ec *executionContext) marshalOAgent2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐAgent(ctx context.Context, sel ast.SelectionSet, v *Agent) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Agent(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOAgentKind2ᚖchickᚋinternalᚋgraphqlᚐAgentKind(ctx context.Context, v any) (*AgentKind, error) {
+func (ec *executionContext) unmarshalOAgentKind2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐAgentKind(ctx context.Context, v any) (*AgentKind, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -1324,14 +1324,14 @@ func (ec *executionContext) unmarshalOAgentKind2ᚖchickᚋinternalᚋgraphqlᚐ
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOAgentKind2ᚖchickᚋinternalᚋgraphqlᚐAgentKind(ctx context.Context, sel ast.SelectionSet, v *AgentKind) graphql.Marshaler {
+func (ec *executionContext) marshalOAgentKind2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐAgentKind(ctx context.Context, sel ast.SelectionSet, v *AgentKind) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return v
 }
 
-func (ec *executionContext) unmarshalOAgentStatus2ᚖchickᚋinternalᚋgraphqlᚐAgentStatus(ctx context.Context, v any) (*AgentStatus, error) {
+func (ec *executionContext) unmarshalOAgentStatus2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐAgentStatus(ctx context.Context, v any) (*AgentStatus, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -1340,7 +1340,7 @@ func (ec *executionContext) unmarshalOAgentStatus2ᚖchickᚋinternalᚋgraphql�
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOAgentStatus2ᚖchickᚋinternalᚋgraphqlᚐAgentStatus(ctx context.Context, sel ast.SelectionSet, v *AgentStatus) graphql.Marshaler {
+func (ec *executionContext) marshalOAgentStatus2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐAgentStatus(ctx context.Context, sel ast.SelectionSet, v *AgentStatus) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}

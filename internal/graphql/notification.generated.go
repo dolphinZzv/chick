@@ -744,15 +744,15 @@ func (ec *executionContext) _NotificationTypeInfo(ctx context.Context, sel ast.S
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) marshalNNotificationEvent2chickᚋinternalᚋgraphqlᚐNotificationEvent(ctx context.Context, sel ast.SelectionSet, v NotificationEvent) graphql.Marshaler {
+func (ec *executionContext) marshalNNotificationEvent2morningᚑgloryᚋinternalᚋgraphqlᚐNotificationEvent(ctx context.Context, sel ast.SelectionSet, v NotificationEvent) graphql.Marshaler {
 	return ec._NotificationEvent(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNNotificationEvent2ᚕᚖchickᚋinternalᚋgraphqlᚐNotificationEventᚄ(ctx context.Context, sel ast.SelectionSet, v []*NotificationEvent) graphql.Marshaler {
+func (ec *executionContext) marshalNNotificationEvent2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐNotificationEventᚄ(ctx context.Context, sel ast.SelectionSet, v []*NotificationEvent) graphql.Marshaler {
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNNotificationEvent2ᚖchickᚋinternalᚋgraphqlᚐNotificationEvent(ctx, sel, v[i])
+		return ec.marshalNNotificationEvent2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐNotificationEvent(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -764,7 +764,7 @@ func (ec *executionContext) marshalNNotificationEvent2ᚕᚖchickᚋinternalᚋg
 	return ret
 }
 
-func (ec *executionContext) marshalNNotificationEvent2ᚖchickᚋinternalᚋgraphqlᚐNotificationEvent(ctx context.Context, sel ast.SelectionSet, v *NotificationEvent) graphql.Marshaler {
+func (ec *executionContext) marshalNNotificationEvent2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐNotificationEvent(ctx context.Context, sel ast.SelectionSet, v *NotificationEvent) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -774,15 +774,15 @@ func (ec *executionContext) marshalNNotificationEvent2ᚖchickᚋinternalᚋgrap
 	return ec._NotificationEvent(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNNotificationSetting2chickᚋinternalᚋgraphqlᚐNotificationSetting(ctx context.Context, sel ast.SelectionSet, v NotificationSetting) graphql.Marshaler {
+func (ec *executionContext) marshalNNotificationSetting2morningᚑgloryᚋinternalᚋgraphqlᚐNotificationSetting(ctx context.Context, sel ast.SelectionSet, v NotificationSetting) graphql.Marshaler {
 	return ec._NotificationSetting(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNNotificationSetting2ᚕᚖchickᚋinternalᚋgraphqlᚐNotificationSettingᚄ(ctx context.Context, sel ast.SelectionSet, v []*NotificationSetting) graphql.Marshaler {
+func (ec *executionContext) marshalNNotificationSetting2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐNotificationSettingᚄ(ctx context.Context, sel ast.SelectionSet, v []*NotificationSetting) graphql.Marshaler {
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNNotificationSetting2ᚖchickᚋinternalᚋgraphqlᚐNotificationSetting(ctx, sel, v[i])
+		return ec.marshalNNotificationSetting2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐNotificationSetting(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -794,7 +794,7 @@ func (ec *executionContext) marshalNNotificationSetting2ᚕᚖchickᚋinternal�
 	return ret
 }
 
-func (ec *executionContext) marshalNNotificationSetting2ᚖchickᚋinternalᚋgraphqlᚐNotificationSetting(ctx context.Context, sel ast.SelectionSet, v *NotificationSetting) graphql.Marshaler {
+func (ec *executionContext) marshalNNotificationSetting2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐNotificationSetting(ctx context.Context, sel ast.SelectionSet, v *NotificationSetting) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -804,11 +804,11 @@ func (ec *executionContext) marshalNNotificationSetting2ᚖchickᚋinternalᚋgr
 	return ec._NotificationSetting(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNNotificationTypeInfo2ᚕᚖchickᚋinternalᚋgraphqlᚐNotificationTypeInfoᚄ(ctx context.Context, sel ast.SelectionSet, v []*NotificationTypeInfo) graphql.Marshaler {
+func (ec *executionContext) marshalNNotificationTypeInfo2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐNotificationTypeInfoᚄ(ctx context.Context, sel ast.SelectionSet, v []*NotificationTypeInfo) graphql.Marshaler {
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNNotificationTypeInfo2ᚖchickᚋinternalᚋgraphqlᚐNotificationTypeInfo(ctx, sel, v[i])
+		return ec.marshalNNotificationTypeInfo2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐNotificationTypeInfo(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -820,7 +820,7 @@ func (ec *executionContext) marshalNNotificationTypeInfo2ᚕᚖchickᚋinternal�
 	return ret
 }
 
-func (ec *executionContext) marshalNNotificationTypeInfo2ᚖchickᚋinternalᚋgraphqlᚐNotificationTypeInfo(ctx context.Context, sel ast.SelectionSet, v *NotificationTypeInfo) graphql.Marshaler {
+func (ec *executionContext) marshalNNotificationTypeInfo2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐNotificationTypeInfo(ctx context.Context, sel ast.SelectionSet, v *NotificationTypeInfo) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")

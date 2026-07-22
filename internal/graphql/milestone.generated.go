@@ -181,7 +181,7 @@ func (ec *executionContext) _Milestone_state(ctx context.Context, field graphql.
 			return obj.State, nil
 		},
 		nil,
-		ec.marshalNMilestoneState2chickᚋinternalᚋgraphqlᚐMilestoneState,
+		ec.marshalNMilestoneState2morningᚑgloryᚋinternalᚋgraphqlᚐMilestoneState,
 		true,
 		true,
 	)
@@ -376,15 +376,15 @@ func (ec *executionContext) _Milestone(ctx context.Context, sel ast.SelectionSet
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) marshalNMilestone2chickᚋinternalᚋgraphqlᚐMilestone(ctx context.Context, sel ast.SelectionSet, v Milestone) graphql.Marshaler {
+func (ec *executionContext) marshalNMilestone2morningᚑgloryᚋinternalᚋgraphqlᚐMilestone(ctx context.Context, sel ast.SelectionSet, v Milestone) graphql.Marshaler {
 	return ec._Milestone(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNMilestone2ᚕᚖchickᚋinternalᚋgraphqlᚐMilestoneᚄ(ctx context.Context, sel ast.SelectionSet, v []*Milestone) graphql.Marshaler {
+func (ec *executionContext) marshalNMilestone2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐMilestoneᚄ(ctx context.Context, sel ast.SelectionSet, v []*Milestone) graphql.Marshaler {
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNMilestone2ᚖchickᚋinternalᚋgraphqlᚐMilestone(ctx, sel, v[i])
+		return ec.marshalNMilestone2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐMilestone(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -396,7 +396,7 @@ func (ec *executionContext) marshalNMilestone2ᚕᚖchickᚋinternalᚋgraphql�
 	return ret
 }
 
-func (ec *executionContext) marshalNMilestone2ᚖchickᚋinternalᚋgraphqlᚐMilestone(ctx context.Context, sel ast.SelectionSet, v *Milestone) graphql.Marshaler {
+func (ec *executionContext) marshalNMilestone2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐMilestone(ctx context.Context, sel ast.SelectionSet, v *Milestone) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -406,24 +406,24 @@ func (ec *executionContext) marshalNMilestone2ᚖchickᚋinternalᚋgraphqlᚐMi
 	return ec._Milestone(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNMilestoneState2chickᚋinternalᚋgraphqlᚐMilestoneState(ctx context.Context, v any) (MilestoneState, error) {
+func (ec *executionContext) unmarshalNMilestoneState2morningᚑgloryᚋinternalᚋgraphqlᚐMilestoneState(ctx context.Context, v any) (MilestoneState, error) {
 	var res MilestoneState
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNMilestoneState2chickᚋinternalᚋgraphqlᚐMilestoneState(ctx context.Context, sel ast.SelectionSet, v MilestoneState) graphql.Marshaler {
+func (ec *executionContext) marshalNMilestoneState2morningᚑgloryᚋinternalᚋgraphqlᚐMilestoneState(ctx context.Context, sel ast.SelectionSet, v MilestoneState) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) marshalOMilestone2ᚕᚖchickᚋinternalᚋgraphqlᚐMilestoneᚄ(ctx context.Context, sel ast.SelectionSet, v []*Milestone) graphql.Marshaler {
+func (ec *executionContext) marshalOMilestone2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐMilestoneᚄ(ctx context.Context, sel ast.SelectionSet, v []*Milestone) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNMilestone2ᚖchickᚋinternalᚋgraphqlᚐMilestone(ctx, sel, v[i])
+		return ec.marshalNMilestone2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐMilestone(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -435,14 +435,14 @@ func (ec *executionContext) marshalOMilestone2ᚕᚖchickᚋinternalᚋgraphql�
 	return ret
 }
 
-func (ec *executionContext) marshalOMilestone2ᚖchickᚋinternalᚋgraphqlᚐMilestone(ctx context.Context, sel ast.SelectionSet, v *Milestone) graphql.Marshaler {
+func (ec *executionContext) marshalOMilestone2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐMilestone(ctx context.Context, sel ast.SelectionSet, v *Milestone) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Milestone(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOMilestoneState2ᚖchickᚋinternalᚋgraphqlᚐMilestoneState(ctx context.Context, v any) (*MilestoneState, error) {
+func (ec *executionContext) unmarshalOMilestoneState2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐMilestoneState(ctx context.Context, v any) (*MilestoneState, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -451,7 +451,7 @@ func (ec *executionContext) unmarshalOMilestoneState2ᚖchickᚋinternalᚋgraph
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOMilestoneState2ᚖchickᚋinternalᚋgraphqlᚐMilestoneState(ctx context.Context, sel ast.SelectionSet, v *MilestoneState) graphql.Marshaler {
+func (ec *executionContext) marshalOMilestoneState2ᚖmorningᚑgloryᚋinternalᚋgraphqlᚐMilestoneState(ctx context.Context, sel ast.SelectionSet, v *MilestoneState) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
