@@ -23,6 +23,8 @@ func (h *Handlers) registerCreateIssue(r *ToolRegistry) {
 			"environment": StringParam("Environment name, e.g. staging, production"),
 			"branch":      StringParam("Branch name"),
 			"links":       ArrayParam("Related links (URLs)", "string"),
+			"solution":    StringParam("Solution description in Markdown"),
+			"rootCause":   StringParam("Root cause analysis in Markdown"),
 			"difficulty":  NumberParam("Implementation difficulty (1-5)"),
 			"startedAt":   StringParam("Start time (RFC3339 format, e.g. 2024-01-01T00:00:00Z)"),
 			"completedAt": StringParam("End time (RFC3339 format)"),
@@ -42,6 +44,8 @@ func (h *Handlers) handleCreateIssue(id json.RawMessage, params json.RawMessage,
 		Environment string   `json:"environment"`
 		Branch      string   `json:"branch"`
 		Links       []string `json:"links"`
+		Solution    string   `json:"solution"`
+		RootCause   string   `json:"rootCause"`
 		Difficulty  int      `json:"difficulty"`
 		StartedAt   string   `json:"startedAt"`
 		CompletedAt string   `json:"completedAt"`
@@ -110,7 +114,7 @@ func (h *Handlers) handleCreateIssue(id json.RawMessage, params json.RawMessage,
 		completedAt = &t
 	}
 	env, branch := strPtr(p.Environment), strPtr(p.Branch)
-	issue, err := h.issueSvc.Create(service.IssueCreateInput{ProjectID: projectID, CreatorID: creatorID, Title: p.Title, Description: p.Description, Priority: priority, AssigneeIDs: assigneeIDs, MilestoneID: milestoneID, Environment: env, Branch: branch, Link: mcpLinksToJson(p.Links), Difficulty: diff, StartedAt: startedAt, CompletedAt: completedAt})
+	issue, err := h.issueSvc.Create(service.IssueCreateInput{ProjectID: projectID, CreatorID: creatorID, Title: p.Title, Description: p.Description, Priority: priority, AssigneeIDs: assigneeIDs, MilestoneID: milestoneID, Environment: env, Branch: branch, Link: mcpLinksToJson(p.Links), Solution: strPtr(p.Solution), RootCause: strPtr(p.RootCause), Difficulty: diff, StartedAt: startedAt, CompletedAt: completedAt})
 	if err != nil {
 		return NewInternalError(id, err.Error())
 	}

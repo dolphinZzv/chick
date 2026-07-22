@@ -49,6 +49,9 @@ type Issue {
   environment: String
   branch: String
   links: [String!]
+  commits: [String!]
+  solution: String
+  rootCause: String
   closedAt: Time
   startedAt: Time
   completedAt: Time

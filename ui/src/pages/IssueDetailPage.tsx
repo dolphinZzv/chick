@@ -26,7 +26,8 @@ interface IssueDetail {
   id: string; number: number; title: string; description: string | null;
   state: string; priority: string; dueDate: string | null;
   startedAt: string | null; completedAt: string | null; difficulty: number | null;
-  environment: string | null; branch: string | null; links: string[];
+  environment: string | null; branch: string | null; links: string[]; commits: string[];
+  solution: string | null; rootCause: string | null;
   createdAt: string; creator: { id: string; name: string };
   assignees: Array<{ id: string; agent: { id: string; name: string }; state: string }>;
   labels: Array<{ id: string; name: string; color: string | null }>;
@@ -99,13 +100,17 @@ export function IssueDetailPage() {
   const [noteDialogOpen, setNoteDialogOpen] = useState(false);
   const [noteDialogTarget, setNoteDialogTarget] = useState<string | null>(null);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [editingSolution, setEditingSolution] = useState(false);
+  const [editSolution, setEditSolution] = useState("");
+  const [editingRootCause, setEditingRootCause] = useState(false);
+  const [editRootCause, setEditRootCause] = useState("");
 
   const fetchData = useCallback((showLoading = true) => {
     if (!id) return;
     if (showLoading) setLoading(true);
     setError(null);
     Promise.all([
-      gql(`query issue($id: ID!) { issue(id: $id) { id number title description state priority dueDate startedAt completedAt difficulty environment branch links createdAt creator { id name } assignees { id agent { id name } state } labels { id name color } milestone { id title } projectID } }`, { id }),
+      gql(`query issue($id: ID!) { issue(id: $id) { id number title description state priority dueDate startedAt completedAt difficulty environment branch links commits solution rootCause createdAt creator { id name } assignees { id agent { id name } state } labels { id name color } milestone { id title } projectID } }`, { id }),
       gql(`query comments($issueId: ID!) { comments(issueID: $issueId) { id body createdAt parentID author { id name } replies { id body createdAt author { id name } } } }`, { issueId: id }),
       gql(`query timeline($issueId: ID!) { timeline(issueID: $issueId) { id eventType createdAt actor { id name } payload } }`, { issueId: id }),
     ]).then(([iJson, cJson, tJson]) => {
@@ -136,7 +141,7 @@ export function IssueDetailPage() {
   }, [issue]);
 
   useSubscription(
-    `subscription issueUpdated($issueID: ID!) { issueUpdated(issueID: $issueID) { id number title description state priority dueDate startedAt completedAt difficulty environment branch links createdAt creator { id name } assignees { id agent { id name } state } labels { id name color } milestone { id title } projectID } }`,
+    `subscription issueUpdated($issueID: ID!) { issueUpdated(issueID: $issueID) { id number title description state priority dueDate startedAt completedAt difficulty environment branch links commits solution rootCause createdAt creator { id name } assignees { id agent { id name } state } labels { id name color } milestone { id title } projectID } }`,
     id ? { issueID: id } : undefined,
     (data: any) => { if (data?.issueUpdated) { setIssue((prev) => prev ? { ...prev, ...data.issueUpdated } : prev); fetchData(false); } },
   );
@@ -157,6 +162,15 @@ export function IssueDetailPage() {
     } catch { toast.error("网络错误，状态变更失败"); }
   };
 
+  const handleSaveSolution = async () => {
+    await handleUpdateIssue({ solution: editSolution || null });
+    setEditingSolution(false);
+  };
+  const handleSaveRootCause = async () => {
+    await handleUpdateIssue({ rootCause: editRootCause || null });
+    setEditingRootCause(false);
+  };
+
   const confirmDelete = async () => {
     if (!id) return; setDeleteConfirmOpen(false);
     try {
@@ -169,9 +183,9 @@ export function IssueDetailPage() {
   const handleUpdateIssue = async (fields: Record<string, unknown>) => {
     if (!id) return;
     try {
-      const json = await gql(`mutation updateIssue($id: ID!, $title: String, $description: String, $priority: Priority, $milestoneId: ID, $difficulty: Int, $startedAt: Time, $completedAt: Time, $environment: String, $branch: String, $links: [String!]) {
-        updateIssue(id: $id, title: $title, description: $description, priority: $priority, milestoneId: $milestoneId, difficulty: $difficulty, startedAt: $startedAt, completedAt: $completedAt, environment: $environment, branch: $branch, links: $links) {
-          id title description priority milestone { id title } difficulty environment branch links startedAt completedAt
+      const json = await gql(`mutation updateIssue($id: ID!, $title: String, $description: String, $priority: Priority, $milestoneId: ID, $difficulty: Int, $startedAt: Time, $completedAt: Time, $environment: String, $branch: String, $links: [String!], $commits: [String!], $solution: String, $rootCause: String) {
+        updateIssue(id: $id, title: $title, description: $description, priority: $priority, milestoneId: $milestoneId, difficulty: $difficulty, startedAt: $startedAt, completedAt: $completedAt, environment: $environment, branch: $branch, links: $links, commits: $commits, solution: $solution, rootCause: $rootCause) {
+          id title description priority milestone { id title } difficulty environment branch links commits solution rootCause startedAt completedAt
         }
       }`, { id, ...fields });
       if (!json.errors && json.data) { setIssue((prev) => prev ? { ...prev, ...json.data.updateIssue } : prev); toast.success("已更新"); }
@@ -221,6 +235,64 @@ export function IssueDetailPage() {
         <div className="border bg-card p-4 rounded-lg"><MarkdownContent content={issue.description} /></div>
       )}
 
+      {/* Solution */}
+      {editingSolution ? (
+        <div className="border bg-card p-4 rounded-lg">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-medium">解决方案</span>
+            <div className="flex gap-1">
+              <Button size="sm" className="h-7 text-xs" onClick={handleSaveSolution}>保存</Button>
+              <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => setEditingSolution(false)}>取消</Button>
+            </div>
+          </div>
+          <Textarea value={editSolution} onChange={(e) => setEditSolution(e.target.value)} className="min-h-[100px]" placeholder="解决方案（支持 Markdown）" />
+        </div>
+      ) : issue.solution ? (
+        <div className="border bg-card p-4 rounded-lg">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-medium">解决方案</span>
+            {agent && <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={() => { setEditSolution(issue.solution || ""); setEditingSolution(true); }}><Pencil className="h-3 w-3 mr-1" />编辑</Button>}
+          </div>
+          <MarkdownContent content={issue.solution} />
+        </div>
+      ) : agent ? (
+        <div className="border bg-card p-4 rounded-lg">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium">解决方案</span>
+            <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={() => { setEditSolution(""); setEditingSolution(true); }}><Plus className="h-3 w-3 mr-1" />添加</Button>
+          </div>
+        </div>
+      ) : null}
+
+      {/* Root Cause */}
+      {editingRootCause ? (
+        <div className="border bg-card p-4 rounded-lg">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-medium">根因分析</span>
+            <div className="flex gap-1">
+              <Button size="sm" className="h-7 text-xs" onClick={handleSaveRootCause}>保存</Button>
+              <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => setEditingRootCause(false)}>取消</Button>
+            </div>
+          </div>
+          <Textarea value={editRootCause} onChange={(e) => setEditRootCause(e.target.value)} className="min-h-[100px]" placeholder="根因分析（支持 Markdown）" />
+        </div>
+      ) : issue.rootCause ? (
+        <div className="border bg-card p-4 rounded-lg">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-medium">根因分析</span>
+            {agent && <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={() => { setEditRootCause(issue.rootCause || ""); setEditingRootCause(true); }}><Pencil className="h-3 w-3 mr-1" />编辑</Button>}
+          </div>
+          <MarkdownContent content={issue.rootCause} />
+        </div>
+      ) : agent ? (
+        <div className="border bg-card p-4 rounded-lg">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium">根因分析</span>
+            <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={() => { setEditRootCause(""); setEditingRootCause(true); }}><Plus className="h-3 w-3 mr-1" />添加</Button>
+          </div>
+        </div>
+      ) : null}
+
       <div className="border-t" />
 
       <IssueCommentSection issueId={issue.id} agentId={agent?.agentId} comments={comments} onRefresh={() => fetchData(false)} />
@@ -245,6 +317,7 @@ export function IssueDetailPage() {
       environment={issue.environment}
       branch={issue.branch}
       links={issue.links}
+      commits={issue.commits}
       startedAt={issue.startedAt}
       completedAt={issue.completedAt}
       projectLabels={projectLabels}

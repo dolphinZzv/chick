@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { CreateIssueDialog } from "@/components/project/CreateIssueDialog";
 import { KanbanBoard } from "@/components/project/KanbanBoard";
+import { IssueListView } from "@/components/project/IssueListView";
 import { ProposalBoard } from "@/components/project/ProposalBoard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
@@ -22,7 +23,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, LayoutGrid, List } from "lucide-react";
 import { ErrorFallback } from "@/components/shared/ErrorFallback";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
@@ -70,6 +71,7 @@ export function ProjectDetailPage() {
 
   const [searchInput, setSearchInput] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [stateFilter, setStateFilter] = useState<string[]>([]);
   const [priorityFilter, setPriorityFilter] = useState("all");
   const [labelFilter, setLabelFilter] = useState<string[]>([]);
   const [milestoneFilter, setMilestoneFilter] = useState("all");
@@ -80,6 +82,7 @@ export function ProjectDetailPage() {
   const [validTransitions, setValidTransitions] = useState<Record<string, string[]>>({});
   const activeTab = (searchParams.get("tab") === "proposals" ? "proposals" : "issues") as "issues" | "proposals";
   const setActiveTab = (tab: "issues" | "proposals") => setSearchParams({ tab });
+  const [viewMode, setViewMode] = useState<"board" | "list">("board");
   const [proposals, setProposals] = useState<any[]>([]);
   const [refreshKey, setRefreshKey] = useState(0);
   const [transitionConfirm, setTransitionConfirm] = useState<{ open: boolean; issueId: string; toState: string; label: string }>({ open: false, issueId: "", toState: "", label: "" });
@@ -246,6 +249,7 @@ export function ProjectDetailPage() {
 
   const filters = {
     search: debouncedSearch,
+    state: stateFilter,
     priority: priorityFilter,
     labelIDs: labelFilter,
     assigneeID: assigneeFilter,
@@ -315,6 +319,29 @@ export function ProjectDetailPage() {
           onChange={(e) => setSearchInput(e.target.value)}
           className="h-8 w-full sm:w-48"
         />
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="outline" size="sm" className="h-8 gap-1 text-xs">
+              状态{stateFilter.length > 0 ? ` (${stateFilter.length})` : ""}
+              <ChevronDown className="h-3 w-3 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-36 p-2" align="start">
+            <div className="space-y-1">
+              {columns.map((c) => (
+                <label key={c.state} className="flex items-center gap-2 rounded px-1 py-1 text-xs hover:bg-accent cursor-pointer">
+                  <Checkbox
+                    checked={stateFilter.includes(c.state)}
+                    onCheckedChange={(checked) => {
+                      setStateFilter(checked ? [...stateFilter, c.state] : stateFilter.filter((s) => s !== c.state));
+                    }}
+                  />
+                  <span>{c.label}</span>
+                </label>
+              ))}
+            </div>
+          </PopoverContent>
+        </Popover>
         <Select value={priorityFilter} onValueChange={setPriorityFilter}>
           <SelectTrigger className="h-8 w-28">
             <SelectValue />
@@ -378,8 +405,26 @@ export function ProjectDetailPage() {
             ))}
           </SelectContent>
         </Select>
+
+        <div className="flex items-center border rounded-lg overflow-hidden">
+          <button
+            onClick={() => setViewMode("board")}
+            className={`p-1.5 ${viewMode === "board" ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:text-foreground"}`}
+            title="看板视图"
+          >
+            <LayoutGrid className="h-4 w-4" />
+          </button>
+          <button
+            onClick={() => setViewMode("list")}
+            className={`p-1.5 ${viewMode === "list" ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:text-foreground"}`}
+            title="列表视图"
+          >
+            <List className="h-4 w-4" />
+          </button>
+        </div>
       </div>
 
+      {viewMode === "board" ? (
       <KanbanBoard
         projectId={id!}
         columns={columns}
@@ -396,7 +441,14 @@ export function ProjectDetailPage() {
         onCreateMilestone={handleCreateMilestone}
         validTransitions={validTransitions}
       />
-        </>
+      ) : (
+      <IssueListView
+        projectId={id!}
+        filters={filters}
+        refreshKey={refreshKey}
+      />
+      )}
+        </> 
       )}
 
       {activeTab === "proposals" && (

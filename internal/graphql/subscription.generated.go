@@ -104,6 +104,12 @@ func (ec *executionContext) fieldContext_Subscription_issueUpdated(ctx context.C
 				return ec.fieldContext_Issue_branch(ctx, field)
 			case "links":
 				return ec.fieldContext_Issue_links(ctx, field)
+			case "commits":
+				return ec.fieldContext_Issue_commits(ctx, field)
+			case "solution":
+				return ec.fieldContext_Issue_solution(ctx, field)
+			case "rootCause":
+				return ec.fieldContext_Issue_rootCause(ctx, field)
 			case "closedAt":
 				return ec.fieldContext_Issue_closedAt(ctx, field)
 			case "startedAt":

@@ -35,6 +35,9 @@ type IssueCreateInput struct {
 	Environment *string
 	Branch      *string
 	Link        *string
+	Commits     *string
+	Solution    *string
+	RootCause   *string
 	Difficulty  *int
 	StartedAt   *time.Time
 	CompletedAt *time.Time
@@ -49,6 +52,9 @@ type IssueUpdateInput struct {
 	Environment *string
 	Branch      *string
 	Link        *string
+	Commits     *string
+	Solution    *string
+	RootCause   *string
 	StartedAt   *time.Time
 	CompletedAt *time.Time
 	Difficulty  *int
@@ -90,6 +96,9 @@ func (s *IssueService) Create(input IssueCreateInput) (*models.Issue, error) {
 			Environment: input.Environment,
 			Branch:      input.Branch,
 			Link:        input.Link,
+			Commits:     input.Commits,
+			Solution:    input.Solution,
+			RootCause:   input.RootCause,
 			Difficulty:  input.Difficulty,
 			StartedAt:   input.StartedAt,
 			CompletedAt: input.CompletedAt,
@@ -408,6 +417,27 @@ func (s *IssueService) Update(id uint, input IssueUpdateInput) (*models.Issue, e
 			changes["link"] = nil
 		} else {
 			changes["link"] = *input.Link
+		}
+	}
+	if input.Commits != nil {
+		if *input.Commits == "" {
+			changes["commits"] = nil
+		} else {
+			changes["commits"] = *input.Commits
+		}
+	}
+	if input.Solution != nil {
+		if *input.Solution == "" {
+			changes["solution"] = nil
+		} else {
+			changes["solution"] = *input.Solution
+		}
+	}
+	if input.RootCause != nil {
+		if *input.RootCause == "" {
+			changes["root_cause"] = nil
+		} else {
+			changes["root_cause"] = *input.RootCause
 		}
 	}
 	if input.StartedAt != nil {

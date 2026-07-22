@@ -12,7 +12,7 @@ export function Layout() {
   return (
     <div className="flex min-h-screen flex-col">
       <TopBar />
-      <main className="flex-1 min-w-0 p-4 lg:p-6">
+      <main className="flex-1 min-w-0 p-4 lg:p-6 w-full max-w-7xl mx-auto">
         <Outlet />
       </main>
     </div>

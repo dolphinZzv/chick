@@ -56,6 +56,37 @@ func linksToJson(links []string) *string {
 	return &s
 }
 
+func parseCommits(commits *string) []string {
+	if commits == nil || *commits == "" {
+		return []string{}
+	}
+	var result []string
+	if err := json.Unmarshal([]byte(*commits), &result); err == nil {
+		return result
+	}
+	return []string{strings.TrimSpace(*commits)}
+}
+
+func commitsToJson(commits []string) *string {
+	if len(commits) == 0 {
+		return nil
+	}
+	for i := range commits {
+		commits[i] = strings.TrimSpace(commits[i])
+	}
+	commits = filterEmpty(commits)
+	if len(commits) == 0 {
+		return nil
+	}
+	b, err := json.Marshal(commits)
+	if err != nil {
+		slog.Warn("commitsToJson: failed to marshal commits", "error", err, "commits", commits)
+		return nil
+	}
+	s := string(b)
+	return &s
+}
+
 func filterEmpty(ss []string) []string {
 	result := make([]string, 0, len(ss))
 	for _, s := range ss {
@@ -162,6 +193,9 @@ func issueFromModel(i *models.Issue) *Issue {
 		Environment: i.Environment,
 		Branch:      i.Branch,
 		Links:       parseLinks(i.Link),
+		Commits:     parseCommits(i.Commits),
+		Solution:    i.Solution,
+		RootCause:   i.RootCause,
 		ClosedAt:    i.ClosedAt,
 		StartedAt:   i.StartedAt,
 		CompletedAt: i.CompletedAt,

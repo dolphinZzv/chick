@@ -22,6 +22,8 @@ func (h *Handlers) registerEditIssue(r *ToolRegistry) {
 			"environment": StringParam("Environment name, e.g. staging, production"),
 			"branch":      StringParam("Branch name"),
 			"links":       ArrayParam("Related links (URLs)", "string"),
+			"solution":    StringParam("Solution description in Markdown"),
+			"rootCause":   StringParam("Root cause analysis in Markdown"),
 			"difficulty":  NumberParam("Implementation difficulty (1-5)"),
 			"startedAt":   StringParam("Start processing time (RFC3339)"),
 			"completedAt": StringParam("End processing time (RFC3339)"),
@@ -39,6 +41,8 @@ func (h *Handlers) handleEditIssue(id json.RawMessage, params json.RawMessage, a
 		Environment string   `json:"environment"`
 		Branch      string   `json:"branch"`
 		Links       []string `json:"links"`
+		Solution    string   `json:"solution"`
+		RootCause   string   `json:"rootCause"`
 		Difficulty  int      `json:"difficulty"`
 		StartedAt   string   `json:"startedAt"`
 		CompletedAt string   `json:"completedAt"`
@@ -62,7 +66,7 @@ func (h *Handlers) handleEditIssue(id json.RawMessage, params json.RawMessage, a
 		return NewError(id, -32602, "Access denied: not a member of this project")
 	}
 
-	if p.Title == "" && p.Description == "" && p.Priority == "" && p.Difficulty == 0 && p.StartedAt == "" && p.CompletedAt == "" && len(p.Links) == 0 {
+	if p.Title == "" && p.Description == "" && p.Priority == "" && p.Difficulty == 0 && p.StartedAt == "" && p.CompletedAt == "" && len(p.Links) == 0 && p.Solution == "" && p.RootCause == "" {
 		return NewError(id, -32602, "At least one field must be provided for update")
 	}
 
@@ -117,6 +121,8 @@ func (h *Handlers) handleEditIssue(id json.RawMessage, params json.RawMessage, a
 		Environment: strPtr(p.Environment),
 		Branch:      strPtr(p.Branch),
 		Link:        linkInput,
+		Solution:    strPtr(p.Solution),
+		RootCause:   strPtr(p.RootCause),
 		StartedAt:   startedAt,
 		CompletedAt: completedAt,
 		Difficulty:  diff,

@@ -35,6 +35,7 @@ interface IssueMetaSidebarProps {
   environment: string | null;
   branch: string | null;
   links: string[];
+  commits: string[];
   startedAt: string | null;
   completedAt: string | null;
   projectLabels: Label[];
@@ -55,6 +56,7 @@ export function IssueMetaSidebar({
   environment,
   branch,
   links,
+  commits,
   startedAt,
   completedAt,
   projectLabels,
@@ -79,6 +81,9 @@ export function IssueMetaSidebar({
   const [editingLinks, setEditingLinks] = useState(false);
   const [editLinks, setEditLinks] = useState<string[]>([]);
   const [newLink, setNewLink] = useState("");
+  const [editingCommits, setEditingCommits] = useState(false);
+  const [editCommits, setEditCommits] = useState<string[]>([]);
+  const [newCommit, setNewCommit] = useState("");
   const [showTimeFields, setShowTimeFields] = useState(false);
   const [editStartedAt, setEditStartedAt] = useState("");
   const [editCompletedAt, setEditCompletedAt] = useState("");
@@ -189,6 +194,7 @@ export function IssueMetaSidebar({
   const handleSaveEnv = () => { onIssueUpdate({ environment: editEnv || null }); setEditingEnv(false); };
   const handleSaveBranch = () => { onIssueUpdate({ branch: editBranch || null }); setEditingBranch(false); };
   const handleSaveLinks = () => { const allLinks = newLink.trim() ? [...editLinks, newLink.trim()] : editLinks; onIssueUpdate({ links: allLinks }); setEditingLinks(false); };
+  const handleSaveCommits = () => { const allCommits = newCommit.trim() ? [...editCommits, newCommit.trim()] : editCommits; onIssueUpdate({ commits: allCommits }); setEditingCommits(false); };
   const handleSaveTimeFields = () => { onIssueUpdate({ startedAt: editStartedAt || null, completedAt: editCompletedAt || null }); setShowTimeFields(false); };
 
   return (
@@ -380,6 +386,46 @@ export function IssueMetaSidebar({
             {links.map((url, idx) => (
               <div key={idx} className="flex items-center gap-1 text-sm">
                 <a href={url} target="_blank" rel="noreferrer" className="text-primary underline hover:text-primary/80 truncate flex-1">{url}</a>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <span className="text-sm text-muted-foreground">未设置</span>
+        )}
+      </div>
+
+      {/* Commits */}
+      <div className="border bg-card p-4 rounded-lg">
+        <div className="flex items-center justify-between mb-1">
+          <span className="text-xs text-muted-foreground">提交</span>
+          {!editingCommits && agentId && (
+            <Button variant="ghost" size="sm" className="h-7 px-2 text-xs min-h-[44px]" aria-label={commits.length > 0 ? "编辑提交" : "添加提交"} onClick={() => { setEditCommits([...commits]); setEditingCommits(true); }}>
+              <Plus className="h-3 w-3 mr-1" />{commits.length > 0 ? "编辑" : "添加"}
+            </Button>
+          )}
+        </div>
+        {editingCommits ? (
+          <div className="space-y-2">
+            {editCommits.map((hash, idx) => (
+              <div key={idx} className="flex items-center gap-1">
+                <Input value={hash} onChange={(e) => { const u = [...editCommits]; u[idx] = e.target.value; setEditCommits(u); }} className="h-7 text-xs flex-1 font-mono" />
+                <Button size="sm" variant="ghost" className="h-7 px-1 text-muted-foreground hover:text-destructive shrink-0" onClick={() => setEditCommits(editCommits.filter((_, i) => i !== idx))}><X className="h-3 w-3" /></Button>
+              </div>
+            ))}
+            <div className="flex items-center gap-1">
+              <Input value={newCommit} onChange={(e) => setNewCommit(e.target.value)} placeholder="commit hash" className="h-7 text-xs flex-1 font-mono" onKeyDown={(e) => { if (e.key === "Enter" && newCommit.trim()) { setEditCommits([...editCommits, newCommit.trim()]); setNewCommit(""); } }} />
+              <Button size="sm" className="h-7 text-xs shrink-0" onClick={() => { if (newCommit.trim()) { setEditCommits([...editCommits, newCommit.trim()]); setNewCommit(""); } }} disabled={!newCommit.trim()}><Plus className="h-3 w-3" /></Button>
+            </div>
+            <div className="flex justify-end gap-1">
+              <Button size="sm" className="h-7 text-xs" onClick={handleSaveCommits}>确定</Button>
+              <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => setEditingCommits(false)}>取消</Button>
+            </div>
+          </div>
+        ) : commits.length > 0 ? (
+          <div className="space-y-1">
+            {commits.map((hash, idx) => (
+              <div key={idx} className="flex items-center gap-1 text-sm font-mono">
+                <span className="truncate flex-1">{hash}</span>
               </div>
             ))}
           </div>

@@ -18,7 +18,7 @@ var validTransitions = map[models.IssueState][]models.IssueState{
 	models.IssueStateOpen:                {models.IssueStateInProgress, models.IssueStateBlocked, models.IssueStateLater, models.IssueStateClosedNotPlanned},
 	models.IssueStateInProgress:          {models.IssueStateBlocked, models.IssueStateReview, models.IssueStateLater},
 	models.IssueStateBlocked:             {models.IssueStateInProgress, models.IssueStateClosedNotPlanned, models.IssueStateLater},
-	models.IssueStateReview:              {models.IssueStateInProgress, models.IssueStateClosedCompleted, models.IssueStateClosedNotPlanned, models.IssueStateClosedRejected, models.IssueStateLater, models.IssueStatePendingConfirmation},
+	models.IssueStateReview:              {models.IssueStateInProgress, models.IssueStateClosedCompleted, models.IssueStateClosedNotPlanned, models.IssueStateClosedRejected, models.IssueStateLater, models.IssueStatePendingConfirmation, models.IssueStateReopen},
 	models.IssueStatePendingConfirmation: {models.IssueStateClosedCompleted, models.IssueStateInProgress, models.IssueStateClosedNotPlanned, models.IssueStateLater},
 	models.IssueStateLater:               {models.IssueStateOpen, models.IssueStateClosedNotPlanned},
 	models.IssueStateReopen:              {models.IssueStateInProgress, models.IssueStateBlocked, models.IssueStateLater},

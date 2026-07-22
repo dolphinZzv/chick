@@ -82,6 +82,9 @@ type Issue struct {
 	Environment      *string          `json:"environment,omitempty"`
 	Branch           *string          `json:"branch,omitempty"`
 	Links            []string         `json:"links,omitempty"`
+	Commits          []string         `json:"commits,omitempty"`
+	Solution         *string          `json:"solution,omitempty"`
+	RootCause        *string          `json:"rootCause,omitempty"`
 	ClosedAt         *time.Time       `json:"closedAt,omitempty"`
 	StartedAt        *time.Time       `json:"startedAt,omitempty"`
 	CompletedAt      *time.Time       `json:"completedAt,omitempty"`

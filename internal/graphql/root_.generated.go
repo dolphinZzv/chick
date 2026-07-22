@@ -95,6 +95,7 @@ type ComplexityRoot struct {
 		Branch           func(childComplexity int) int
 		Children         func(childComplexity int) int
 		ClosedAt         func(childComplexity int) int
+		Commits          func(childComplexity int) int
 		CompletedAt      func(childComplexity int) int
 		CreatedAt        func(childComplexity int) int
 		Creator          func(childComplexity int) int
@@ -111,6 +112,8 @@ type ComplexityRoot struct {
 		ParentID         func(childComplexity int) int
 		Priority         func(childComplexity int) int
 		ProjectID        func(childComplexity int) int
+		RootCause        func(childComplexity int) int
+		Solution         func(childComplexity int) int
 		StartedAt        func(childComplexity int) int
 		State            func(childComplexity int) int
 		StructuredOutput func(childComplexity int) int
@@ -170,7 +173,7 @@ type ComplexityRoot struct {
 		AddTaskComment            func(childComplexity int, taskID string, authorID string, body string, contentType CommentContentType) int
 		AssignTask                func(childComplexity int, id string, assigneeID string) int
 		CreateFeedback            func(childComplexity int, targetType FeedbackTargetType, targetID string, authorID string, rating FeedbackRating, body *string) int
-		CreateIssue               func(childComplexity int, projectID string, title string, description *string, priority Priority, assigneeIDs []string, labelIDs []string, milestoneID *string, environment *string, branch *string, links []string) int
+		CreateIssue               func(childComplexity int, projectID string, title string, description *string, priority Priority, assigneeIDs []string, labelIDs []string, milestoneID *string, environment *string, branch *string, links []string, commits []string, solution *string, rootCause *string) int
 		CreateLabel               func(childComplexity int, projectID string, name string, color *string, capability *string, group *string) int
 		CreateMilestone           func(childComplexity int, projectID string, title string, description *string, dueDate *time.Time) int
 		CreateProject             func(childComplexity int, name string, description *string) int
@@ -205,7 +208,7 @@ type ComplexityRoot struct {
 		UpdateAgentStatus         func(childComplexity int, id string, status AgentStatus) int
 		UpdateAssigneeState       func(childComplexity int, issueID string, agentID string, state AssigneeState) int
 		UpdateComment             func(childComplexity int, id string, body string) int
-		UpdateIssue               func(childComplexity int, id string, title *string, description *string, priority *Priority, dueDate *time.Time, milestoneID *string, environment *string, branch *string, links []string, startedAt *time.Time, completedAt *time.Time, difficulty *int32) int
+		UpdateIssue               func(childComplexity int, id string, title *string, description *string, priority *Priority, dueDate *time.Time, milestoneID *string, environment *string, branch *string, links []string, commits []string, solution *string, rootCause *string, startedAt *time.Time, completedAt *time.Time, difficulty *int32) int
 		UpdateLabel               func(childComplexity int, id string, name *string, color *string) int
 		UpdateMilestone           func(childComplexity int, id string, title *string, description *string, dueDate *time.Time, state *MilestoneState) int
 		UpdateNotificationSetting func(childComplexity int, agentID string, notificationType string, enabled bool, channel *string) int
@@ -754,6 +757,13 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.ComplexityRoot.Issue.ClosedAt(childComplexity), true
 
+	case "Issue.commits":
+		if e.ComplexityRoot.Issue.Commits == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Issue.Commits(childComplexity), true
+
 	case "Issue.completedAt":
 		if e.ComplexityRoot.Issue.CompletedAt == nil {
 			break
@@ -865,6 +875,20 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.Issue.ProjectID(childComplexity), true
+
+	case "Issue.rootCause":
+		if e.ComplexityRoot.Issue.RootCause == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Issue.RootCause(childComplexity), true
+
+	case "Issue.solution":
+		if e.ComplexityRoot.Issue.Solution == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Issue.Solution(childComplexity), true
 
 	case "Issue.startedAt":
 		if e.ComplexityRoot.Issue.StartedAt == nil {
@@ -1203,7 +1227,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.ComplexityRoot.Mutation.CreateIssue(childComplexity, args["projectID"].(string), args["title"].(string), args["description"].(*string), args["priority"].(Priority), args["assigneeIDs"].([]string), args["labelIDs"].([]string), args["milestoneId"].(*string), args["environment"].(*string), args["branch"].(*string), args["links"].([]string)), true
+		return e.ComplexityRoot.Mutation.CreateIssue(childComplexity, args["projectID"].(string), args["title"].(string), args["description"].(*string), args["priority"].(Priority), args["assigneeIDs"].([]string), args["labelIDs"].([]string), args["milestoneId"].(*string), args["environment"].(*string), args["branch"].(*string), args["links"].([]string), args["commits"].([]string), args["solution"].(*string), args["rootCause"].(*string)), true
 
 	case "Mutation.createLabel":
 		if e.ComplexityRoot.Mutation.CreateLabel == nil {
@@ -1623,7 +1647,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.ComplexityRoot.Mutation.UpdateIssue(childComplexity, args["id"].(string), args["title"].(*string), args["description"].(*string), args["priority"].(*Priority), args["dueDate"].(*time.Time), args["milestoneId"].(*string), args["environment"].(*string), args["branch"].(*string), args["links"].([]string), args["startedAt"].(*time.Time), args["completedAt"].(*time.Time), args["difficulty"].(*int32)), true
+		return e.ComplexityRoot.Mutation.UpdateIssue(childComplexity, args["id"].(string), args["title"].(*string), args["description"].(*string), args["priority"].(*Priority), args["dueDate"].(*time.Time), args["milestoneId"].(*string), args["environment"].(*string), args["branch"].(*string), args["links"].([]string), args["commits"].([]string), args["solution"].(*string), args["rootCause"].(*string), args["startedAt"].(*time.Time), args["completedAt"].(*time.Time), args["difficulty"].(*int32)), true
 
 	case "Mutation.updateLabel":
 		if e.ComplexityRoot.Mutation.UpdateLabel == nil {

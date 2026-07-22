@@ -404,6 +404,93 @@ func (ec *executionContext) fieldContext_Issue_links(_ context.Context, field gr
 	return fc, nil
 }
 
+func (ec *executionContext) _Issue_commits(ctx context.Context, field graphql.CollectedField, obj *Issue) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Issue_commits,
+		func(ctx context.Context) (any, error) {
+			return obj.Commits, nil
+		},
+		nil,
+		ec.marshalOString2ᚕstringᚄ,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_Issue_commits(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Issue",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Issue_solution(ctx context.Context, field graphql.CollectedField, obj *Issue) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Issue_solution,
+		func(ctx context.Context) (any, error) {
+			return obj.Solution, nil
+		},
+		nil,
+		ec.marshalOString2ᚖstring,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_Issue_solution(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Issue",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Issue_rootCause(ctx context.Context, field graphql.CollectedField, obj *Issue) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Issue_rootCause,
+		func(ctx context.Context) (any, error) {
+			return obj.RootCause, nil
+		},
+		nil,
+		ec.marshalOString2ᚖstring,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_Issue_rootCause(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Issue",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Issue_closedAt(ctx context.Context, field graphql.CollectedField, obj *Issue) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -791,6 +878,12 @@ func (ec *executionContext) fieldContext_Issue_children(_ context.Context, field
 				return ec.fieldContext_Issue_branch(ctx, field)
 			case "links":
 				return ec.fieldContext_Issue_links(ctx, field)
+			case "commits":
+				return ec.fieldContext_Issue_commits(ctx, field)
+			case "solution":
+				return ec.fieldContext_Issue_solution(ctx, field)
+			case "rootCause":
+				return ec.fieldContext_Issue_rootCause(ctx, field)
 			case "closedAt":
 				return ec.fieldContext_Issue_closedAt(ctx, field)
 			case "startedAt":
@@ -1195,6 +1288,12 @@ func (ec *executionContext) fieldContext_IssueConnection_edges(_ context.Context
 				return ec.fieldContext_Issue_branch(ctx, field)
 			case "links":
 				return ec.fieldContext_Issue_links(ctx, field)
+			case "commits":
+				return ec.fieldContext_Issue_commits(ctx, field)
+			case "solution":
+				return ec.fieldContext_Issue_solution(ctx, field)
+			case "rootCause":
+				return ec.fieldContext_Issue_rootCause(ctx, field)
 			case "closedAt":
 				return ec.fieldContext_Issue_closedAt(ctx, field)
 			case "startedAt":
@@ -1325,6 +1424,12 @@ func (ec *executionContext) _Issue(ctx context.Context, sel ast.SelectionSet, ob
 			out.Values[i] = ec._Issue_branch(ctx, field, obj)
 		case "links":
 			out.Values[i] = ec._Issue_links(ctx, field, obj)
+		case "commits":
+			out.Values[i] = ec._Issue_commits(ctx, field, obj)
+		case "solution":
+			out.Values[i] = ec._Issue_solution(ctx, field, obj)
+		case "rootCause":
+			out.Values[i] = ec._Issue_rootCause(ctx, field, obj)
 		case "closedAt":
 			out.Values[i] = ec._Issue_closedAt(ctx, field, obj)
 		case "startedAt":
