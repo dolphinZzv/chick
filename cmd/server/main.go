@@ -1,6 +1,9 @@
 package main
 
 import (
+	"bufio"
+	"crypto/rand"
+	"encoding/hex"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -23,9 +26,24 @@ import (
 )
 
 func main() {
+	stdio := flag.Bool("stdio", false, "Run in MCP stdio mode (read JSON-RPC from stdin, write to stdout)")
 	flag.Parse()
 
 	cfg := config.Load()
+
+	if *stdio {
+		runStdio(cfg)
+		return
+	}
+
+	if cfg.JWTSecret == "" {
+		b := make([]byte, 32)
+		if _, err := rand.Read(b); err != nil {
+			log.Fatalf("generate jwt secret: %v", err)
+		}
+		cfg.JWTSecret = hex.EncodeToString(b)
+		log.Printf("[server] CHICK_JWT_SECRET not set, generated random secret (set it to persist sessions across restarts)")
+	}
 
 	srv, err := server.New(cfg)
 	if err != nil {
@@ -47,7 +65,9 @@ func main() {
 	mcpServer := mcp.NewServer(mcpHandlers)
 
 	// Start offline timeout watcher
-	go srv.MatchingEngine.WatchOfflineTimeout(60*time.Second, 5*time.Minute)
+	checkInterval, _ := time.ParseDuration(cfg.MatchingCheckInterval)
+	offlineTimeout, _ := time.ParseDuration(cfg.MatchingOfflineTimeout)
+	go srv.MatchingEngine.WatchOfflineTimeout(checkInterval, offlineTimeout)
 
 	corsMW := server.CORSMiddleware(cfg.AllowedOrigins)
 	authMW := srv.Authenticator.HTTPMiddleware
@@ -69,8 +89,23 @@ func main() {
 
 	// Health check (no auth)
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		sqlDB, err := srv.DB.DB()
+		dbStatus := "ok"
+		if err != nil || sqlDB.Ping() != nil {
+			dbStatus = "error"
+		}
+		info := map[string]interface{}{
+			"status":   "ok",
+			"database": dbStatus,
+			"driver":   cfg.DBDriver,
+		}
+		status := http.StatusOK
+		if dbStatus != "ok" {
+			status = http.StatusServiceUnavailable
+		}
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(`{"status":"ok"}`))
+		w.WriteHeader(status)
+		json.NewEncoder(w).Encode(info)
 	})
 
 	// pprof (auth required, only when enabled)
@@ -130,6 +165,62 @@ func main() {
 	sqlDB, err := srv.DB.DB()
 	if err == nil {
 		sqlDB.Close()
+	}
+}
+
+// runStdio runs the MCP server in stdio mode.
+func runStdio(cfg *config.Config) {
+	srv, err := server.New(cfg)
+	if err != nil {
+		log.Fatalf("init server: %v", err)
+	}
+
+	mcpHandlers := mcp.NewHandlers(
+		srv.ProjectService,
+		srv.AgentService,
+		srv.IssueService,
+		srv.CommentService,
+		srv.ProposalService,
+		srv.TaskService,
+		srv.WorkflowService,
+		srv.NotifService,
+		cfg.DefaultRequirementProjectID,
+	)
+	mcpServer := mcp.NewServer(mcpHandlers)
+
+	agentToken := os.Getenv("CHICK_AGENT_TOKEN")
+	if agentToken == "" {
+		agentToken = cfg.AdminToken
+	}
+	if agentToken == "" {
+		log.Fatalf("CHICK_AGENT_TOKEN or CHICK_ADMIN_TOKEN must be set in stdio mode")
+	}
+
+	agent, err := srv.AgentService.Authenticate(agentToken)
+	if err != nil {
+		log.Fatalf("auth: %v", err)
+	}
+
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Buffer(make([]byte, 1024*1024), 1024*1024)
+	for scanner.Scan() {
+		line := strings.TrimSpace(scanner.Text())
+		if line == "" {
+			continue
+		}
+		var req mcp.Request
+		if err := json.Unmarshal([]byte(line), &req); err != nil {
+			resp := mcp.NewParseError(nil)
+			json.NewEncoder(os.Stdout).Encode(resp)
+			fmt.Fprintln(os.Stdout)
+			continue
+		}
+		resp := mcpServer.HandleRequest(&req, agent.ID, "stdio")
+		json.NewEncoder(os.Stdout).Encode(resp)
+		fmt.Fprintln(os.Stdout)
+	}
+	if err := scanner.Err(); err != nil {
+		log.Fatalf("stdio read: %v", err)
 	}
 }
 

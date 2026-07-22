@@ -17,6 +17,43 @@ check:
 	cd ui && npx tsc --noEmit
 	@echo "=== 门禁检查: 全部通过 ==="
 
+# ─── 快速启动（跳过门禁，仅构建 + 启动）───────────────────
+
+run: build
+	@echo "=== 释放端口 8082 ==="
+	@pid=$$(lsof -ti:8082 2>/dev/null || true); \
+	if [ -n "$$pid" ]; then \
+		echo "  Port 8082 occupied by PID $$pid, killing..."; \
+		kill $$pid 2>/dev/null || true; \
+		sleep 1; \
+	fi
+	@echo "=== 启动应用 ==="
+	CHICK_PORT=8082 \
+	CHICK_ALLOW_HUMAN_REGISTRATION=true \
+		CHICK_ALLOWED_ORIGINS="*" \
+	CHICK_JWT_SECRET=$${CHICK_JWT_SECRET:-chick-dev-secret-key-2024} \
+	nohup ./bin/chick &>/tmp/chick-server.log &
+	@sleep 1
+	@echo "  PID: $$!"
+	@sleep 3
+	@echo "=== 启动后检查: 健康端点 ==="
+	@status=$$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8082/health 2>/dev/null); \
+	if [ "$$status" = "200" ]; then \
+		echo "  ✅ 健康检查通过 (HTTP $$status)"; \
+	else \
+		echo "  ❌ 健康检查失败 (HTTP $$status)"; \
+		exit 1; \
+	fi
+	@echo "=== 启动后检查: 页面 ==="
+	@status=$$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8082/ 2>/dev/null); \
+	if [ "$$status" = "200" ]; then \
+		echo "  ✅ 页面返回 200"; \
+	else \
+		echo "  ❌ 页面返回 $$status"; \
+		exit 1; \
+	fi
+	@echo "=== 启动完成: http://0.0.0.0:8082 ==="
+
 # ─── 前端构建 ──────────────────────────────────────────────
 
 ui-build:

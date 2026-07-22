@@ -13,7 +13,7 @@ import (
 )
 
 // SeedData populates the database with initial data if it's empty.
-func SeedData(db *gorm.DB) error {
+func SeedData(db *gorm.DB, adminToken string) error {
 	var count int64
 	if err := db.Model(&models.Agent{}).Count(&count).Error; err != nil {
 		return fmt.Errorf("seed: count agents: %w", err)
@@ -25,7 +25,12 @@ func SeedData(db *gorm.DB) error {
 
 	// ── Admin agent ──────────────────────────────────────────
 	hash, _ := bcrypt.GenerateFromPassword([]byte("admin"), bcrypt.DefaultCost)
-	token := randomHex(32)
+	token := adminToken
+	if token == "" {
+		token = randomHex(32)
+	} else {
+		log.Println("[seed] using CHICK_ADMIN_TOKEN for admin agent")
+	}
 	admin := &models.Agent{
 		Name:       "admin",
 		Kind:       models.AgentKindHuman,

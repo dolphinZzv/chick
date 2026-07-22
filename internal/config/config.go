@@ -11,6 +11,7 @@ type Config struct {
 	DBDSN                       string
 	Port                        string
 	JWTSecret                   string
+	AdminToken                  string
 	AllowedOrigins              []string
 	DevMode                     bool
 	AllowHumanRegistration      bool
@@ -20,6 +21,8 @@ type Config struct {
 	RedisAddr                   string
 	RedisPassword               string
 	RedisDB                     int
+	MatchingCheckInterval       string
+	MatchingOfflineTimeout      string
 }
 
 func Load() *Config {
@@ -29,12 +32,15 @@ func Load() *Config {
 		DBDSN:                       getEnv("CHICK_DB_DSN", "file:dev.db?_pragma=journal_mode(WAL)"),
 		Port:                        getEnv("CHICK_PORT", "8080"),
 		JWTSecret:                   getEnv("CHICK_JWT_SECRET", ""),
+		AdminToken:                  getEnv("CHICK_ADMIN_TOKEN", ""),
 		AllowedOrigins:              splitOrigins(origins),
 		DevMode:                     getEnv("CHICK_DEV_MODE", "") == "true",
 		AllowHumanRegistration:      getEnv("CHICK_ALLOW_HUMAN_REGISTRATION", "false") == "true",
 		MCPAllowedCIDRs:             splitCIDRs(getEnv("CHICK_MCP_ALLOWED_CIDRS", "")),
 		DefaultRequirementProjectID: uint(getEnvInt("CHICK_REQUIREMENT_PROJECT_ID", 0)),
 		PprofEnabled:                getEnv("CHICK_PPROF_ENABLED", "false") == "true",
+		MatchingCheckInterval:       getEnv("CHICK_MATCHING_CHECK_INTERVAL", "60s"),
+		MatchingOfflineTimeout:      getEnv("CHICK_MATCHING_OFFLINE_TIMEOUT", "5m"),
 		RedisAddr:                   getEnv("CHICK_REDIS_ADDR", "localhost:6379"),
 		RedisPassword:               getEnv("CHICK_REDIS_PASSWORD", ""),
 		RedisDB:                     getEnvInt("CHICK_REDIS_DB", 1),
