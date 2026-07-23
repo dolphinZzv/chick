@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"morning-glory/internal/events"
+	"morning-glory/internal/models"
 
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
@@ -318,6 +319,7 @@ func (s *Service) markAllReadRedis(agentID uint) error {
 }
 
 // ListByAgent returns notifications for a specific agent, optionally filtered by project.
+// Broadcast notifications are filtered by the agent's notification settings.
 func (s *Service) ListByAgent(agentID uint, projectID ...uint) []Notification {
 	if s.rdb != nil {
 		return s.listByAgentRedis(agentID, projectID...)
@@ -330,10 +332,14 @@ func (s *Service) listByAgentMem(agentID uint, projectID ...uint) []Notification
 	defer s.mu.RUnlock()
 
 	filterProject := len(projectID) > 0 && projectID[0] > 0
+	disabledTypes := s.disabledTypes(agentID)
 
 	var result []Notification
 	for _, n := range s.notifications {
 		if n.AgentID != 0 && n.AgentID != agentID {
+			continue
+		}
+		if n.AgentID == broadcastAgentID && disabledTypes[string(n.Type)] {
 			continue
 		}
 		if filterProject && n.ProjectID != projectID[0] {
@@ -350,6 +356,7 @@ func (s *Service) listByAgentMem(agentID uint, projectID ...uint) []Notification
 func (s *Service) listByAgentRedis(agentID uint, projectID ...uint) []Notification {
 	ctx := context.Background()
 	filterProject := len(projectID) > 0 && projectID[0] > 0
+	disabledTypes := s.disabledTypes(agentID)
 
 	// Get IDs from both agent set and broadcast set
 	agentIDs, _ := s.rdb.ZRevRange(ctx, agentSetKey(agentID), 0, -1).Result()
@@ -379,6 +386,9 @@ func (s *Service) listByAgentRedis(agentID uint, projectID ...uint) []Notificati
 		}
 		var n Notification
 		if err := json.Unmarshal([]byte(data), &n); err != nil {
+			continue
+		}
+		if n.AgentID == broadcastAgentID && disabledTypes[string(n.Type)] {
 			continue
 		}
 		if filterProject && n.ProjectID != projectID[0] {
@@ -509,6 +519,20 @@ func (s *Service) addRedis(n Notification) {
 		pipe.ZAdd(ctx, agentSetKey(n.AgentID), redis.Z{Score: score, Member: fmt.Sprint(id)})
 	}
 	pipe.Exec(ctx)
+}
+
+// disabledTypes returns a set of notification type strings that are disabled for the given agent.
+func (s *Service) disabledTypes(agentID uint) map[string]bool {
+	if s.db == nil {
+		return nil
+	}
+	var settings []models.NotificationSetting
+	s.db.Where("agent_id = ? AND enabled = ?", agentID, false).Find(&settings)
+	dt := make(map[string]bool, len(settings))
+	for _, st := range settings {
+		dt[st.NotificationType] = true
+	}
+	return dt
 }
 
 func parseID(s string) uint {
