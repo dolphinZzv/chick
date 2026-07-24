@@ -16,7 +16,7 @@ type Query {
   task(id: ID!): Task
   tasks(proposalID: ID!, state: TaskState, assigneeID: ID, search: String, limit: Int, offset: Int): TaskConnection!
   validTaskTransitions(state: TaskState!): [TaskState!]!
-  comments(issueID: ID, proposalID: ID, taskID: ID): [Comment!]!
+  comments(issueID: ID, proposalID: ID, taskID: ID, orderBy: String): [Comment!]!
   timeline(issueID: ID, proposalID: ID, taskID: ID): [TimelineEvent!]!
   validTransitions(state: IssueState!): [IssueState!]!
   feedback(targetType: FeedbackTargetType!, targetID: ID!): [Feedback!]!

@@ -83,6 +83,7 @@ type Issue struct {
 	Branch           *string          `json:"branch,omitempty"`
 	Links            []string         `json:"links,omitempty"`
 	Commits          []string         `json:"commits,omitempty"`
+	FixedInCommit    *string          `json:"fixedInCommit,omitempty"`
 	Solution         *string          `json:"solution,omitempty"`
 	RootCause        *string          `json:"rootCause,omitempty"`
 	ClosedAt         *time.Time       `json:"closedAt,omitempty"`

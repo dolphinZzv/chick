@@ -334,14 +334,18 @@ func (r *queryResolver) ValidTaskTransitions(ctx context.Context, state TaskStat
 }
 
 // Comments is the resolver for the comments field.
-func (r *queryResolver) Comments(ctx context.Context, issueID *string, proposalID *string, taskID *string) ([]*Comment, error) {
+func (r *queryResolver) Comments(ctx context.Context, issueID *string, proposalID *string, taskID *string, orderBy *string) ([]*Comment, error) {
+	asc := true
+	if orderBy != nil && *orderBy == "desc" {
+		asc = false
+	}
 	switch {
 	case issueID != nil:
 		iid := parseID(*issueID)
 		if _, err := r.requireIssueProjectMember(ctx, iid); err != nil {
 			return nil, err
 		}
-		comments, err := r.CommentSvc.ListByIssue(iid)
+		comments, err := r.CommentSvc.ListByIssue(iid, asc)
 		if err != nil {
 			return nil, fmt.Errorf("list comments: %w", err)
 		}
@@ -352,7 +356,7 @@ func (r *queryResolver) Comments(ctx context.Context, issueID *string, proposalI
 		return result, nil
 	case proposalID != nil:
 		pid := parseID(*proposalID)
-		comments, err := r.CommentSvc.ListByProposal(pid)
+		comments, err := r.CommentSvc.ListByProposal(pid, asc)
 		if err != nil {
 			return nil, fmt.Errorf("list comments: %w", err)
 		}
@@ -363,7 +367,7 @@ func (r *queryResolver) Comments(ctx context.Context, issueID *string, proposalI
 		return result, nil
 	case taskID != nil:
 		tid := parseID(*taskID)
-		comments, err := r.CommentSvc.ListByTask(tid)
+		comments, err := r.CommentSvc.ListByTask(tid, asc)
 		if err != nil {
 			return nil, fmt.Errorf("list comments: %w", err)
 		}

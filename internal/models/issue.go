@@ -44,6 +44,7 @@ type Issue struct {
 	Branch           *string `gorm:"type:varchar(255)"`
 	Link             *string `gorm:"type:text"`
 	Commits          *string `gorm:"type:text"`
+	FixedInCommit    *string `gorm:"type:varchar(255)"`
 	Solution         *string `gorm:"type:text"`
 	RootCause        *string `gorm:"type:text"`
 	StructuredOutput JSONMap `gorm:"type:jsonb;serializer:json"`

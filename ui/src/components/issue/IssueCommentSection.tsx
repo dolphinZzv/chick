@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Send } from "lucide-react";
+import { Send, ArrowUpDown } from "lucide-react";
 import { toast } from "sonner";
 import { gql } from "@/lib/graphql";
 import { MarkdownContent } from "@/components/shared/MarkdownContent";
@@ -29,6 +29,12 @@ export function IssueCommentSection({ issueId, agentId, comments, onRefresh }: I
   const [replyText, setReplyText] = useState("");
   const [previewComment, setPreviewComment] = useState(false);
   const [previewReply, setPreviewReply] = useState(false);
+  const [sortAsc, setSortAsc] = useState(false);
+
+  const sortedComments = [...comments].sort((a, b) => {
+    const diff = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+    return sortAsc ? diff : -diff;
+  });
 
   const handleComment = async (parentID?: string) => {
     const text = parentID ? replyText : newComment;
@@ -51,8 +57,18 @@ export function IssueCommentSection({ issueId, agentId, comments, onRefresh }: I
 
   return (
     <div className="space-y-4">
-      <h2 className="text-base font-medium">评论 ({comments.length})</h2>
-      {comments
+      <div className="flex items-center gap-2">
+        <h2 className="text-base font-medium">评论 ({comments.length})</h2>
+        <button
+          className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs text-muted-foreground hover:bg-accent transition-colors"
+          onClick={() => setSortAsc(!sortAsc)}
+          title={sortAsc ? "正序（旧→新）" : "倒序（新→旧）"}
+        >
+          <ArrowUpDown className="h-3 w-3" />
+          {sortAsc ? "正序" : "倒序"}
+        </button>
+      </div>
+      {sortedComments
         .filter((c) => !c.parentID)
         .map((parent) => (
         <div key={parent.id}>

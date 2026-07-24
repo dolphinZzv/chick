@@ -84,16 +84,16 @@ func (s *CommentService) GetByID(id uint) (*models.Comment, error) {
 	return s.commentRepo.GetByID(id)
 }
 
-func (s *CommentService) ListByIssue(issueID uint) ([]models.Comment, error) {
-	return s.commentRepo.ListByIssue(issueID)
+func (s *CommentService) ListByIssue(issueID uint, asc bool) ([]models.Comment, error) {
+	return s.commentRepo.ListByIssue(issueID, asc)
 }
 
-func (s *CommentService) ListByProposal(proposalID uint) ([]models.Comment, error) {
-	return s.commentRepo.ListByProposal(proposalID)
+func (s *CommentService) ListByProposal(proposalID uint, asc bool) ([]models.Comment, error) {
+	return s.commentRepo.ListByProposal(proposalID, asc)
 }
 
-func (s *CommentService) ListByTask(taskID uint) ([]models.Comment, error) {
-	return s.commentRepo.ListByTask(taskID)
+func (s *CommentService) ListByTask(taskID uint, asc bool) ([]models.Comment, error) {
+	return s.commentRepo.ListByTask(taskID, asc)
 }
 
 func (s *CommentService) Update(id uint, body string) (*models.Comment, error) {

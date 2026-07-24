@@ -575,6 +575,8 @@ func (ec *executionContext) fieldContext_Task_issues(_ context.Context, field gr
 				return ec.fieldContext_Issue_links(ctx, field)
 			case "commits":
 				return ec.fieldContext_Issue_commits(ctx, field)
+			case "fixedInCommit":
+				return ec.fieldContext_Issue_fixedInCommit(ctx, field)
 			case "solution":
 				return ec.fieldContext_Issue_solution(ctx, field)
 			case "rootCause":

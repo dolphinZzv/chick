@@ -50,6 +50,7 @@ type Issue {
   branch: String
   links: [String!]
   commits: [String!]
+  fixedInCommit: String
   solution: String
   rootCause: String
   closedAt: Time

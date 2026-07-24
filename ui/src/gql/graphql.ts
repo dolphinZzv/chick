@@ -131,6 +131,7 @@ export type Issue = {
   branch?: Maybe<Scalars['String']['output']>;
   children?: Maybe<Array<Issue>>;
   closedAt?: Maybe<Scalars['Time']['output']>;
+  commits?: Maybe<Array<Scalars['String']['output']>>;
   completedAt?: Maybe<Scalars['Time']['output']>;
   createdAt: Scalars['Time']['output'];
   creator: Agent;
@@ -139,6 +140,7 @@ export type Issue = {
   difficulty?: Maybe<Scalars['Int']['output']>;
   dueDate?: Maybe<Scalars['Time']['output']>;
   environment?: Maybe<Scalars['String']['output']>;
+  fixedInCommit?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   labels?: Maybe<Array<Label>>;
   links?: Maybe<Array<Scalars['String']['output']>>;
@@ -147,6 +149,8 @@ export type Issue = {
   parentID?: Maybe<Scalars['ID']['output']>;
   priority: Priority;
   projectID: Scalars['ID']['output'];
+  rootCause?: Maybe<Scalars['String']['output']>;
+  solution?: Maybe<Scalars['String']['output']>;
   startedAt?: Maybe<Scalars['Time']['output']>;
   state: IssueState;
   structuredOutput?: Maybe<Scalars['Map']['output']>;
@@ -339,13 +343,17 @@ export type MutationCreateFeedbackArgs = {
 export type MutationCreateIssueArgs = {
   assigneeIDs?: InputMaybe<Array<Scalars['ID']['input']>>;
   branch?: InputMaybe<Scalars['String']['input']>;
+  commits?: InputMaybe<Array<Scalars['String']['input']>>;
   description?: InputMaybe<Scalars['String']['input']>;
   environment?: InputMaybe<Scalars['String']['input']>;
+  fixedInCommit?: InputMaybe<Scalars['String']['input']>;
   labelIDs?: InputMaybe<Array<Scalars['ID']['input']>>;
   links?: InputMaybe<Array<Scalars['String']['input']>>;
   milestoneId?: InputMaybe<Scalars['ID']['input']>;
   priority: Priority;
   projectID: Scalars['ID']['input'];
+  rootCause?: InputMaybe<Scalars['String']['input']>;
+  solution?: InputMaybe<Scalars['String']['input']>;
   title: Scalars['String']['input'];
 };
 
@@ -575,15 +583,19 @@ export type MutationUpdateCommentArgs = {
 
 export type MutationUpdateIssueArgs = {
   branch?: InputMaybe<Scalars['String']['input']>;
+  commits?: InputMaybe<Array<Scalars['String']['input']>>;
   completedAt?: InputMaybe<Scalars['Time']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   difficulty?: InputMaybe<Scalars['Int']['input']>;
   dueDate?: InputMaybe<Scalars['Time']['input']>;
   environment?: InputMaybe<Scalars['String']['input']>;
+  fixedInCommit?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['ID']['input'];
   links?: InputMaybe<Array<Scalars['String']['input']>>;
   milestoneId?: InputMaybe<Scalars['ID']['input']>;
   priority?: InputMaybe<Priority>;
+  rootCause?: InputMaybe<Scalars['String']['input']>;
+  solution?: InputMaybe<Scalars['String']['input']>;
   startedAt?: InputMaybe<Scalars['Time']['input']>;
   title?: InputMaybe<Scalars['String']['input']>;
 };
@@ -808,6 +820,7 @@ export type QueryAgentsArgs = {
 
 export type QueryCommentsArgs = {
   issueID?: InputMaybe<Scalars['ID']['input']>;
+  orderBy?: InputMaybe<Scalars['String']['input']>;
   proposalID?: InputMaybe<Scalars['ID']['input']>;
   taskID?: InputMaybe<Scalars['ID']['input']>;
 };

@@ -125,18 +125,12 @@ export function DraggableIssue({
         </div>
       )}
       <LabelsDisplay labels={issue.labels} />
-      {issue.milestone && (
-        <p className="mt-1 text-[10px] text-muted-foreground truncate">⛳ {issue.milestone.title}</p>
-      )}
-      {issue.startedAt && (
-        <p className="mt-1 text-[10px] text-muted-foreground">开始 {new Date(issue.startedAt).toLocaleDateString()}</p>
-      )}
-      {issue.completedAt && (
-        <p className="mt-1 text-[10px] text-muted-foreground">完成 {new Date(issue.completedAt).toLocaleDateString()}</p>
-      )}
-      {issue.links && issue.links.length > 0 && (
-        <p className="mt-1 text-[10px] text-muted-foreground">🔗 {issue.links.length} 个链接</p>
-      )}
+      <div className="mt-1 flex flex-wrap gap-x-2 text-[10px] text-muted-foreground">
+        {issue.milestone && <span className="truncate">⛳ {issue.milestone.title}</span>}
+        {issue.startedAt && <span>开始 {new Date(issue.startedAt).toLocaleDateString()}</span>}
+        {issue.completedAt && <span>完成 {new Date(issue.completedAt).toLocaleDateString()}</span>}
+        {issue.links && issue.links.length > 0 && <span>🔗 {issue.links.length} 个链接</span>}
+      </div>
     </Link>
   );
 }
@@ -361,19 +355,11 @@ export function SimpleIssueCard({
           </div>
         )}
       </div>
-      {issue.startedAt && (
-        <div className="px-3 pb-1">
-          <p className="text-[10px] text-muted-foreground">开始 {new Date(issue.startedAt).toLocaleDateString()}</p>
-        </div>
-      )}
-      {issue.completedAt && (
-        <div className="px-3 pb-1">
-          <p className="text-[10px] text-muted-foreground">完成 {new Date(issue.completedAt).toLocaleDateString()}</p>
-        </div>
-      )}
-      {issue.links && issue.links.length > 0 && (
-        <div className="px-3 pb-1">
-          <p className="text-[10px] text-muted-foreground">🔗 {issue.links.length} 个链接</p>
+      {(issue.startedAt || issue.completedAt || (issue.links && issue.links.length > 0)) && (
+        <div className="flex flex-wrap gap-x-2 px-3 pb-1 text-[10px] text-muted-foreground">
+          {issue.startedAt && <span>开始 {new Date(issue.startedAt).toLocaleDateString()}</span>}
+          {issue.completedAt && <span>完成 {new Date(issue.completedAt).toLocaleDateString()}</span>}
+          {issue.links && issue.links.length > 0 && <span>🔗 {issue.links.length} 个链接</span>}
         </div>
       )}
       {transitions.length > 0 && (

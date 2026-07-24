@@ -24,40 +24,42 @@ type IssueService struct {
 }
 
 type IssueCreateInput struct {
-	ProjectID   uint
-	CreatorID   uint
-	Title       string
-	Description string
-	Priority    models.Priority
-	AssigneeIDs []uint
-	LabelIDs    []uint
-	MilestoneID *uint
-	Environment *string
-	Branch      *string
-	Link        *string
-	Commits     *string
-	Solution    *string
-	RootCause   *string
-	Difficulty  *int
-	StartedAt   *time.Time
-	CompletedAt *time.Time
+	ProjectID     uint
+	CreatorID     uint
+	Title         string
+	Description   string
+	Priority      models.Priority
+	AssigneeIDs   []uint
+	LabelIDs      []uint
+	MilestoneID   *uint
+	Environment   *string
+	Branch        *string
+	Link          *string
+	Commits       *string
+	FixedInCommit *string
+	Solution      *string
+	RootCause     *string
+	Difficulty    *int
+	StartedAt     *time.Time
+	CompletedAt   *time.Time
 }
 
 type IssueUpdateInput struct {
-	Title       *string
-	Description *string
-	Priority    *models.Priority
-	DueDate     *models.UnixNullTime
-	MilestoneID *uint
-	Environment *string
-	Branch      *string
-	Link        *string
-	Commits     *string
-	Solution    *string
-	RootCause   *string
-	StartedAt   *time.Time
-	CompletedAt *time.Time
-	Difficulty  *int
+	Title         *string
+	Description   *string
+	Priority      *models.Priority
+	DueDate       *models.UnixNullTime
+	MilestoneID   *uint
+	Environment   *string
+	Branch        *string
+	Link          *string
+	Commits       *string
+	FixedInCommit *string
+	Solution      *string
+	RootCause     *string
+	StartedAt     *time.Time
+	CompletedAt   *time.Time
+	Difficulty    *int
 }
 
 func NewIssueService(
@@ -86,22 +88,23 @@ func (s *IssueService) Create(input IssueCreateInput) (*models.Issue, error) {
 		txAssigneeRepo := gormrepo.NewIssueAssigneeRepo(tx)
 
 		issue = &models.Issue{
-			ProjectID:   input.ProjectID,
-			Title:       input.Title,
-			Description: input.Description,
-			State:       models.IssueStateOpen,
-			Priority:    input.Priority,
-			CreatorID:   input.CreatorID,
-			MilestoneID: input.MilestoneID,
-			Environment: input.Environment,
-			Branch:      input.Branch,
-			Link:        input.Link,
-			Commits:     input.Commits,
-			Solution:    input.Solution,
-			RootCause:   input.RootCause,
-			Difficulty:  input.Difficulty,
-			StartedAt:   input.StartedAt,
-			CompletedAt: input.CompletedAt,
+			ProjectID:     input.ProjectID,
+			Title:         input.Title,
+			Description:   input.Description,
+			State:         models.IssueStateOpen,
+			Priority:      input.Priority,
+			CreatorID:     input.CreatorID,
+			MilestoneID:   input.MilestoneID,
+			Environment:   input.Environment,
+			Branch:        input.Branch,
+			Link:          input.Link,
+			Commits:       input.Commits,
+			FixedInCommit: input.FixedInCommit,
+			Solution:      input.Solution,
+			RootCause:     input.RootCause,
+			Difficulty:    input.Difficulty,
+			StartedAt:     input.StartedAt,
+			CompletedAt:   input.CompletedAt,
 		}
 		if err := txIssueRepo.Create(issue); err != nil {
 			return fmt.Errorf("create issue: %w", err)
@@ -424,6 +427,13 @@ func (s *IssueService) Update(id uint, input IssueUpdateInput) (*models.Issue, e
 			changes["commits"] = nil
 		} else {
 			changes["commits"] = *input.Commits
+		}
+	}
+	if input.FixedInCommit != nil {
+		if *input.FixedInCommit == "" {
+			changes["fixed_in_commit"] = nil
+		} else {
+			changes["fixed_in_commit"] = *input.FixedInCommit
 		}
 	}
 	if input.Solution != nil {

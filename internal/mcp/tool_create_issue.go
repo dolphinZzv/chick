@@ -15,20 +15,23 @@ func (h *Handlers) registerCreateIssue(r *ToolRegistry) {
 		Name:        "create_issue",
 		Description: "Create a new issue in a project. The issue is the core work unit — use this to track bugs, features, tasks, or any actionable item. Required: title. The projectId is auto-detected if the agent belongs to only one project, otherwise it must be specified. The description, solution, and rootCause fields all support Markdown formatting.",
 		InputSchema: ObjectSchema(map[string]interface{}{
-			"title":       StringRequiredParam("Issue title (required)"),
-			"description": StringParam("Issue description in Markdown"),
-			"priority":    StringParam("Priority: critical / high / medium / low (default: medium)"),
-			"assigneeIds": ArrayParam("Agent IDs to assign (array of string IDs)", "string"),
-			"milestoneId": StringParam("Milestone ID to associate"),
-			"environment": StringParam("Environment name, e.g. staging, production"),
-			"branch":      StringParam("Branch name"),
-			"links":       ArrayParam("Related links (URLs)", "string"),
-			"solution":    StringParam("Solution description in Markdown"),
-			"rootCause":   StringParam("Root cause analysis in Markdown"),
-			"difficulty":  NumberParam("Implementation difficulty (1-5)"),
-			"startedAt":   StringParam("Start time (RFC3339 format, e.g. 2024-01-01T00:00:00Z)"),
-			"completedAt": StringParam("End time (RFC3339 format)"),
-			"projectId":   StringParam("Project ID (required if agent is member of multiple projects)"),
+			"title":         StringRequiredParam("Issue title (required)"),
+			"description":   StringParam("Issue description in Markdown"),
+			"priority":      StringParam("Priority: critical / high / medium / low (default: medium)"),
+			"assigneeIds":   ArrayParam("Agent IDs to assign (array of string IDs)", "string"),
+			"labelIds":      ArrayParam("Label IDs to tag the issue (array of string IDs)", "string"),
+			"milestoneId":   StringParam("Milestone ID to associate"),
+			"environment":   StringParam("Environment name, e.g. staging, production"),
+			"branch":        StringParam("Branch name"),
+			"links":         ArrayParam("Related links (URLs)", "string"),
+			"commits":       ArrayParam("Commit hashes", "string"),
+			"fixedInCommit": StringParam("Commit hash that fixed this issue"),
+			"solution":      StringParam("Solution description in Markdown"),
+			"rootCause":     StringParam("Root cause analysis in Markdown"),
+			"difficulty":    NumberParam("Implementation difficulty (1-5)"),
+			"startedAt":     StringParam("Start time (RFC3339 format, e.g. 2024-01-01T00:00:00Z)"),
+			"completedAt":   StringParam("End time (RFC3339 format)"),
+			"projectId":     StringParam("Project ID (required if agent is member of multiple projects)"),
 		}, []string{"title"}),
 		Handler: h.handleCreateIssue,
 	})
@@ -36,20 +39,23 @@ func (h *Handlers) registerCreateIssue(r *ToolRegistry) {
 
 func (h *Handlers) handleCreateIssue(id json.RawMessage, params json.RawMessage, creatorID uint, remoteAddr string) Response {
 	var p struct {
-		Title       string   `json:"title"`
-		Description string   `json:"description"`
-		Priority    string   `json:"priority"`
-		AssigneeIDs []string `json:"assigneeIds"`
-		MilestoneID string   `json:"milestoneId"`
-		Environment string   `json:"environment"`
-		Branch      string   `json:"branch"`
-		Links       []string `json:"links"`
-		Solution    string   `json:"solution"`
-		RootCause   string   `json:"rootCause"`
-		Difficulty  int      `json:"difficulty"`
-		StartedAt   string   `json:"startedAt"`
-		CompletedAt string   `json:"completedAt"`
-		ProjectID   string   `json:"projectId"`
+		Title         string   `json:"title"`
+		Description   string   `json:"description"`
+		Priority      string   `json:"priority"`
+		AssigneeIDs   []string `json:"assigneeIds"`
+		LabelIDs      []string `json:"labelIds"`
+		MilestoneID   string   `json:"milestoneId"`
+		Environment   string   `json:"environment"`
+		Branch        string   `json:"branch"`
+		Links         []string `json:"links"`
+		Commits       []string `json:"commits"`
+		FixedInCommit string   `json:"fixedInCommit"`
+		Solution      string   `json:"solution"`
+		RootCause     string   `json:"rootCause"`
+		Difficulty    int      `json:"difficulty"`
+		StartedAt     string   `json:"startedAt"`
+		CompletedAt   string   `json:"completedAt"`
+		ProjectID     string   `json:"projectId"`
 	}
 	if err := json.Unmarshal(params, &p); err != nil {
 		return NewError(id, -32602, "Invalid params: "+err.Error())
@@ -79,6 +85,13 @@ func (h *Handlers) handleCreateIssue(id json.RawMessage, params json.RawMessage,
 	for _, a := range p.AssigneeIDs {
 		if aid, err := strconv.ParseUint(a, 10, 64); err == nil {
 			assigneeIDs = append(assigneeIDs, uint(aid))
+		}
+	}
+
+	var labelIDs []uint
+	for _, lid := range p.LabelIDs {
+		if id, err := strconv.ParseUint(lid, 10, 64); err == nil {
+			labelIDs = append(labelIDs, uint(id))
 		}
 	}
 
@@ -114,7 +127,7 @@ func (h *Handlers) handleCreateIssue(id json.RawMessage, params json.RawMessage,
 		completedAt = &t
 	}
 	env, branch := strPtr(p.Environment), strPtr(p.Branch)
-	issue, err := h.issueSvc.Create(service.IssueCreateInput{ProjectID: projectID, CreatorID: creatorID, Title: p.Title, Description: p.Description, Priority: priority, AssigneeIDs: assigneeIDs, MilestoneID: milestoneID, Environment: env, Branch: branch, Link: mcpLinksToJson(p.Links), Solution: strPtr(p.Solution), RootCause: strPtr(p.RootCause), Difficulty: diff, StartedAt: startedAt, CompletedAt: completedAt})
+	issue, err := h.issueSvc.Create(service.IssueCreateInput{ProjectID: projectID, CreatorID: creatorID, Title: p.Title, Description: p.Description, Priority: priority, AssigneeIDs: assigneeIDs, LabelIDs: labelIDs, MilestoneID: milestoneID, Environment: env, Branch: branch, Link: mcpLinksToJson(p.Links), Commits: mcpLinksToJson(p.Commits), FixedInCommit: strPtr(p.FixedInCommit), Solution: strPtr(p.Solution), RootCause: strPtr(p.RootCause), Difficulty: diff, StartedAt: startedAt, CompletedAt: completedAt})
 	if err != nil {
 		return NewInternalError(id, err.Error())
 	}

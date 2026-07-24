@@ -25,10 +25,17 @@ func (r *CommentRepo) GetByID(id uint) (*models.Comment, error) {
 	return &c, err
 }
 
-func (r *CommentRepo) ListByIssue(issueID uint) ([]models.Comment, error) {
+func (r *CommentRepo) orderDir(asc bool) string {
+	if asc {
+		return "ASC"
+	}
+	return "DESC"
+}
+
+func (r *CommentRepo) ListByIssue(issueID uint, asc bool) ([]models.Comment, error) {
 	var list []models.Comment
 	err := r.db.Where("issue_id = ?", issueID).
-		Order("created_at ASC").
+		Order("created_at " + r.orderDir(asc)).
 		Preload("Author").
 		Preload("Replies").
 		Preload("Replies.Author").
@@ -36,10 +43,10 @@ func (r *CommentRepo) ListByIssue(issueID uint) ([]models.Comment, error) {
 	return list, err
 }
 
-func (r *CommentRepo) ListByProposal(proposalID uint) ([]models.Comment, error) {
+func (r *CommentRepo) ListByProposal(proposalID uint, asc bool) ([]models.Comment, error) {
 	var list []models.Comment
 	err := r.db.Where("proposal_id = ?", proposalID).
-		Order("created_at ASC").
+		Order("created_at " + r.orderDir(asc)).
 		Preload("Author").
 		Preload("Replies").
 		Preload("Replies.Author").
@@ -47,10 +54,10 @@ func (r *CommentRepo) ListByProposal(proposalID uint) ([]models.Comment, error) 
 	return list, err
 }
 
-func (r *CommentRepo) ListByTask(taskID uint) ([]models.Comment, error) {
+func (r *CommentRepo) ListByTask(taskID uint, asc bool) ([]models.Comment, error) {
 	var list []models.Comment
 	err := r.db.Where("task_id = ?", taskID).
-		Order("created_at ASC").
+		Order("created_at " + r.orderDir(asc)).
 		Preload("Author").
 		Preload("Replies").
 		Preload("Replies.Author").
@@ -58,10 +65,10 @@ func (r *CommentRepo) ListByTask(taskID uint) ([]models.Comment, error) {
 	return list, err
 }
 
-func (r *CommentRepo) ListByParent(parentID uint) ([]models.Comment, error) {
+func (r *CommentRepo) ListByParent(parentID uint, asc bool) ([]models.Comment, error) {
 	var list []models.Comment
 	err := r.db.Where("parent_id = ?", parentID).
-		Order("created_at ASC").
+		Order("created_at " + r.orderDir(asc)).
 		Preload("Author").
 		Find(&list).Error
 	return list, err

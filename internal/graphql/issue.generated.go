@@ -433,6 +433,35 @@ func (ec *executionContext) fieldContext_Issue_commits(_ context.Context, field 
 	return fc, nil
 }
 
+func (ec *executionContext) _Issue_fixedInCommit(ctx context.Context, field graphql.CollectedField, obj *Issue) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Issue_fixedInCommit,
+		func(ctx context.Context) (any, error) {
+			return obj.FixedInCommit, nil
+		},
+		nil,
+		ec.marshalOString2ᚖstring,
+		true,
+		false,
+	)
+}
+
+func (ec *executionContext) fieldContext_Issue_fixedInCommit(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Issue",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Issue_solution(ctx context.Context, field graphql.CollectedField, obj *Issue) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -880,6 +909,8 @@ func (ec *executionContext) fieldContext_Issue_children(_ context.Context, field
 				return ec.fieldContext_Issue_links(ctx, field)
 			case "commits":
 				return ec.fieldContext_Issue_commits(ctx, field)
+			case "fixedInCommit":
+				return ec.fieldContext_Issue_fixedInCommit(ctx, field)
 			case "solution":
 				return ec.fieldContext_Issue_solution(ctx, field)
 			case "rootCause":
@@ -1290,6 +1321,8 @@ func (ec *executionContext) fieldContext_IssueConnection_edges(_ context.Context
 				return ec.fieldContext_Issue_links(ctx, field)
 			case "commits":
 				return ec.fieldContext_Issue_commits(ctx, field)
+			case "fixedInCommit":
+				return ec.fieldContext_Issue_fixedInCommit(ctx, field)
 			case "solution":
 				return ec.fieldContext_Issue_solution(ctx, field)
 			case "rootCause":
@@ -1426,6 +1459,8 @@ func (ec *executionContext) _Issue(ctx context.Context, sel ast.SelectionSet, ob
 			out.Values[i] = ec._Issue_links(ctx, field, obj)
 		case "commits":
 			out.Values[i] = ec._Issue_commits(ctx, field, obj)
+		case "fixedInCommit":
+			out.Values[i] = ec._Issue_fixedInCommit(ctx, field, obj)
 		case "solution":
 			out.Values[i] = ec._Issue_solution(ctx, field, obj)
 		case "rootCause":

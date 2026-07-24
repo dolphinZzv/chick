@@ -21,13 +21,19 @@ func (h *Handlers) registerCreateIssuesBatch(r *ToolRegistry) {
 				"items": map[string]interface{}{
 					"type": "object",
 					"properties": map[string]interface{}{
-						"title":       StringRequiredParam("Issue title"),
-						"description": StringParam("Issue description in Markdown"),
-						"priority":    StringParam("Priority: critical / high / medium / low"),
-						"assigneeIds": ArrayParam("Agent IDs to assign", "string"),
-						"environment": StringParam("Environment name, e.g. staging, production"),
-						"branch":      StringParam("Branch name"),
-						"links":       ArrayParam("Related links (URLs)", "string"),
+						"title":         StringRequiredParam("Issue title"),
+						"description":   StringParam("Issue description in Markdown"),
+						"priority":      StringParam("Priority: critical / high / medium / low"),
+						"assigneeIds":   ArrayParam("Agent IDs to assign", "string"),
+						"labelIds":      ArrayParam("Label IDs", "string"),
+						"milestoneId":   StringParam("Milestone ID"),
+						"environment":   StringParam("Environment name, e.g. staging, production"),
+						"branch":        StringParam("Branch name"),
+						"links":         ArrayParam("Related links (URLs)", "string"),
+						"commits":       ArrayParam("Commit hashes", "string"),
+						"fixedInCommit": StringParam("Commit hash that fixed this issue"),
+						"solution":      StringParam("Solution description in Markdown"),
+						"rootCause":     StringParam("Root cause analysis in Markdown"),
 					},
 					"required": []string{"title"},
 				},
@@ -60,13 +66,19 @@ func (h *Handlers) handleCreateIssuesBatch(id json.RawMessage, params json.RawMe
 	var results []map[string]interface{}
 	for i, raw := range p.Issues {
 		var issue struct {
-			Title       string   `json:"title"`
-			Description string   `json:"description"`
-			Priority    string   `json:"priority"`
-			AssigneeIDs []string `json:"assigneeIds"`
-			Environment string   `json:"environment"`
-			Branch      string   `json:"branch"`
-			Links       []string `json:"links"`
+			Title         string   `json:"title"`
+			Description   string   `json:"description"`
+			Priority      string   `json:"priority"`
+			AssigneeIDs   []string `json:"assigneeIds"`
+			LabelIDs      []string `json:"labelIds"`
+			MilestoneID   string   `json:"milestoneId"`
+			Environment   string   `json:"environment"`
+			Branch        string   `json:"branch"`
+			Links         []string `json:"links"`
+			Commits       []string `json:"commits"`
+			FixedInCommit string   `json:"fixedInCommit"`
+			Solution      string   `json:"solution"`
+			RootCause     string   `json:"rootCause"`
 		}
 		if err := json.Unmarshal(raw, &issue); err != nil {
 			return NewError(id, -32602, fmt.Sprintf("issues[%d]: invalid params: %s", i, err))
@@ -92,7 +104,22 @@ func (h *Handlers) handleCreateIssuesBatch(id json.RawMessage, params json.RawMe
 			}
 		}
 
-		created, err := h.issueSvc.Create(service.IssueCreateInput{ProjectID: projectID, CreatorID: creatorID, Title: issue.Title, Description: issue.Description, Priority: priority, AssigneeIDs: assigneeIDs, Environment: strPtr(issue.Environment), Branch: strPtr(issue.Branch), Link: mcpLinksToJson(issue.Links)})
+		var labelIDs []uint
+		for _, lid := range issue.LabelIDs {
+			if id, err := strconv.ParseUint(lid, 10, 64); err == nil {
+				labelIDs = append(labelIDs, uint(id))
+			}
+		}
+
+		var milestoneID *uint
+		if issue.MilestoneID != "" {
+			if mid, err := strconv.ParseUint(issue.MilestoneID, 10, 64); err == nil {
+				v := uint(mid)
+				milestoneID = &v
+			}
+		}
+
+		created, err := h.issueSvc.Create(service.IssueCreateInput{ProjectID: projectID, CreatorID: creatorID, Title: issue.Title, Description: issue.Description, Priority: priority, AssigneeIDs: assigneeIDs, LabelIDs: labelIDs, MilestoneID: milestoneID, Environment: strPtr(issue.Environment), Branch: strPtr(issue.Branch), Link: mcpLinksToJson(issue.Links), Commits: mcpLinksToJson(issue.Commits), FixedInCommit: strPtr(issue.FixedInCommit), Solution: strPtr(issue.Solution), RootCause: strPtr(issue.RootCause)})
 		if err != nil {
 			return NewInternalError(id, fmt.Sprintf("issues[%d]: %s", i, err.Error()))
 		}

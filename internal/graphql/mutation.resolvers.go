@@ -296,7 +296,7 @@ func (r *mutationResolver) RemoveProjectMember(ctx context.Context, projectID st
 }
 
 // CreateIssue is the resolver for the createIssue field.
-func (r *mutationResolver) CreateIssue(ctx context.Context, projectID string, title string, description *string, priority Priority, assigneeIDs []string, labelIDs []string, milestoneID *string, environment *string, branch *string, links []string, commits []string, solution *string, rootCause *string) (*Issue, error) {
+func (r *mutationResolver) CreateIssue(ctx context.Context, projectID string, title string, description *string, priority Priority, assigneeIDs []string, labelIDs []string, milestoneID *string, environment *string, branch *string, links []string, commits []string, fixedInCommit *string, solution *string, rootCause *string) (*Issue, error) {
 	pid := parseID(projectID)
 	agentID, err := r.requireIssueProjectMemberByProject(ctx, pid)
 	if err != nil {
@@ -319,7 +319,7 @@ func (r *mutationResolver) CreateIssue(ctx context.Context, projectID string, ti
 		v := parseID(*milestoneID)
 		mid = &v
 	}
-	issue, err := r.IssueSvc.Create(service.IssueCreateInput{ProjectID: pid, CreatorID: agentID, Title: title, Description: desc, Priority: models.Priority(priority), AssigneeIDs: assigneeUintIDs, LabelIDs: labelUintIDs, MilestoneID: mid, Environment: environment, Branch: branch, Link: linksToJson(links), Commits: commitsToJson(commits), Solution: solution, RootCause: rootCause})
+	issue, err := r.IssueSvc.Create(service.IssueCreateInput{ProjectID: pid, CreatorID: agentID, Title: title, Description: desc, Priority: models.Priority(priority), AssigneeIDs: assigneeUintIDs, LabelIDs: labelUintIDs, MilestoneID: mid, Environment: environment, Branch: branch, Link: linksToJson(links), Commits: commitsToJson(commits), FixedInCommit: fixedInCommit, Solution: solution, RootCause: rootCause})
 	if err != nil {
 		return nil, fmt.Errorf("create issue: %w", err)
 	}
@@ -327,7 +327,7 @@ func (r *mutationResolver) CreateIssue(ctx context.Context, projectID string, ti
 }
 
 // UpdateIssue is the resolver for the updateIssue field.
-func (r *mutationResolver) UpdateIssue(ctx context.Context, id string, title *string, description *string, priority *Priority, dueDate *time.Time, milestoneID *string, environment *string, branch *string, links []string, commits []string, solution *string, rootCause *string, startedAt *time.Time, completedAt *time.Time, difficulty *int32) (*Issue, error) {
+func (r *mutationResolver) UpdateIssue(ctx context.Context, id string, title *string, description *string, priority *Priority, dueDate *time.Time, milestoneID *string, environment *string, branch *string, links []string, commits []string, fixedInCommit *string, solution *string, rootCause *string, startedAt *time.Time, completedAt *time.Time, difficulty *int32) (*Issue, error) {
 	iid := parseID(id)
 	if _, err := r.requireIssueProjectMember(ctx, iid); err != nil {
 		return nil, err
@@ -382,20 +382,21 @@ func (r *mutationResolver) UpdateIssue(ctx context.Context, id string, title *st
 		}
 	}
 	issue, err := r.IssueSvc.Update(iid, service.IssueUpdateInput{
-		Title:       &t,
-		Description: &d,
-		Priority:    &p,
-		DueDate:     nt,
-		MilestoneID: mid,
-		Environment: environment,
-		Branch:      branch,
-		Link:        linkInput,
-		Commits:     commitsInput,
-		Solution:    solution,
-		RootCause:   rootCause,
-		StartedAt:   startedAt,
-		CompletedAt: completedAt,
-		Difficulty:  diff,
+		Title:         &t,
+		Description:   &d,
+		Priority:      &p,
+		DueDate:       nt,
+		MilestoneID:   mid,
+		Environment:   environment,
+		Branch:        branch,
+		Link:          linkInput,
+		Commits:       commitsInput,
+		FixedInCommit: fixedInCommit,
+		Solution:      solution,
+		RootCause:     rootCause,
+		StartedAt:     startedAt,
+		CompletedAt:   completedAt,
+		Difficulty:    diff,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("update issue: %w", err)

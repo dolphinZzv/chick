@@ -15,18 +15,20 @@ func (h *Handlers) registerEditIssue(r *ToolRegistry) {
 		Name:        "edit_issue",
 		Description: "Edit an existing issue's fields (title, description, priority, solution, rootCause, etc.). The description, solution, and rootCause fields all support Markdown formatting.",
 		InputSchema: ObjectSchema(map[string]interface{}{
-			"issueId":     StringRequiredParam("Issue ID"),
-			"title":       StringParam("New issue title"),
-			"description": StringParam("New issue description in Markdown"),
-			"priority":    StringParam("New priority: critical / high / medium / low"),
-			"environment": StringParam("Environment name, e.g. staging, production"),
-			"branch":      StringParam("Branch name"),
-			"links":       ArrayParam("Related links (URLs)", "string"),
-			"solution":    StringParam("Solution description in Markdown"),
-			"rootCause":   StringParam("Root cause analysis in Markdown"),
-			"difficulty":  NumberParam("Implementation difficulty (1-5)"),
-			"startedAt":   StringParam("Start processing time (RFC3339)"),
-			"completedAt": StringParam("End processing time (RFC3339)"),
+			"issueId":       StringRequiredParam("Issue ID"),
+			"title":         StringParam("New issue title"),
+			"description":   StringParam("New issue description in Markdown"),
+			"priority":      StringParam("New priority: critical / high / medium / low"),
+			"environment":   StringParam("Environment name, e.g. staging, production"),
+			"branch":        StringParam("Branch name"),
+			"links":         ArrayParam("Related links (URLs)", "string"),
+			"commits":       ArrayParam("Commit hashes", "string"),
+			"fixedInCommit": StringParam("Commit hash that fixed this issue"),
+			"solution":      StringParam("Solution description in Markdown"),
+			"rootCause":     StringParam("Root cause analysis in Markdown"),
+			"difficulty":    NumberParam("Implementation difficulty (1-5)"),
+			"startedAt":     StringParam("Start processing time (RFC3339)"),
+			"completedAt":   StringParam("End processing time (RFC3339)"),
 		}, []string{"issueId"}),
 		Handler: h.handleEditIssue,
 	})
@@ -34,18 +36,20 @@ func (h *Handlers) registerEditIssue(r *ToolRegistry) {
 
 func (h *Handlers) handleEditIssue(id json.RawMessage, params json.RawMessage, actorID uint, remoteAddr string) Response {
 	var p struct {
-		IssueID     string   `json:"issueId"`
-		Title       string   `json:"title"`
-		Description string   `json:"description"`
-		Priority    string   `json:"priority"`
-		Environment string   `json:"environment"`
-		Branch      string   `json:"branch"`
-		Links       []string `json:"links"`
-		Solution    string   `json:"solution"`
-		RootCause   string   `json:"rootCause"`
-		Difficulty  int      `json:"difficulty"`
-		StartedAt   string   `json:"startedAt"`
-		CompletedAt string   `json:"completedAt"`
+		IssueID       string   `json:"issueId"`
+		Title         string   `json:"title"`
+		Description   string   `json:"description"`
+		Priority      string   `json:"priority"`
+		Environment   string   `json:"environment"`
+		Branch        string   `json:"branch"`
+		Links         []string `json:"links"`
+		Commits       []string `json:"commits"`
+		FixedInCommit string   `json:"fixedInCommit"`
+		Solution      string   `json:"solution"`
+		RootCause     string   `json:"rootCause"`
+		Difficulty    int      `json:"difficulty"`
+		StartedAt     string   `json:"startedAt"`
+		CompletedAt   string   `json:"completedAt"`
 	}
 	if err := json.Unmarshal(params, &p); err != nil {
 		return NewError(id, -32602, "Invalid params: "+err.Error())
@@ -66,7 +70,7 @@ func (h *Handlers) handleEditIssue(id json.RawMessage, params json.RawMessage, a
 		return NewError(id, -32602, "Access denied: not a member of this project")
 	}
 
-	if p.Title == "" && p.Description == "" && p.Priority == "" && p.Difficulty == 0 && p.StartedAt == "" && p.CompletedAt == "" && len(p.Links) == 0 && p.Solution == "" && p.RootCause == "" {
+	if p.Title == "" && p.Description == "" && p.Priority == "" && p.Difficulty == 0 && p.StartedAt == "" && p.CompletedAt == "" && len(p.Links) == 0 && len(p.Commits) == 0 && p.FixedInCommit == "" && p.Solution == "" && p.RootCause == "" {
 		return NewError(id, -32602, "At least one field must be provided for update")
 	}
 
@@ -114,18 +118,29 @@ func (h *Handlers) handleEditIssue(id json.RawMessage, params json.RawMessage, a
 			linkInput = mcpLinksToJson(p.Links)
 		}
 	}
+	var commitsInput *string
+	if p.Commits != nil {
+		if len(p.Commits) == 0 {
+			s := ""
+			commitsInput = &s
+		} else {
+			commitsInput = mcpLinksToJson(p.Commits)
+		}
+	}
 	issue, err := h.issueSvc.Update(uint(issueID), service.IssueUpdateInput{
-		Title:       strPtr(p.Title),
-		Description: strPtr(p.Description),
-		Priority:    &priority,
-		Environment: strPtr(p.Environment),
-		Branch:      strPtr(p.Branch),
-		Link:        linkInput,
-		Solution:    strPtr(p.Solution),
-		RootCause:   strPtr(p.RootCause),
-		StartedAt:   startedAt,
-		CompletedAt: completedAt,
-		Difficulty:  diff,
+		Title:         strPtr(p.Title),
+		Description:   strPtr(p.Description),
+		Priority:      &priority,
+		Environment:   strPtr(p.Environment),
+		Branch:        strPtr(p.Branch),
+		Link:          linkInput,
+		Commits:       commitsInput,
+		FixedInCommit: strPtr(p.FixedInCommit),
+		Solution:      strPtr(p.Solution),
+		RootCause:     strPtr(p.RootCause),
+		StartedAt:     startedAt,
+		CompletedAt:   completedAt,
+		Difficulty:    diff,
 	})
 	if err != nil {
 		return NewInternalError(id, err.Error())

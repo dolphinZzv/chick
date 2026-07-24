@@ -10,6 +10,7 @@ func (h *Handlers) RegisterAll(registry *ToolRegistry) {
 	h.registerTransitionIssue(registry)
 	h.registerTransitionIssuesBatch(registry)
 	h.registerSearchIssues(registry)
+	h.registerSearchLabels(registry)
 
 	h.registerSubmitRequirement(registry)
 	h.registerCreateProposal(registry)

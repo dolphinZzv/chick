@@ -84,10 +84,10 @@ type IssueAssigneeRepository interface {
 type CommentRepository interface {
 	Create(comment *models.Comment) error
 	GetByID(id uint) (*models.Comment, error)
-	ListByIssue(issueID uint) ([]models.Comment, error)
-	ListByProposal(proposalID uint) ([]models.Comment, error)
-	ListByTask(taskID uint) ([]models.Comment, error)
-	ListByParent(parentID uint) ([]models.Comment, error)
+	ListByIssue(issueID uint, asc bool) ([]models.Comment, error)
+	ListByProposal(proposalID uint, asc bool) ([]models.Comment, error)
+	ListByTask(taskID uint, asc bool) ([]models.Comment, error)
+	ListByParent(parentID uint, asc bool) ([]models.Comment, error)
 	Update(id uint, body string) error
 	Delete(id uint) error
 }

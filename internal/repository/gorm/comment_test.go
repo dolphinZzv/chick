@@ -40,7 +40,7 @@ func TestCommentRepo_CreateAndList(t *testing.T) {
 		t.Errorf("expected 'Hello', got %s", got.Body)
 	}
 
-	comments, err := repo.ListByIssue(1)
+	comments, err := repo.ListByIssue(1, true)
 	if err != nil {
 		t.Fatalf("list: %v", err)
 	}
@@ -68,7 +68,7 @@ func TestCommentRepo_Replies(t *testing.T) {
 	reply := &models.Comment{IssueID: uintPtr(1), AuthorID: agent.ID, Body: "Reply", ContentType: models.CommentMarkdown, ParentID: &parent.ID}
 	repo.Create(reply)
 
-	replies, err := repo.ListByParent(parent.ID)
+	replies, err := repo.ListByParent(parent.ID, true)
 	if err != nil {
 		t.Fatalf("list replies: %v", err)
 	}

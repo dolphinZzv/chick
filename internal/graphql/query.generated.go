@@ -33,7 +33,7 @@ type QueryResolver interface {
 	Task(ctx context.Context, id string) (*Task, error)
 	Tasks(ctx context.Context, proposalID string, state *TaskState, assigneeID *string, search *string, limit *int32, offset *int32) (*TaskConnection, error)
 	ValidTaskTransitions(ctx context.Context, state TaskState) ([]TaskState, error)
-	Comments(ctx context.Context, issueID *string, proposalID *string, taskID *string) ([]*Comment, error)
+	Comments(ctx context.Context, issueID *string, proposalID *string, taskID *string, orderBy *string) ([]*Comment, error)
 	Timeline(ctx context.Context, issueID *string, proposalID *string, taskID *string) ([]*TimelineEvent, error)
 	ValidTransitions(ctx context.Context, state IssueState) ([]IssueState, error)
 	Feedback(ctx context.Context, targetType FeedbackTargetType, targetID string) ([]*Feedback, error)
@@ -113,6 +113,11 @@ func (ec *executionContext) field_Query_comments_args(ctx context.Context, rawAr
 		return nil, err
 	}
 	args["taskID"] = arg2
+	arg3, err := graphql.ProcessArgField(ctx, rawArgs, "orderBy", ec.unmarshalOString2ᚖstring)
+	if err != nil {
+		return nil, err
+	}
+	args["orderBy"] = arg3
 	return args, nil
 }
 
@@ -970,6 +975,8 @@ func (ec *executionContext) fieldContext_Query_issue(ctx context.Context, field 
 				return ec.fieldContext_Issue_links(ctx, field)
 			case "commits":
 				return ec.fieldContext_Issue_commits(ctx, field)
+			case "fixedInCommit":
+				return ec.fieldContext_Issue_fixedInCommit(ctx, field)
 			case "solution":
 				return ec.fieldContext_Issue_solution(ctx, field)
 			case "rootCause":
@@ -1411,7 +1418,7 @@ func (ec *executionContext) _Query_comments(ctx context.Context, field graphql.C
 		ec.fieldContext_Query_comments,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.Resolvers.Query().Comments(ctx, fc.Args["issueID"].(*string), fc.Args["proposalID"].(*string), fc.Args["taskID"].(*string))
+			return ec.Resolvers.Query().Comments(ctx, fc.Args["issueID"].(*string), fc.Args["proposalID"].(*string), fc.Args["taskID"].(*string), fc.Args["orderBy"].(*string))
 		},
 		nil,
 		ec.marshalNComment2ᚕᚖmorningᚑgloryᚋinternalᚋgraphqlᚐCommentᚄ,
