@@ -1,0 +1,261 @@
+version: "3"
+
+tasks:
+  default:
+    cmds:
+      - task: dev
+
+  # ─── 门禁检查 ────────────────────────────────────
+  check:
+    desc: "门禁检查: vet + build + test + 验证 + 前端类型检查"
+    cmds:
+      - echo "=== 门禁检查: go vet ==="
+      - go vet ./...
+      - echo "=== 门禁检查: go build ==="
+      - go build -o /dev/null ./cmd/server/
+      - echo "=== 门禁检查: Go 测试 ==="
+      - go test -race -count=1 ./internal/...
+      - echo "=== 门禁检查: 验证 ==="
+      - go test -v -count=1 ./verif/
+      - echo "=== 门禁检查: 前端类型检查 ==="
+      - cd ui && npx tsc --noEmit
+      - echo "=== 门禁检查: 全部通过 ==="
+
+  # ─── 构建 ────────────────────────────────────────
+  build:
+    desc: "构建后端"
+    cmds:
+      - go build -o bin/morning-glory ./cmd/server/
+
+  build-prod:
+    desc: "构建生产后端"
+    cmds:
+      - go build -ldflags="-s -w" -o bin/morning-glory-prod ./cmd/server/
+
+  ui-build:
+    desc: "构建前端"
+    cmds:
+      - echo "=== 构建前端 ==="
+      - cd ui && npm run build
+
+  # ─── 本地开发 ────────────────────────────────────
+  dev:
+    desc: "启动本地开发环境"
+    cmds:
+      - ./dev start
+
+  run:
+    desc: "快速启动（构建 + 启动，跳过门禁）"
+    deps: [build]
+    cmds:
+      - echo "=== 释放端口 8082 ==="
+      - cmd: |
+          pid=$(lsof -ti:8082 2>/dev/null || true); \
+          if [ -n "$pid" ]; then \
+            echo "  Port 8082 occupied by PID $pid, killing..."; \
+            kill $pid 2>/dev/null || true; \
+            sleep 1; \
+          fi
+      - echo "=== 启动应用 ==="
+      - cmd: |
+          MORNING_GLORY_PORT=8082 \
+          MORNING_GLORY_ALLOW_HUMAN_REGISTRATION=true \
+          MORNING_GLORY_ALLOWED_ORIGINS="*" \
+          MORNING_GLORY_JWT_SECRET=${MORNING_GLORY_JWT_SECRET:-morning-glory-dev-secret-key-2024} \
+          nohup ./bin/morning-glory &>/tmp/morning-glory-server.log &
+      - sleep 1
+      - echo "  PID: $$!"
+      - sleep 3
+      - echo "=== 启动后检查: 健康端点 ==="
+      - cmd: |
+          status=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8082/health 2>/dev/null); \
+          if [ "$status" = "200" ]; then \
+            echo "  ✅ 健康检查通过 (HTTP $status)"; \
+          else \
+            echo "  ❌ 健康检查失败 (HTTP $status)"; \
+            exit 1; \
+          fi
+      - echo "=== 启动后检查: 页面 ==="
+      - cmd: |
+          status=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8082/ 2>/dev/null); \
+          if [ "$status" = "200" ]; then \
+            echo "  ✅ 页面返回 200"; \
+          else \
+            echo "  ❌ 页面返回 $status"; \
+            exit 1; \
+          fi
+      - echo "=== 启动完成: http://0.0.0.0:8082 ==="
+
+  start:
+    desc: "完整启动（门禁 + 构建 + 启动）"
+    deps: [check, ui-build, build]
+    cmds:
+      - echo "=== 释放端口 8082 ==="
+      - cmd: |
+          pid=$(lsof -ti:8082 2>/dev/null || true); \
+          if [ -n "$pid" ]; then \
+            echo "  Port 8082 occupied by PID $pid, killing..."; \
+            kill $pid 2>/dev/null || true; \
+            sleep 1; \
+          fi
+      - echo "=== 启动应用 ==="
+      - cmd: |
+          MORNING_GLORY_PORT=8082 \
+          MORNING_GLORY_ALLOW_HUMAN_REGISTRATION=true \
+          MORNING_GLORY_ALLOWED_ORIGINS="*" \
+          MORNING_GLORY_JWT_SECRET=${MORNING_GLORY_JWT_SECRET:-morning-glory-dev-secret-key-2024} \
+          nohup ./bin/morning-glory &>/tmp/morning-glory-server.log &
+      - sleep 1
+      - echo "  PID: $$!"
+      - sleep 3
+      - echo "=== 启动后检查: 健康端点 ==="
+      - cmd: |
+          status=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8082/health 2>/dev/null); \
+          if [ "$status" = "200" ]; then \
+            echo "  ✅ 健康检查通过 (HTTP $status)"; \
+          else \
+            echo "  ❌ 健康检查失败 (HTTP $status)"; \
+            exit 1; \
+          fi
+      - echo "=== 启动后检查: 页面 ==="
+      - cmd: |
+          status=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8082/ 2>/dev/null); \
+          if [ "$status" = "200" ]; then \
+            echo "  ✅ 页面返回 200"; \
+          else \
+            echo "  ❌ 页面返回 $status"; \
+            exit 1; \
+          fi
+      - echo "=== 启动完成: http://0.0.0.0:8082 ==="
+
+  stop:
+    desc: "停止服务"
+    cmds:
+      - echo "=== 停止开发进程 ==="
+      - pkill -f "bin/morning-glory" 2>/dev/null || true
+      - echo "=== 停止生产服务 ==="
+      - sudo systemctl stop morning-glory-prod 2>/dev/null || true
+      - echo "  ✅ 已停止"
+
+  # ─── 测试 ────────────────────────────────────────
+  test:
+    desc: "运行单元测试"
+    cmds:
+      - go test -race -count=1 ./internal/...
+
+  test-all:
+    desc: "运行全部测试"
+    cmds:
+      - go test -race -count=1 ./internal/...
+
+  test-integration:
+    desc: "运行集成测试"
+    cmds:
+      - go test -tags=integration -race -count=1 ./internal/...
+
+  # ─── 代码生成 ────────────────────────────────────
+  generate:
+    desc: "生成 GraphQL 代码"
+    cmds:
+      - cd ui && npx graphql-codegen
+      - go run github.com/99designs/gqlgen generate
+
+  # ─── 覆盖率 ──────────────────────────────────────
+  coverage:
+    desc: "测试覆盖率"
+    cmds:
+      - go test -count=1 -coverprofile=coverage.out ./internal/...
+      - go tool cover -func=coverage.out | grep total
+
+  coverage-html:
+    desc: "测试覆盖率 HTML"
+    cmds:
+      - go test -count=1 -coverprofile=coverage.out ./internal/...
+      - go tool cover -html=coverage.out
+
+  # ─── systemd 服务 ───────────────────────────────
+  prod-service:
+    desc: "安装生产 systemd 服务"
+    cmds:
+      - cp deploy/morning-glory-prod.service /etc/systemd/system/morning-glory-prod.service
+      - test -f /etc/default/morning-glory-prod || echo "MORNING_GLORY_JWT_SECRET=morning-glory-dev-secret-key-2024" > /etc/default/morning-glory-prod
+      - systemctl daemon-reload
+      - systemctl enable morning-glory-prod
+
+  dev-service:
+    desc: "安装开发 systemd 服务"
+    cmds:
+      - cp deploy/morning-glory-dev.service /etc/systemd/system/morning-glory-dev.service
+      - systemctl daemon-reload
+      - systemctl enable morning-glory-dev
+      - systemctl restart morning-glory-dev 2>/dev/null || true
+
+  # ─── 生产部署 ────────────────────────────────────
+  prod:
+    desc: "生产部署"
+    deps: [build-prod, ui-build, prod-service]
+    cmds:
+      - echo "=== 更新前端资源 ==="
+      - sudo install -d /opt/morning-glory/ui/dist
+      - sudo install -m 755 bin/morning-glory-prod /opt/morning-glory/morning-glory-server
+      - sudo cp -r ui/dist/* /opt/morning-glory/ui/dist/
+      - echo "=== 重启服务 ==="
+      - sudo systemctl restart morning-glory-prod
+      - sleep 2
+      - echo "=== 健康检查 ==="
+      - cmd: |
+          status=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:18082/health 2>/dev/null); \
+          if [ "$status" = "200" ]; then \
+            echo "  ✅ 生产服务运行正常 (HTTP $status)"; \
+          else \
+            echo "  ❌ 健康检查失败 (HTTP $status)，查看日志: journalctl -u morning-glory-prod -n 50"; \
+          fi
+      - echo "=== 部署完成: http://0.0.0.0:18082 ==="
+
+  # ─── 远程部署 ────────────────────────────────────
+  deploy:
+    desc: "远程部署到生产机"
+    vars:
+      DEPLOY_HOST: '{{ .DEPLOY_HOST | default "47.95.200.101" }}'
+      DEPLOY_SSH_PORT: '{{ .DEPLOY_SSH_PORT | default "10022" }}'
+      DEPLOY_USER: '{{ .DEPLOY_USER | default "root" }}'
+      DEPLOY_PATH: '{{ .DEPLOY_PATH | default "/opt/morning-glory" }}'
+      DEPLOY_SERVICE: '{{ .DEPLOY_SERVICE | default "morning-glory-prod" }}'
+      DEPLOY_HEALTH_PORT: '{{ .DEPLOY_HEALTH_PORT | default "18080" }}'
+    deps: [build-prod, ui-build]
+    cmds:
+      - echo "=== 部署到 {{.DEPLOY_HOST}}:{{.DEPLOY_SSH_PORT}} ==="
+      - ssh -p {{.DEPLOY_SSH_PORT}} {{.DEPLOY_USER}}@{{.DEPLOY_HOST}} "install -d {{.DEPLOY_PATH}}/ui/dist"
+      - ssh -p {{.DEPLOY_SSH_PORT}} {{.DEPLOY_USER}}@{{.DEPLOY_HOST}} "systemctl stop {{.DEPLOY_SERVICE}}"
+      - cat bin/morning-glory-prod | ssh -p {{.DEPLOY_SSH_PORT}} {{.DEPLOY_USER}}@{{.DEPLOY_HOST}} "cat > {{.DEPLOY_PATH}}/morning-glory-server && chmod +x {{.DEPLOY_PATH}}/morning-glory-server"
+      - tar c -C ui/dist . | ssh -p {{.DEPLOY_SSH_PORT}} {{.DEPLOY_USER}}@{{.DEPLOY_HOST}} "tar x -C {{.DEPLOY_PATH}}/ui/dist"
+      - echo "=== 启动服务 ==="
+      - ssh -p {{.DEPLOY_SSH_PORT}} {{.DEPLOY_USER}}@{{.DEPLOY_HOST}} "systemctl start {{.DEPLOY_SERVICE}}"
+      - sleep 2
+      - echo "=== 健康检查 ==="
+      - cmd: |
+          status=$(curl -s -o /dev/null -w "%{http_code}" http://{{.DEPLOY_HOST}}:{{.DEPLOY_HEALTH_PORT}}/health 2>/dev/null); \
+          if [ "$status" = "200" ]; then \
+            echo "  ✅ 生产服务运行正常 (HTTP $status)"; \
+          else \
+            echo "  ❌ 健康检查失败 (HTTP $status)"; \
+          fi
+      - echo "=== 部署完成: http://{{.DEPLOY_HOST}}:{{.DEPLOY_HEALTH_PORT}} ==="
+
+  # ─── 推送 ────────────────────────────────────────
+  push:
+    desc: "门禁 + 提交 + 推送"
+    deps: [check]
+    cmds:
+      - echo "=== 提交并推送 ==="
+      - git add -A
+      - cmd: git commit -m "{{ .MSG | default "update" }}"
+        ignore_error: true
+      - cmd: git push origin $(git rev-parse --abbrev-ref HEAD)
+      - echo "=== 推送完成: $(git rev-parse --abbrev-ref HEAD) ==="
+
+  # ─── 清理 ────────────────────────────────────────
+  clean:
+    desc: "清理构建产物"
+    cmds:
+      - rm -rf bin/ coverage.out
